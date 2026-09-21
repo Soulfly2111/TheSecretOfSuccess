@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+if [ "${RENEWED_LINEAGE:-}" = /etc/letsencrypt/live/casanova-studio.de ]; then
+    apache2ctl configtest
+    systemctl reload apache2
+fi
