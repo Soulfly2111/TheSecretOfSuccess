@@ -1,6 +1,6 @@
 'use strict';
 const PixelScene=(()=>{
- const backgrounds=new Image(),hero=new Image(),mechanicImage=new Image();backgrounds.src='assets/locations-v3.png';hero.src='assets/hero-walk.png';mechanicImage.src='assets/mechanic-idle.png';
+ const backgrounds=new Image(),hero=new Image(),mechanicImage=new Image();backgrounds.src='assets/locations-v3.png';hero.src='assets/hero-detailed-v6.png';mechanicImage.src='assets/mechanic-idle.png';
  const doorsOpen=new Image();doorsOpen.src='assets/doors-open-v5.png';
  const changed=new Image();changed.src='assets/locations-states-v3.png';
  const carClosed=new Image(),carOpen=new Image();carClosed.src='assets/car-front-closed-v4.png';carOpen.src='assets/car-front-open-v4.png';
@@ -42,37 +42,28 @@ const PixelScene=(()=>{
    patch(ctx,'yard',[86,44,97,69],doorsOpen);
   }
  }
- function slice(image,columns,rows,output){const c=document.createElement('canvas');c.width=image.width;c.height=image.height;let g=c.getContext('2d',{willReadFrequently:true});g.drawImage(image,0,0);const pixels=g.getImageData(0,0,c.width,c.height).data,tw=c.width/columns,th=c.height/rows;
-  for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){let left=Math.ceil(col*tw),top=Math.ceil(row*th),right=Math.floor((col+1)*tw)-1,bottom=Math.floor((row+1)*th)-1,minX=right,maxX=left,minY=bottom,maxY=top;
+ function slice(image,columns,rows,output,rowCuts=null){const c=document.createElement('canvas');c.width=image.width;c.height=image.height;let g=c.getContext('2d',{willReadFrequently:true});g.drawImage(image,0,0);const pixels=g.getImageData(0,0,c.width,c.height).data,tw=c.width/columns,th=c.height/rows;
+  for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){let left=Math.ceil(col*tw),top=rowCuts?rowCuts[row]:Math.ceil(row*th),right=Math.floor((col+1)*tw)-1,bottom=(rowCuts?rowCuts[row+1]:Math.floor((row+1)*th))-1,minX=right,maxX=left,minY=bottom,maxY=top;
    for(let y=top;y<=bottom;y++)for(let x=left;x<=right;x++){if(pixels[(y*c.width+x)*4+3]>100){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}}
-   let hipY=Math.round(minY+(maxY-minY)*.74),hipL=maxX,hipR=minX;
+   let hipY=Math.round(minY+(maxY-minY)*(image===hero?.48:.74)),hipL=maxX,hipR=minX;
    for(let x=minX;x<=maxX;x++)if(pixels[(hipY*c.width+x)*4+3]>100){hipL=Math.min(hipL,x);hipR=Math.max(hipR,x);}
    output.push({x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1,anchor:(hipL+hipR)/2-minX});
   }
  }
- hero.onload=()=>slice(hero,4,4,tiles);mechanicImage.onload=()=>slice(mechanicImage,2,2,mechanicTiles);
+ hero.onload=()=>slice(hero,5,4,tiles,[0,283,559,829,1122]);mechanicImage.onload=()=>slice(mechanicImage,2,2,mechanicTiles);
  function background(ctx,room){if(!backgrounds.complete||!backgrounds.naturalWidth)return;const slots={yard:[0,0],garage:[1,0],barn:[0,1],house:[1,1]},[x,y]=slots[room],w=backgrounds.width/2,h=backgrounds.height/2;ctx.imageSmoothingEnabled=false;ctx.drawImage(backgrounds,x*w,y*h,w,h,0,0,640,360);}
  function actor(ctx,a,room,t,mechanic=false){const factor=Movement.scale(room,a.y),h=Math.round(72*factor*2/3),x=Math.round(a.x*2/3),y=Math.round(a.y*2/3);ctx.imageSmoothingEnabled=false;ctx.fillStyle='#11152266';ctx.fillRect(x-Math.round(h*.12),y,Math.round(h*.27),2);
   if(mechanic&&mechanicTiles.length===4){let frame=t<talkingUntil?2+Math.floor(t/420)%2:(Math.floor(t/160)%24===0?1:0),tile=mechanicTiles[frame],w=Math.round(h*tile.w/tile.h);ctx.drawImage(mechanicImage,tile.x,tile.y,tile.w,tile.h,x-Math.round(tile.anchor/tile.h*h),y-h,w,h);return;}
-  if(tiles.length===16&&!mechanic){
-   let frame=a.moving?Math.floor(a.phase/125)%4:1,tile=tiles[dirs[a.direction]*4+frame],w=Math.round(h*tile.w/tile.h),bob=a.moving?(frame%2):0;
-   if(a.moving){
-    if((a.direction==='up'||a.direction==='down')&&frame>=2){
-     // Opposite stride below the hips; head and jacket keep their orientation.
-     let cut=Math.floor(tile.h*.61),dh=Math.round(h*.61);
-     ctx.drawImage(hero,tile.x,tile.y,tile.w,cut,x-Math.floor(w/2),y-h-bob,w,dh);
-     ctx.save();ctx.translate(x,y-h+dh-bob);ctx.scale(-1,1);ctx.drawImage(hero,tile.x,tile.y+cut,tile.w,tile.h-cut,-Math.floor(w/2),0,w,h-dh);ctx.restore();
-    }else ctx.drawImage(hero,tile.x,tile.y,tile.w,tile.h,x-Math.floor(w/2),y-h-bob,w,h);
-   }else{
-    // Neutral feet instead of freezing a mid-stride frame.
-    const leg=Math.round(h*.37),lw=Math.max(2,Math.round(h*.065)),gap=Math.max(1,Math.round(h*.02));
-    ctx.fillStyle='#171c23';ctx.fillRect(x-lw-gap,y-leg,lw,leg-2);ctx.fillStyle='#222831';ctx.fillRect(x+gap,y-leg,lw,leg-2);
-    ctx.fillStyle='#10151b';ctx.fillRect(x-lw-gap-(a.direction==='left'?2:0),y-2,lw+2,2);ctx.fillRect(x+gap,y-2,lw+2,2);
-    let cut=Math.floor(tile.h*.65);ctx.drawImage(hero,tile.x,tile.y,tile.w,cut,x-Math.floor(w/2),y-h,w,Math.round(h*.65));
-   }
-   if(a.gesture>0&&a.direction!=='up'){let side=a.direction==='left'?-1:1;ctx.fillStyle='#232c35';ctx.fillRect(x+(side<0?-h*.24:h*.04),y-h*.45,h*.2,Math.max(2,h*.04));ctx.fillStyle='#d6a071';ctx.fillRect(x+(side<0?-h*.26:h*.23),y-h*.45,Math.max(2,h*.045),Math.max(2,h*.04));}
+  if(tiles.length===20&&!mechanic){
+   // Each direction has one complete standing pose and four complete walk frames.
+   // Never cut, mirror or replace legs independently of the jacket and pelvis.
+   const frame=a.moving?1+Math.floor(a.phase/125)%4:0;
+   const tile=tiles[dirs[a.direction]*5+frame],w=Math.round(h*tile.w/tile.h);
+   const left=x-Math.round(tile.anchor/tile.h*h);
+   ctx.drawImage(hero,tile.x,tile.y,tile.w,tile.h,left,y-h,w,h);
    return;
   }
+  if(!mechanic)return;
   // A separate low-resolution mechanic with a cap, overalls and idle gestures.
   ctx.save();ctx.translate(x,y);ctx.scale(factor*2/3,factor*2/3);const r=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h)},breathe=Math.floor(t/800)%2;
   r(-8,-3,9,3,'#151925');r(3,-3,10,3,'#151925');r(-7,-28,7,26,'#263e56');r(3,-28,7,26,'#33536c');r(-7,-28,3,24,'#476981');r(-11,-49,23,24,'#456c83');r(-7,-48,13,11,'#8a9c9b');r(-7,-44,3,16,'#2f536f');r(6,-44,3,16,'#2f536f');r(-6,-34,13,10,'#315774');r(-13,-46,5,22+breathe,'#315570');r(10,-46,5,21-breathe,'#547b8c');r(-13,-25+breathe,5,6,'#b98961');r(10,-26-breathe,5,6,'#d1a176');r(-5,-56,11,8,'#ae7957');r(-8,-67,16,13,'#d0a278');r(-9,-64,3,8,'#916947');r(6,-64,3,8,'#e2b18a');r(-8,-72,15,6,'#536b7a');r(-11,-67,22,3,'#73909a');r(-6,-60,3,2,'#242f3a');r(3,-60,3,2,'#242f3a');r(-4,-55,11,3,'#aaa69a');r(0,-54,5,1,'#795343');ctx.restore();

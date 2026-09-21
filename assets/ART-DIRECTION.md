@@ -1,5 +1,13 @@
 # Hintergrundgrafik
 
+## Version 6 – Vollständige Hauptfigur
+
+Datei: `assets/hero-detailed-v6.png`. Mit dem eingebauten Imagegen-Werkzeug erstellt. Fünf Spalten: Standpose und vier Laufphasen; vier Zeilen: rechts, links, vorne, hinten. Vollständige Figuren ersetzen die zusammengesetzten Standbeine. Positionierung am Rumpf und an der Bodenlinie verhindert seitliches Springen durch unterschiedliche Schrittbreiten.
+
+### Verwendeter Prompt
+
+Use input as character identity and pixel-art style reference. Create a production game sprite sheet with genuine transparent background, EXACTLY FIVE equal columns and FOUR equal rows, no text, labels, borders or ground shadows. Each cell contains one complete SAME young dark-blond man in black business suit, white shirt, thin black tie, black leather shoes. Rows respectively RIGHT profile, LEFT profile, FRONT toward viewer, BACK away. Column1 each row: neutral STANDING with both feet planted and relaxed arms, anatomically natural straight trousers. Columns2-5: four successive WALK phases, alternating left/right leg and opposing arm, contact passing opposite contact opposite passing; front/back must visibly alternate steps. All20 full bodies same head size, consistent proportions and height, feet aligned to identical baseline within cell and torso centered. Padding between cells, no cropping. Improve craftsmanship: subtle charcoal suit highlights, lapels buttons pocket seam, trousers with knee bends folds and cuffs, clearly shaped leather shoes with toe heel sole and small highlights; detailed expressive face and layered blond hair. Preserve original slender adult proportions and modest stylized head. Crisp retro pixel clusters, limited warm charcoal palette, no smooth painting no outlines of rectangles replacing legs. Transparent background. Wide sheet approx 5:4. All figures complete from hair to soles.
+
 ## Version 5 – Schranktür und Garagentor
 
 Datei: `assets/doors-open-v5.png`. Mit dem eingebauten Imagegen-Werkzeug aus `locations-v3.png` erstellt. Der Renderer verwendet nur die lokalen Türausschnitte. Das Kaffeepulver bleibt ein separat entnehmbares Objekt.
