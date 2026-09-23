@@ -4,7 +4,7 @@ Live: https://casanova-studio.de/ – Spiel: https://casanova-studio.de/the-secr
 
 Apache auf 185.207.107.160. Ausschließlich eigene Site `casanova-studio.conf`; andere VirtualHosts bleiben unverändert. Webroot `/var/www/casanova-studio/current` verweist auf ein versioniertes Verzeichnis unter `/var/www/casanova-studio/releases/`.
 
-Release-Aufbau: Inhalt von `site/` ins Release-Hauptverzeichnis kopieren; Spieldateien `index.html`, `style.css`, `engine.js`, `movement.js`, `scene-state.js`, `renderer.js`, `game.js` und `assets/` unter `the-secret-of-my-success/` kopieren. Keine Zugangsdaten, Tests oder Deployment-Dateien im öffentlichen Webroot.
+Release-Aufbau: Inhalt von `site/` ins Release-Hauptverzeichnis kopieren; Spieldateien `index.html`, `style.css`, `engine.js`, `movement.js`, `scene-state.js`, `renderer.js`, `game.js`, `chapters.js`, `act1.html`, `act1.js`, `act1-engine.js`, `act1-world.js`, `act1-renderer.js` und `assets/` unter `the-secret-of-my-success/` kopieren. Keine Zugangsdaten, Tests oder Deployment-Dateien im öffentlichen Webroot.
 
 Für Updates neues Release-Verzeichnis anlegen, Dateien übertragen, prüfen und `current` mittels temporärem Symlink und `mv -Tf` atomar umschalten. Rückkehr zum vorherigen Release durch dieselbe Symlink-Umschaltung. Für reine Inhaltsupdates kein Apache-Reload nötig.
 

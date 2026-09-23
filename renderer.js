@@ -71,6 +71,6 @@ const PixelScene=(()=>{
  function render(ctx,state,a,t){ctx.clearRect(0,0,640,360);background(ctx,state.room);objectStates(ctx,state);if(state.room==='garage'){let p=Movement.maps.garage.npc,npc={x:p[0],y:p[1],direction:'left',moving:false};if(a.y<npc.y){actor(ctx,a,state.room,t);actor(ctx,npc,state.room,t,true);}else{actor(ctx,npc,state.room,t,true);actor(ctx,a,state.room,t);}}else actor(ctx,a,state.room,t);
 
  }
- return {render,talk:()=>{talkingUntil=performance.now()+6500;}};
+ return {render,drawActor:actor,talk:()=>{talkingUntil=performance.now()+6500;}};
 })();
 
