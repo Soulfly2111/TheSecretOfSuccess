@@ -2,8 +2,8 @@
 const $=id=>document.getElementById(id),A=ActOne,W=ActOneWorld,rooms=W.rooms;
 const scratch=new URLSearchParams(location.search).has('test'),saveKey='success-act1-v1';W.install(Movement);
 let state=A.fresh(),verb='Gehe zu',selected=null,hover='',showAll=false,lastTime=0,sound=false,audio=null;
-try{const s=scratch?null:JSON.parse(localStorage.getItem(saveKey));if(s&&rooms[s.room]&&Array.isArray(s.inventory)&&s.flags){state={...A.fresh(),...s,inventory:s.inventory.filter(id=>A.items[id]),journal:Array.isArray(s.journal)?s.journal:[]};}}catch{}
-let actor=Movement.create(state.room),endingTimer;
+try{const s=scratch?null:JSON.parse(localStorage.getItem(saveKey));if(s)W.migrate(s);if(s&&rooms[s.room]&&Array.isArray(s.inventory)&&s.flags){state={...A.fresh(),...s,inventory:s.inventory.filter(id=>A.items[id]),journal:Array.isArray(s.journal)?s.journal:[]};}}catch{}
+let actor=Movement.create(state.room),endingTimer,camera=0;
 const verbs=['Öffne','Schließe','Drücke','Ziehe','Gehe zu','Nimm','Rede mit','Gib','Benutze','Schau an','Mach an','Mach aus'];
 function save(){if(!scratch)try{localStorage.setItem(saveKey,JSON.stringify(state));}catch{}}
 function say(text){$('speech').textContent=text;}
@@ -19,15 +19,37 @@ function renderControls(){
 }
 function showChoices(target){clearChoices();for(const [id,label] of A.options(state,target)){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{say(A.act(state,'Wähle',id));selected=null;save();render();showChoices(target);};$('choices').append(b);}}
 function render(){
- const room=rooms[state.room];$('scene').dataset.room=state.room;$('location-name').textContent=room.name;$('location-sub').textContent=room.sub;$('hotspots').replaceChildren();
- for(const [id,label,x,y,w,h] of room.objects){if(!A.visible(state,id))continue;const b=document.createElement('button');b.className='hotspot';b.dataset.object=id;b.style.cssText=`left:${x}%;top:${y}%;width:${w}%;height:${h}%`;b.setAttribute('aria-label',label);const span=document.createElement('span');span.textContent=label;b.append(span);b.onmouseenter=b.onfocus=()=>{hover=label;$('hover-label').textContent=label;sentence();};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();approach(id);};$('hotspots').append(b);}
+ const room=rooms[state.room];camera=W.cameraX(state.room,actor.x);$('scene').dataset.room=state.room;$('location-name').textContent=room.name;$('location-sub').textContent=room.sub;$('hotspots').replaceChildren();
+ for(const [id,label,x,y,w,h] of room.objects){if(!A.visible(state,id))continue;const b=document.createElement('button');b.className='hotspot';b.dataset.object=id;b.dataset.worldX=x/100*(room.width||960);b.dataset.worldWidth=w/100*(room.width||960);b.style.cssText=`top:${y}%;height:${h}%`;b.setAttribute('aria-label',label);const span=document.createElement('span');span.textContent=label;b.append(span);b.onmouseenter=b.onfocus=()=>{hover=label;$('hover-label').textContent=label;sentence();};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();approach(id);};$('hotspots').append(b);}
  $('map').replaceChildren();for(const [id,r] of Object.entries(rooms)){if(id==='ending')continue;const b=document.createElement('button');b.textContent=r.label;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);}
- renderControls();sentence();const f=state.flags,stages=[f.badgeIssued,f.visitorDone,f.sellerRejected&&f.techAdmitted,f.accessClear,f.repaired&&f.audited&&state.won];$('progress').textContent=state.won?'AKT 1 ABGESCHLOSSEN':`ERSTER ARBEITSTAG · ${stages.filter(Boolean).length} / 5`;
+ updateCamera();renderControls();sentence();const f=state.flags,stages=[f.badgeIssued,f.visitorDone,f.sellerRejected&&f.techAdmitted,f.accessClear,f.repaired&&f.audited&&state.won];$('progress').textContent=state.won?'AKT 1 ABGESCHLOSSEN':`ERSTER ARBEITSTAG · ${stages.filter(Boolean).length} / 5`;
 }
 function approach(id){if(state.won){ending();return;}clearChoices();const p=Movement.maps[state.room].spots[id];if(!p)return;Movement.move(actor,state.room,{x:p[0],y:p[1]},{target:id,verb,selected,room:state.room,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[state.room].objects.find(o=>o[0]===id)[1]+' …';}
-function travel(destination){if(state.won){ending();return;}if(destination===state.room)return;clearChoices();selected=null;renderControls();const next=W.nextRoom(state.room,destination),p=Movement.maps[state.room].spots.exit;Movement.move(actor,state.room,{x:p[0],y:p[1]},{room:state.room,travel:next,destination,facing:'right'});$('sentence').textContent='Gehe zu '+rooms[destination].label+' …';}
+function updateCamera(){
+ camera=W.cameraX(state.room,actor.x);
+ for(const b of $('hotspots').children){const x=Number(b.dataset.worldX)-camera,w=Number(b.dataset.worldWidth);b.style.left=`${x/960*100}%`;b.style.width=`${w/960*100}%`;b.hidden=x+w<=0||x>=960;}
+ $('scene').dataset.cameraX=camera;
+ $('pan-left').hidden=state.room!=='lobby'||actor.x<110;
+ $('pan-right').hidden=state.room!=='lobby'||actor.x>1835;
+ $('walk-hint').textContent=state.room==='lobby'?'← ERDGESCHOSS →':'ZURÜCK DURCH DIE TÜR';
+}
+function travel(destination){
+ if(state.won){ending();return;}if(destination===state.room)return;clearChoices();selected=null;renderControls();
+ const next=W.nextRoom(state.room,destination),target=W.exitTarget(state.room,next),p=Movement.maps[state.room].spots[target];
+ Movement.move(actor,state.room,{x:p[0],y:p[1]},{room:state.room,travel:next,destination,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[destination].label+' …';
+}
+function enter(destination){
+ const blocked=A.canEnter(state,destination);if(blocked){say(blocked);sentence();return false;}
+ const from=state.room;if(from==='lobby'&&destination==='delivery'||from==='delivery')state.flags.sideOpen=true;
+ state.room=destination;actor=Movement.create(destination);const p=W.entry(destination,from);if(p){actor.x=p[0];actor.y=p[1];actor.direction=destination==='lobby'?'left':'down';}
+ say(rooms[state.room].entry);save();render();return true;
+}
 function arrive(action){if(action.room!==state.room)return;
- if(action.travel){const blocked=A.canEnter(state,action.travel);if(blocked){say(blocked);sentence();return;}state.room=action.travel;actor=Movement.create(state.room);say(rooms[state.room].entry);save();render();if(action.destination!==state.room)travel(action.destination);return;}
+ if(action.travel){if(enter(action.travel)&&action.destination!==state.room)travel(action.destination);return;}
+ if(!action.selected&&['Gehe zu','Benutze'].includes(action.verb)){
+  const target=action.target,destination=target==='sideDoor'?'delivery':target==='techDoor'?'corridor':target==='lobbyExit'?'lobby':null;
+  if(destination){enter(destination);return;}
+ }
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
  ping();const before=state.room;say(A.act(state,action.verb,action.target,action.selected));selected=null;if(before!==state.room)actor=Movement.create(state.room);save();render();
  if(!action.selected&&((action.target==='phone'&&['Benutze','Rede mit'].includes(action.verb))||action.verb==='Rede mit'||action.target==='keyboard'&&['Nimm','Benutze'].includes(action.verb)))showChoices(action.target);
@@ -38,15 +60,19 @@ function ending(){popup('Die erste „Beförderung“.',['Walter hat die Schicht
 function chapterMenu(){Movement.cancel(actor);popup('Kapitel auswählen',['Prolog und Akt 1 speichern ihren Fortschritt getrennt.']);for(const [label,url] of [['Prolog · Raus hier!','index.html?chapter=prolog'],['Akt 1 · Weiterspielen',null]]){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{save();if(url)location.href=url+(scratch?'&test=chapters':'');else $('modal').close();};$('modal-content').append(b);}}
 $('chapters').onclick=chapterMenu;
 document.querySelector('.wordmark').onclick=e=>{e.preventDefault();chapterMenu();};
-$('journal').onclick=()=>popup('Notizbuch · Mein erster Arbeitstag',state.journal.length?state.journal:['Noch keine Notizen. Untersuche deine Einladung und die Unterlagen in der Loge.']);
-$('help').onclick=()=>popup('Ein guter Plan öffnet Türen.',['Wähle ein Verb und klicke auf ein Objekt oder eine Person. Die Figur geht zuerst dorthin. Bei Gesprächen erscheinen zusätzliche Themen unter dem Dialog.','Dokumente lesen: „Schau an“ wählen, dann auf das Dokument im Inventar klicken. Zum Benutzen einen Gegenstand und danach das Ziel wählen.','Die Ortsleiste führt zu den fünf Schauplätzen. Ausweise und verschlossene Türen werden dabei geprüft. Der Hinweis-Knopf zeigt den nächsten sinnvollen Schritt.','Wichtige Informationen werden im Notizbuch gespeichert. Falsche Anrufe lassen sich ohne Nachteil korrigieren.']);
+$('journal').onclick=()=>popup('Notizbuch · Mein erster Arbeitstag',state.journal.length?state.journal:['Noch keine Notizen. Untersuche deine Einladung und die Unterlagen am Empfang.']);
+$('help').onclick=()=>popup('Ein guter Plan öffnet Türen.',['Wähle ein Verb und klicke auf ein Objekt oder eine Person. Die Figur geht zuerst dorthin. Bei Gesprächen erscheinen zusätzliche Themen unter dem Dialog.','Dokumente lesen: „Schau an“ wählen, dann auf das Dokument im Inventar klicken. Zum Benutzen einen Gegenstand und danach das Ziel wählen.','Das Erdgeschoss ist doppelt so breit wie das Bild. Klicke auf den Boden oder die Randpfeile, um zu laufen; die Kamera folgt. Die Pfeiltasten funktionieren ebenfalls. Die Technikraumtür und der Nebeneingang zum Hof sind echte Ausgänge. Die Ortsleiste läuft zur passenden Tür, ohne zu teleportieren.','Wichtige Informationen werden im Notizbuch gespeichert. Falsche Anrufe lassen sich ohne Nachteil korrigieren.']);
 $('close-modal').onclick=()=>$('modal').close();$('hint').onclick=()=>say(A.hint(state));
 $('restart').onclick=()=>{popup('Akt 1 neu beginnen?',['Nur der Spielstand von Akt 1 wird ersetzt. Der Prolog bleibt erhalten.']);const b=document.createElement('button');b.textContent='Akt 1 neu beginnen';b.onclick=()=>{clearTimeout(endingTimer);state=A.fresh();actor=Movement.create(state.room);selected=null;verb='Gehe zu';save();clearChoices();render();say('Mit Koffer und Bewerbungsmappe. Das Management wartet. Hoffentlich.');$('modal').close();};$('modal-content').append(b);};
 $('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'Ton an':'Ton aus';ping();};
 $('reveal').onclick=()=>{showAll=!showAll;$('scene').classList.toggle('reveal',showAll);$('reveal').setAttribute('aria-pressed',String(showAll));};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){Movement.cancel(actor);selected=null;clearChoices();renderControls();sentence();}if(e.code==='Space'&&!$('modal').open&&document.activeElement.tagName!=='BUTTON'){e.preventDefault();$('scene').classList.add('reveal');}});
 document.addEventListener('keyup',e=>{if(e.code==='Space')$('scene').classList.toggle('reveal',showAll);});
-$('scene').onclick=e=>{if(e.target.closest('button')||state.won)return;const b=$('scene').getBoundingClientRect();Movement.move(actor,state.room,{x:(e.clientX-b.left)/b.width*960,y:(e.clientY-b.top)/b.height*540});selected=null;clearChoices();renderControls();sentence();};
+$('scene').onclick=e=>{if(e.target.closest('button')||state.won)return;const b=$('scene').getBoundingClientRect();Movement.move(actor,state.room,{x:(e.clientX-b.left)/b.width*960+camera,y:(e.clientY-b.top)/b.height*540});selected=null;clearChoices();renderControls();sentence();};
+function walkAcross(direction){if($('modal').open||state.won)return;clearChoices();selected=null;renderControls();Movement.move(actor,state.room,{x:direction<0?88:(rooms[state.room].width||960)-65,y:Math.max(467,actor.y)});sentence();}
+$('pan-left').onclick=e=>{e.stopPropagation();walkAcross(-1);};$('pan-right').onclick=e=>{e.stopPropagation();walkAcross(1);};
+document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)&&!$('modal').open){e.preventDefault();if(!e.repeat)walkAcross(e.key==='ArrowLeft'?-1:1);}});
+document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){Movement.cancel(actor);sentence();}});
 const ctx=$('actors').getContext('2d');$('actors').width=640;$('actors').height=360;
-function frame(t){const dt=Math.min(t-lastTime,50);lastTime=t;if(!$('modal').open){const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}ActOneScene.render(ctx,state,actor,t);$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);}
+function frame(t){const dt=Math.min(t-lastTime,50);lastTime=t;if(!$('modal').open){const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}updateCamera();ActOneScene.render(ctx,state,actor,t,camera);$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);}
 render();if(state.won)ending();else if(state.journal.length)say('Zurück an der Pforte. Dein Spielstand und deine Notizen sind noch da.');requestAnimationFrame(frame);

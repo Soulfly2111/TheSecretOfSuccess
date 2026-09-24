@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),A=require('./act1-engine'),M=require('./movement'),W=require('./act1-world');
 W.install(M);
 let s=A.fresh();const doAct=(v,t,i)=>{const message=A.act(s,v,t,i);assert.equal(typeof message,'string');s=JSON.parse(JSON.stringify(s));return message;};
-assert(A.canEnter(s,'lodge'));assert(A.canEnter(s,'corridor'));
+assert.equal(A.canEnter(s,'lobby'),'');assert(A.canEnter(s,'corridor'));
 doAct('Wähle','callSeidelJob');assert(!s.flags.employment);
 doAct('Benutze','keybook');doAct('Wähle','keyCorrect');assert(!s.inventory.includes('techKey'));
 doAct('Wähle','repair');doAct('Benutze','freight');assert(!s.flags.repaired&&!s.won);
@@ -27,3 +27,28 @@ for(const [room,data] of Object.entries(W.rooms)){
  }
 }
 console.log('PASS: Act 1 complete path, wrong calls/keys, prerequisite gates, consumed items, NPC states, journal/save roundtrips and all arrival-only interactions.');
+
+// The floor is continuous, while doors are the only transitions out of the panorama.
+assert.equal(W.rooms.lobby.width,1920);
+assert.equal(W.cameraX('lobby',180),0);
+assert.equal(W.cameraX('lobby',1000),520);
+assert.equal(W.cameraX('lobby',1860),960);
+assert.equal(W.cameraX('delivery',865),0);
+assert.equal(W.migrate({room:'lodge'}).room,'lobby');
+assert.equal(W.migrate({room:'vestibule'}).room,'lobby');
+assert.equal(W.exitTarget('lobby','delivery'),'sideDoor');
+assert.equal(W.exitTarget('lobby','corridor'),'techDoor');
+assert.equal(W.nextRoom('delivery','corridor'),'lobby');
+const walker=M.create('lobby');
+assert(!M.walkable('lobby',{x:490,y:385}),'Reception desk is not walkable');
+assert(M.move(walker,'lobby',{x:1840,y:480},{target:'across'}));
+let done=null;for(let n=0;n<2000&&!done;n++)done=M.tick(walker,50,'lobby');
+assert.equal(done.target,'across');assert(walker.x>1800);
+// A click on the far-right wall must project to the right-hand floor, never the old viewport limit.
+assert(M.move(walker,'lobby',{x:1820,y:150}));
+assert(walker.route.at(-1).x>1750);
+console.log('PASS: panoramic floor, camera clamps, door topology, legacy save migration and wide-room pathfinding.');
+const objects=W.rooms.lobby.objects;
+const reader=objects.find(o=>o[0]==='reader'),door=objects.find(o=>o[0]==='techDoor');
+assert(reader[2]+reader[4]<door[2]);
+console.log('PASS: reader hotspot does not overlap technical door.');

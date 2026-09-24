@@ -6,19 +6,21 @@ Beim Start steht die Auswahl zwischen Prolog und Akt 1 zur Verfügung. Beide Kap
 
 ## Akt 1: Herzlich willkommen. Personaleingang hinten.
 
-Fünf Schauplätze: Haupteingang, Pförtnerloge, Lieferhof, Personalschleuse und Technikflur. Die Abschlusssequenz spielt im Lastenaufzug. Enthält Walter, Empfang, Übungsbesucher, Verkäufer, Technikerin, Lieferfahrer, Direktor, Rita und die optionale Begegnung mit Mara. Frau Seidel und die drei Bergers werden über das Haustelefon erreicht.
+Drei zusammenhängend erreichbare Schauplätze: ein 1920 × 540 Weltpunkte breites Erdgeschoss mit 960 × 540 Sichtfenster, Lieferhof und Technikraum. Die Kamera folgt horizontal; Start links bei Eingang, Empfang und Aufzug. Rechts folgen Treppenhaus, WC, Technikraum und der Nebeneingang zum Hof. Die früher getrennte Pförtnerloge und Personalschleuse sind in das Erdgeschoss integriert. Vorhandene Spielstände aus diesen Ansichten werden ins Erdgeschoss übernommen, ohne Rätsel-Fortschritt zu löschen. Die Abschlusssequenz spielt im Lastenaufzug. Enthält Walter, Empfang, Übungsbesucher, Verkäufer, Technikerin, Lieferfahrer, Direktor, Rita und die optionale Begegnung mit Mara. Frau Seidel und die drei Bergers werden über das Haustelefon erreicht.
 
 „Rede mit“ öffnet zusätzliche Gesprächsthemen unter dem Dialog; „Benutze“ öffnet das Haustelefon. Dokumente im Inventar mit „Schau an“ lesen. Das Notizbuch sammelt Hinweise. Ortswechsel und Interaktionen werden erst nach dem Hinlaufen ausgeführt. Gesperrte Zugänge werden geprüft; falsche Berger-Anrufe und Schlüssel verursachen keine Sackgassen.
 
+Boden anklicken oder Randpfeile verwenden, um durch das Erdgeschoss zu gehen. Links/rechts-Pfeiltasten laufen solange sie gehalten werden. Hotspots und Figuren scrollen mit dem Hintergrund; Bedienleiste und Dialog bleiben fest. „Gehe zu“ oder „Benutze“ auf Nebeneingang/Techniktür betritt den jeweiligen Raum erst nach dem Hinlaufen. Die Ortsleiste führt ebenfalls über die Türen. Treppenhaus und WC sind aktuell Kulisse mit Untersuchungstexten, keine zusätzlichen Räume.
+
 ### Lösung Akt 1
 
-1. Einladung anschauen, Seitentür öffnen, zur Loge gehen. Telefon benutzen und Seidel mit Personalnummer 4711 kontaktieren. Walter ansprechen, Ausweis erhalten, Übergabe erklären lassen.
+1. Einladung anschauen, zum Empfang gehen. Telefon benutzen und Seidel mit Personalnummer 4711 kontaktieren. Walter ansprechen, Ausweis erhalten, Übergabe erklären lassen.
 2. Übungsbesucher nach Anlass und Abteilung fragen. Terminübersicht und Telefonverzeichnis lesen. Thomas Berger / IT anrufen. Besucherausweis B nehmen und dem Besucher geben.
 3. Seidel zum unangemeldeten Besucher anrufen. Verkäufer am Haupteingang auf einen regulären Termin verweisen. Optional Mara die Tür aufhalten.
-4. Technikerin im Lieferhof ansprechen. Serviceauftrag im Inventar lesen und mit Wartungsbuch in der Loge abgleichen. Haustechnik anrufen, Technikausweis nehmen und der Technikerin geben.
+4. Technikerin im Lieferhof ansprechen. Serviceauftrag im Inventar lesen und mit Wartungsbuch am Empfang abgleichen. Haustechnik anrufen, Technikausweis nehmen und der Technikerin geben.
 5. Vollständigen Lieferschein lesen. Seidel zum Zielort anrufen. Schutzmatten nehmen und mit Aufzug am Haupteingang benutzen. Beim Fahrer den Transport freigeben.
-6. Mitarbeiterausweis mit Leser in der Personalschleuse benutzen. Aushang lesen. Schlüsselbuch in der Loge benutzen. Am Schlüsselbrett T-03 / Kühlung nehmen und mit Techniktür in der Schleuse benutzen.
-7. Technikflur betreten und die Technikerin ansprechen. Anschließend Direktor am Haupteingang ansprechen, Walter die Schicht übergeben und mit Rita sprechen. Lastenaufzug im Technikflur benutzen.
+6. Mitarbeiterausweis mit Leser rechts im Erdgeschoss benutzen. Aushang lesen. Schlüsselbuch am Empfang benutzen. Am Schlüsselbrett T-03 / Kühlung nehmen und mit Techniktür im Erdgeschoss benutzen.
+7. Technikraum betreten und die Technikerin ansprechen. Anschließend Direktor am Haupteingang ansprechen, Walter die Schicht übergeben und mit Rita sprechen. Lastenaufzug im Technikraum benutzen.
 
 `node test-act1.cjs` prüft die vollständige Handlung, Voraussetzungen, Fehlversuche, visuelle Zustände, Speicherung und alle Laufziele. Akt 2 ist noch nicht spielbar. Die tatsächliche Spielzeit hängt vom Erkunden und der Nutzung der Hinweise ab; die im Konzept genannten 45–60 Minuten sind kein gemessener Wert.
 

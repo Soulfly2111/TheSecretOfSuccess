@@ -1,15 +1,45 @@
 (function(root){
 'use strict';
 const rooms={
- lobby:{name:'Herzlich willkommen.',label:'Haupteingang',sub:'KONZERNZENTRALE · MONTAG, 09:12',tile:0,entry:'Marmor, ein Springbrunnen und das Porträt meines Onkels. Das sieht nach einem guten Anfang aus.',objects:[['reception','Empfang',44,37,12,37,390,478,'right'],['fountain','Springbrunnen',23,34,18,35,310,478,'up'],['portrait','Porträt des Onkels',59,4,22,46,655,478,'up'],['elevator','Aufzug',91,37,8,35,869,477,'up'],['sideDoor','Klemmende Seitentür',1,28,13,45,135,482,'left'],['salesman','Anzugträger',62,44,13,41,550,482,'right'],['mara','Mara mit Modellkiste',79,44,12,40,721,482,'right'],['uncle','Herr Direktor',62,44,13,42,552,482,'right'],['rita','Rita',80,45,12,40,721,482,'right']]},
- lodge:{name:'Eine Schlüsselposition.',label:'Pförtnerloge',sub:'EMPFANG UND ZUGANGSKONTROLLE',tile:1,entry:'Walter kennt jede Tür und jeden Vorwand. Auf dem Tisch liegt mein erster Arbeitstag.',objects:[['walter','Walter',67,42,12,42,595,484,'right'],['phone','Haustelefon',22,51,12,12,255,483,'up'],['keybook','Schlüsselbuch',34,53,13,8,380,483,'up'],['badges','Besucherausweise',47,50,9,12,480,483,'up'],['schedule','Terminübersicht',39,15,18,23,455,483,'up'],['directory','Telefonverzeichnis',47,42,8,7,440,483,'up'],['maintenance','Wartungsbuch',56,42,7,8,558,483,'up'],['keyboard','Schlüsselbrett',61,23,15,21,620,483,'up'],['visitor','Übungsbesucher',82,43,12,42,749,484,'right']]},
- delivery:{name:'Bitte Zufahrt freihalten.',label:'Lieferhof',sub:'WARENANNAHME · TECHNIKZUFAHRT',tile:2,entry:'Eine Lieferung steht exakt auf der schraffierten Sperrfläche. Die Markierung war offenbar eine Empfehlung.',objects:[['technician','Technikerin',73,43,12,43,650,484,'right'],['driver','Lieferfahrer',25,44,12,42,260,487,'right'],['deliveryNote','Vollständiger Lieferschein',10,50,11,11,173,487,'up'],['bust','Büste auf Palette',35,18,28,66,439,490,'right'],['mats','Schutzmatten',19,65,9,8,250,490,'up'],['intercom','Gegensprechanlage',79,32,7,18,750,485,'up']]},
- vestibule:{name:'Ohne Ausweis kein Ausweis.',label:'Personalschleuse',sub:'PERSONALEINGANG · ZUTRITT NUR MIT AUSWEIS',tile:3,entry:'Hinter der Schleuse liegt die Personalverwaltung. Genau dort soll ich den Ausweis bekommen, der diese Schleuse öffnet.',objects:[['reader','Ausweisleser',69,36,7,15,663,485,'up'],['notice','Raumzuordnung und Aushang',41,13,25,32,506,485,'up'],['locker','Pförtnerblazer im Schließfach',14,22,26,53,295,486,'up'],['techDoor','Tür zum Technikflur',2,13,9,61,149,487,'left']]},
- corridor:{name:'Einen kühlen Kopf bewahren.',label:'Technikflur',sub:'ANLAGE K-17 · VORSTANDSKÜHLUNG',tile:4,entry:'Rohre statt Marmor. Hier wird dafür gesorgt, dass oben niemand ins Schwitzen kommt.',objects:[['technician','Technikerin',63,43,12,42,535,484,'right'],['cooling','Kühlanlage K-17',28,30,20,41,354,485,'up'],['freight','Lastenaufzug',83,23,14,49,847,483,'up']]},
+ lobby:{name:'Herzlich willkommen.',label:'Erdgeschoss',sub:'KONZERNZENTRALE · ERDGESCHOSS',tile:0,width:1920,entry:'Ein langer Flur. Links der Empfang, rechts die Türen hinter den Kulissen.',objects:[
+ ['entrance','Haupteingang',2,28,11,50,160,454,'up'],
+ ['reception','Empfang',18,35,4,19,365,439,'up'],
+ ['phone','Haustelefon',27.3,50,3,6,552,435,'up'],
+ ['keybook','Schlüsselbuch',24.7,53,2.3,4,490,435,'up'],
+ ['badges','Besucherausweise',30.5,47,2.5,8,600,435,'up'],
+ ['schedule','Terminübersicht',25.4,35,4.2,7,540,436,'up'],
+ ['directory','Telefonverzeichnis',15.4,35,2.2,9,320,437,'up'],
+ ['maintenance','Wartungsbuch',25.4,43,4.2,6,535,437,'up'],
+ ['keyboard','Schlüsselbrett',19.5,35,5,13,430,439,'up'],
+ ['walter','Walter',34,48,3.7,28,635,448,'right'],
+ ['visitor','Übungsbesucher',45.6,48,4,28,845,454,'right'],
+ ['elevator','Aufzug',38.5,32,7.7,38,806,432,'up'],
+ ['salesman','Anzugträger',47.2,48,4,28,880,454,'right'],
+ ['mara','Mara mit Modellkiste',36.8,51,4,28,670,456,'right'],
+ ['uncle','Herr Direktor',47.2,48,4,28,880,454,'right'],
+ ['rita','Rita',36.8,51,4,28,670,456,'right'],
+ ['stairs','Treppenhaus',52,12,10,58,1085,429,'up'],
+ ['wc','WC',64.5,33,7,37,1303,429,'up'],
+ ['reader','Ausweisleser',75.3,47,1.6,9,1450,434,'up'],
+ ['notice','Raumzuordnung und Aushang',73,30,3,13,1410,433,'up'],
+ ['techDoor','Tür zum Technikraum',77.5,33,7,37,1550,434,'up'],
+ ['extinguisher','Feuerlöscher',85.5,34,4.5,33,1670,431,'up'],
+ ['sideDoor','Nebeneingang zum Hof',92,31,6.5,47,1810,461,'up']
+ ]},
+ delivery:{name:'Bitte Zufahrt freihalten.',label:'Lieferhof',sub:'WARENANNAHME · TECHNIKZUFAHRT',tile:2,entry:'Eine Lieferung steht exakt auf der schraffierten Sperrfläche. Die Markierung war offenbar eine Empfehlung.',objects:[['technician','Technikerin',73,43,12,43,650,484,'right'],['driver','Lieferfahrer',25,44,12,42,260,487,'right'],['deliveryNote','Vollständiger Lieferschein',10,50,11,11,173,487,'up'],['bust','Büste auf Palette',35,18,28,66,439,490,'right'],['mats','Schutzmatten',19,65,9,8,250,490,'up'],['intercom','Gegensprechanlage',79,32,7,18,750,485,'up'],['lobbyExit','Nebeneingang ins Erdgeschoss',85,17,12,56,865,477,'up']]},
+ corridor:{name:'Einen kühlen Kopf bewahren.',label:'Technikraum',sub:'ANLAGE K-17 · VORSTANDSKÜHLUNG',tile:4,entry:'Rohre statt Marmor. Hier wird dafür gesorgt, dass oben niemand ins Schwitzen kommt.',objects:[['technician','Technikerin',63,43,12,42,535,484,'right'],['cooling','Kühlanlage K-17',28,30,20,41,354,485,'up'],['freight','Lastenaufzug',83,23,14,49,847,483,'up'],['lobbyExit','Zurück ins Erdgeschoss',1,28,12,53,112,482,'left']]},
  ending:{name:'Die erste Beförderung.',label:'Lastenaufzug',sub:'ETAGE 0 → −1 · FORTSETZUNG IN AKT 2',tile:5,entry:'Ich dachte, es geht hier aufwärts.',objects:[]}
 };
-const npcs={reception:[1,485,458],walter:[0,701,464],visitor:[2,840,471],salesman:[3,657,466],technician:[4,756,467],driver:[5,310,475],uncle:[6,657,466],rita:[7,820,467],mara:[8,812,463]};
-function install(movement){for(const [id,room] of Object.entries(rooms)){movement.maps[id]={floor:[[55,460],[905,460],[928,518],[45,518]],obstacles:[],spawn:[865,497],minY:450,maxY:520,minScale:2.5,maxScale:2.9,spots:{exit:[890,493,'right']}};for(const o of room.objects)movement.maps[id].spots[o[0]]=[o[6],o[7],o[8]];}}
-function nextRoom(from,to){if(from===to)return to;if(from==='corridor')return 'vestibule';if(to==='corridor')return from==='vestibule'?'corridor':from==='lobby'?'vestibule':'lobby';return from==='lobby'?to:'lobby';}
-const api={rooms,npcs,install,nextRoom};if(typeof module!=='undefined')module.exports=api;else root.ActOneWorld=api;
+const npcs={reception:[1,381,380],walter:[0,689,425],visitor:[2,913,427],salesman:[3,945,427],technician:[4,756,467],driver:[5,310,475],uncle:[6,945,427],rita:[7,744,442],mara:[8,744,442]};
+function cameraX(room,x){return Math.round(Math.max(0,Math.min((rooms[room].width||960)-960,x-480)));}
+function migrate(s){if(s.room==='lodge'||s.room==='vestibule')s.room='lobby';return s;}
+function install(movement){for(const [id,room] of Object.entries(rooms)){
+ movement.maps[id]={width:room.width||960,floor:[[55,460],[905,460],[928,518],[45,518]],obstacles:[],spawn:[865,497],minY:450,maxY:520,minScale:2.5,maxScale:2.9,spots:{exit:[890,493,'right']}};
+ if(id==='lobby')Object.assign(movement.maps[id],{floor:[[88,424],[1760,424],[1870,463],[1870,514],[65,514],[65,459]],spawn:[180,466],minY:420,maxY:520,minScale:1.95,maxScale:2.25});
+ for(const o of room.objects)movement.maps[id].spots[o[0]]=[o[6],o[7],o[8]];
+ }}
+function nextRoom(from,to){return from===to?to:from==='lobby'?to:'lobby';}
+function exitTarget(from,to){return from==='lobby'?(to==='corridor'?'techDoor':'sideDoor'):'lobbyExit';}
+function entry(room,from){if(room==='lobby')return from==='corridor'?[1550,448]:[1810,467];if(room==='delivery')return [865,491];if(room==='corridor')return [125,491];return null;}
+const api={rooms,npcs,install,nextRoom,cameraX,migrate,exitTarget,entry};if(typeof module!=='undefined')module.exports=api;else root.ActOneWorld=api;
 })(typeof window!=='undefined'?window:globalThis);
