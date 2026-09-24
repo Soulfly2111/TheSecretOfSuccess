@@ -41,13 +41,14 @@ function travel(destination){
 function enter(destination){
  const blocked=A.canEnter(state,destination);if(blocked){say(blocked);sentence();return false;}
  const from=state.room;if(from==='lobby'&&destination==='delivery'||from==='delivery')state.flags.sideOpen=true;
+ if(destination==='restroom'||from==='restroom')state.flags.wcOpen=true;
  state.room=destination;actor=Movement.create(destination);const p=W.entry(destination,from);if(p){actor.x=p[0];actor.y=p[1];actor.direction=destination==='lobby'?'left':'down';}
  say(rooms[state.room].entry);save();render();return true;
 }
 function arrive(action){if(action.room!==state.room)return;
  if(action.travel){if(enter(action.travel)&&action.destination!==state.room)travel(action.destination);return;}
  if(!action.selected&&['Gehe zu','Benutze'].includes(action.verb)){
-  const target=action.target,destination=target==='sideDoor'?'delivery':target==='techDoor'?'corridor':target==='lobbyExit'?'lobby':null;
+  const target=action.target,destination=target==='wc'?'restroom':target==='sideDoor'?'delivery':target==='techDoor'?'corridor':target==='lobbyExit'?'lobby':null;
   if(destination){enter(destination);return;}
  }
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}

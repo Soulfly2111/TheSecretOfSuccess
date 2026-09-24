@@ -61,3 +61,8 @@ assert(!A.walkExit(doors,'elevator'));assert(!A.walkExit(doors,'keyboard'));
 doors.room='delivery';assert(A.walkExit(doors,'lobbyExit'));assert(!A.walkExit(doors,'techDoor'));
 doors.room='corridor';assert(A.walkExit(doors,'lobbyExit'));
 console.log('PASS: only open accessible door exits automatically select walking.');
+const bathroomState=A.fresh();assert(!A.walkExit(bathroomState,'wc'));A.act(bathroomState,'Öffne','wc');assert(A.walkExit(bathroomState,'wc'));assert.equal(A.canEnter(bathroomState,'restroom'),'');
+assert.equal(W.exitTarget('lobby','restroom'),'wc');assert.deepEqual(W.entry('lobby','restroom'),[1303,448]);assert.equal(W.nextRoom('restroom','delivery'),'lobby');
+bathroomState.room='restroom';assert(A.walkExit(bathroomState,'lobbyExit'));assert.match(A.act(bathroomState,'Benutze','washbasin'),/Hände/);
+assert(!M.walkable('restroom',{x:520,y:310}));assert(!M.walkable('restroom',{x:500,y:480}));assert(!M.walkable('restroom',{x:690,y:315}));
+console.log('PASS: WC access, return position, furniture collision and optional interactions.');

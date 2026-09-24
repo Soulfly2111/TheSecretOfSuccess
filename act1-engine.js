@@ -38,7 +38,8 @@ function act(s,verb,target,item){
   if(target==='phone')return 'Haustelefon. „Benutze“ öffnet das Telefonverzeichnis. Meine Notizen helfen bei Rückfragen.';
   if(target==='elevator')return f.liftProtected?'Der Aufzug ist mit Schutzmatten vorbereitet.':'Ein frisch polierter Aufzug. Für schwere Kunstwerke braucht er Schutzmatten.';
   if(target==='stairs')return 'Das Treppenhaus führt in die oberen Etagen. Mein erster Arbeitstag beginnt unten am Empfang.';
-  if(target==='wc')return 'Die Mitarbeitertoilette. Im Moment gibt es dringendere Geschäfte.';
+  if(target==='wc')return f.wcOpen?'Die WC-Tür ist offen. Ein Klick genügt zum Hineingehen.':'Die Tür zum Waschraum. Nicht abgeschlossen.';
+  const bathroom={washbasin:'Ein steinernes Waschbecken mit Messinghahn. Meine erste Begegnung mit fließendem Kapital.',mirror:'Der Anzug sitzt. Nur meine Karriere hängt noch etwas schief.',towels:'Frisch gefaltet. Hier hat sogar ein Handtuch eine klare Position.',paperDispenser:'Papier ohne Antrag in dreifacher Ausfertigung. Erstaunlich.',wasteBin:'Leer und auf Hochglanz poliert. Ein vorbildlicher Aktenvernichter für Papierhandtücher.',toilet:'Eine moderne Toilette. Für einmal ist die Zuständigkeit eindeutig.',window:'Draußen liegt der Hof. Die Tür ist der bequemere Weg.',amenities:'Seife, Pflegefläschchen, Tücher und Desinfektion. Alles für die kleine Vorstandswäsche.'};if(bathroom[target])return bathroom[target];
   if(target==='extinguisher')return 'Ein geprüfter Feuerlöscher. Der bleibt für echte Notfälle hier.';
   if(target==='entrance')return 'Durch diese Drehtür bin ich angekommen. Jetzt beginnt mein erster Arbeitstag.';
   if(target==='cooling')return f.repaired?'Die Kühlung läuft wieder. Die Anzeige ist grün.':'Die Kühlung steht. Die Technikerin sollte sich darum kümmern.';
@@ -99,7 +100,9 @@ function act(s,verb,target,item){
   if(target==='mara')return 'Eine junge Frau balanciert eine Modellkiste vom Standortbesuch. Mit vollen Händen bekommt sie die Tür nicht auf.';
   if(target==='freight'){if(!f.ritaReady)return 'Der Lastenaufzug führt zur Poststelle. Noch ist meine Schicht an der Pforte nicht beendet.';s.won=true;s.room='ending';return 'Die Etagenanzeige springt von 0 auf −1. Ich: „Ich dachte, es geht hier aufwärts.“ Rita: „Erst mal musst du wissen, was den Laden trägt.“';}
  }
- if(target==='wc')return 'Dafür ist später noch Zeit.';
+ if(target==='wc'&&['Öffne','Drücke','Ziehe'].includes(verb)){f.wcOpen=true;return 'Die WC-Tür ist offen. Ich kann hineingehen.';}
+ if(target==='wc'&&verb==='Schließe'){f.wcOpen=false;return 'Die WC-Tür ist geschlossen.';}
+ if(s.room==='restroom'){if(target==='washbasin'&&['Benutze','Mach an'].includes(verb))return 'Ich wasche mir die Hände. Bereit für saubere Geschäfte.';if(target==='toilet'&&['Benutze','Drücke'].includes(verb))return 'Eine kurze Pause. Die Spülung funktioniert tadellos.';if(verb==='Nimm')return 'Die Ausstattung bleibt hier. Ich bin zum Arbeiten gekommen, nicht zum Einpacken.';}
  if(target==='stairs')return 'Ohne Termin geht es oben nicht weiter. Ich kümmere mich erst um meine Schicht.';
  return 'Damit komme ich noch nicht weiter. Anschauen, nachfragen oder einen passenden Gegenstand benutzen.';
 }
@@ -113,7 +116,7 @@ function options(s,target){const f=s.flags;
  if(target==='mara')return [['helpMara','Die Tür aufhalten']];
  return [];
 }
-function walkExit(s,id){return s.room==='lobby'&&(id==='sideDoor'&&!!s.flags.sideOpen||id==='techDoor'&&!!s.flags.technicalOpen)||['delivery','corridor'].includes(s.room)&&id==='lobbyExit';}
+function walkExit(s,id){return s.room==='lobby'&&(id==='wc'&&!!s.flags.wcOpen||id==='sideDoor'&&!!s.flags.sideOpen||id==='techDoor'&&!!s.flags.technicalOpen)||['delivery','corridor','restroom'].includes(s.room)&&id==='lobbyExit';}
 function canEnter(s,room){if(room==='corridor'&&!s.flags.technicalOpen)return 'Der Technikraum ist verschlossen. Ich brauche einen dokumentierten Schlüssel und die Technikerin.';return '';}
 function hint(s){const f=s.flags,has=id=>s.inventory.includes(id);
  if(!f.invitationRead)return 'Schau dir die Einladung im Inventar an. Das Kleingedruckte enthält Personalnummer und Eingang.';
