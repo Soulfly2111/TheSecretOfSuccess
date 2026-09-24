@@ -18,6 +18,7 @@ function gone(id){const v=SceneState.objects(state);return ['manual','key','rag'
 function renderRoom(){const room=rooms[state.room];$('scene').dataset.room=state.room;$('location-name').textContent=room.name;$('location-sub').textContent=room.sub;$('hotspots').replaceChildren();room.objects.filter(o=>!gone(o[0])).forEach(([id,label,x,y,w,h])=>{let b=document.createElement('button');b.className='hotspot';b.style.cssText=`left:${x}%;top:${y}%;width:${w}%;height:${h}%`;b.setAttribute('aria-label',label);b.dataset.object=id;let s=document.createElement('span');s.textContent=label;b.append(s);b.onmouseenter=b.onfocus=()=>{hover=label;$('hover-label').textContent=label;sentence();};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();ping();approach(id);};$('hotspots').append(b);});$('map').replaceChildren();Object.entries(rooms).forEach(([id,r],i)=>{let b=document.createElement('button');b.innerHTML=`<span>0${i+1}</span>${r.label}`;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);});}
 function approach(id,continuation=null){
  if(state.won){ending();return;}
+ if(rooms[id]){verb='Gehe zu';selected=null;renderVerbs();renderInventory();}
  const spot=Movement.maps[state.room].spots[id];if(!spot)return;
  const action={target:id,verb,selected,room:state.room,facing:spot[2],continuation};
  if(Movement.move(actor,state.room,{x:spot[0],y:spot[1]},action)){

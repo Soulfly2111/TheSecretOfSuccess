@@ -113,6 +113,7 @@ function options(s,target){const f=s.flags;
  if(target==='mara')return [['helpMara','Die Tür aufhalten']];
  return [];
 }
+function walkExit(s,id){return s.room==='lobby'&&(id==='sideDoor'&&!!s.flags.sideOpen||id==='techDoor'&&!!s.flags.technicalOpen)||['delivery','corridor'].includes(s.room)&&id==='lobbyExit';}
 function canEnter(s,room){if(room==='corridor'&&!s.flags.technicalOpen)return 'Der Technikraum ist verschlossen. Ich brauche einen dokumentierten Schlüssel und die Technikerin.';return '';}
 function hint(s){const f=s.flags,has=id=>s.inventory.includes(id);
  if(!f.invitationRead)return 'Schau dir die Einladung im Inventar an. Das Kleingedruckte enthält Personalnummer und Eingang.';
@@ -147,5 +148,5 @@ function hint(s){const f=s.flags,has=id=>s.inventory.includes(id);
  return 'Benutze den Lastenaufzug im Technikraum. Rita begleitet dich nach unten.';
 }
 function visible(s,id){const f=s.flags;return !({visitor:!f.briefed||f.visitorDone,walter:f.visitorDone&&!f.repaired,salesman:!f.visitorDone||f.sellerRejected,technician:!f.visitorDone||s.room==='delivery'&&f.technicalOpen,driver:!f.visitorDone,bust:!f.visitorDone||f.accessClear,deliveryNote:!f.visitorDone,mats:!f.visitorDone||s.inventory.includes('mats')||f.liftProtected,uncle:!f.repaired,rita:!f.audited,mara:!f.visitorDone||f.maraHelped||f.repaired,notice:!f.access,freight:!f.repaired}[id]);}
-const api={items,fresh,act,options,canEnter,hint,visible};if(typeof module!=='undefined')module.exports=api;else root.ActOne=api;
+const api={items,fresh,act,options,canEnter,hint,visible,walkExit};if(typeof module!=='undefined')module.exports=api;else root.ActOne=api;
 })(typeof window!=='undefined'?window:globalThis);

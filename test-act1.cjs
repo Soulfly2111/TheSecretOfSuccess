@@ -52,3 +52,12 @@ const objects=W.rooms.lobby.objects;
 const reader=objects.find(o=>o[0]==='reader'),door=objects.find(o=>o[0]==='techDoor');
 assert(reader[2]+reader[4]<door[2]);
 console.log('PASS: reader hotspot does not overlap technical door.');
+
+const doors=A.fresh();
+assert(!A.walkExit(doors,'sideDoor'));assert(!A.walkExit(doors,'techDoor'));
+doors.flags.sideOpen=true;assert(A.walkExit(doors,'sideDoor'));
+doors.flags.technicalOpen=true;assert(A.walkExit(doors,'techDoor'));
+assert(!A.walkExit(doors,'elevator'));assert(!A.walkExit(doors,'keyboard'));
+doors.room='delivery';assert(A.walkExit(doors,'lobbyExit'));assert(!A.walkExit(doors,'techDoor'));
+doors.room='corridor';assert(A.walkExit(doors,'lobbyExit'));
+console.log('PASS: only open accessible door exits automatically select walking.');
