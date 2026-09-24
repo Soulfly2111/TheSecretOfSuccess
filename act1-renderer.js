@@ -1,5 +1,6 @@
 'use strict';
 const ActOneScene=(()=>{
+ const brochure=new Image();brochure.src='assets/company-brochure-v1.png';
  const restroom=new Image(),wcDoor=new Image();restroom.src='assets/act1-wc-v1.png';wcDoor.src='assets/act1-ground-wc-open-v1.png';
  const panorama=new Image(),opened=new Image();panorama.src='assets/act1-ground-floor-v2.png';opened.src='assets/act1-ground-floor-open-v2.png';
  const backgrounds=new Image(),people=new Image(),bust=new Image(),tiles=[];bust.src='assets/act1-delivery-bust.png';backgrounds.src='assets/act1-locations.png';people.src='assets/act1-characters.png';
@@ -17,6 +18,7 @@ const ActOneScene=(()=>{
   }
   if(s.room==='delivery'&&ActOne.visible(s,'mats')){r(127,248,48,8,'#343e49');r(130,251,44,2,'#839099');r(127,256,48,5,'#26333d');}
   if(s.room==='lobby'){
+   if(!s.inventory.includes('brochure')&&!s.flags.brochureTaken&&brochure.complete&&brochure.naturalWidth)ctx.drawImage(brochure,0,0,brochure.width/3,brochure.height,49,215,28,36);
    const patch=(x,y,w,h)=>{if(opened.complete&&opened.naturalWidth)ctx.drawImage(opened,x/1280*opened.width,y/360*opened.height,w/1280*opened.width,h/360*opened.height,x,y,w,h);};
    if(s.flags.wcOpen&&wcDoor.complete&&wcDoor.naturalWidth)ctx.drawImage(wcDoor,829/1280*wcDoor.width,119/360*wcDoor.height,83/1280*wcDoor.width,133/360*wcDoor.height,829,119,83,133);
    if(s.flags.technicalOpen)patch(988,119,89,133);

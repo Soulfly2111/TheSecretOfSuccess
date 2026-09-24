@@ -66,3 +66,4 @@ assert.equal(W.exitTarget('lobby','restroom'),'wc');assert.deepEqual(W.entry('lo
 bathroomState.room='restroom';assert(A.walkExit(bathroomState,'lobbyExit'));assert.match(A.act(bathroomState,'Benutze','washbasin'),/Hände/);
 assert(!M.walkable('restroom',{x:520,y:310}));assert(!M.walkable('restroom',{x:500,y:480}));assert(!M.walkable('restroom',{x:690,y:315}));
 console.log('PASS: WC access, return position, furniture collision and optional interactions.');
+const brochureState=A.fresh();A.act(brochureState,'Nimm','brochureStand');assert(brochureState.inventory.includes('brochure'));assert(brochureState.flags.brochureTaken);A.act(brochureState,'Nimm','brochureStand');assert.equal(brochureState.inventory.filter(x=>x==='brochure').length,1);assert.match(A.act(JSON.parse(JSON.stringify(brochureState)),'Schau an','brochure'),/Black Hole/);console.log('PASS: brochure pickup, duplicate prevention and saved inventory inspection.');

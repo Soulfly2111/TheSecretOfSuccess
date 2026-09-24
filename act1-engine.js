@@ -1,6 +1,6 @@
 (function(root){
 'use strict';
-const items={invitation:'Einladung',badge:'Mitarbeiterausweis',visitorBadge:'Besucherausweis B',serviceBadge:'Technikausweis · 60 Min.',order:'Serviceauftrag',mats:'Schutzmatten',techKey:'Schlüssel K-17'};
+const items={brochure:'Firmenbroschüre',invitation:'Einladung',badge:'Mitarbeiterausweis',visitorBadge:'Besucherausweis B',serviceBadge:'Technikausweis · 60 Min.',order:'Serviceauftrag',mats:'Schutzmatten',techKey:'Schlüssel K-17'};
 const fresh=()=>({room:'lobby',inventory:['invitation'],flags:{},won:false,journal:[]});
 function act(s,verb,target,item){
  const f=s.flags,has=id=>s.inventory.includes(id),add=id=>{if(!has(id))s.inventory.push(id)},remove=id=>s.inventory=s.inventory.filter(x=>x!==id);
@@ -24,6 +24,8 @@ function act(s,verb,target,item){
   return 'Das passt hier nicht. Vielleicht hilft ein Blick in die Unterlagen.';
  }
  if(verb==='Schau an'){
+  if(target==='brochure')return 'Black Hole Investments & Property Management. Das Zentrum der finanziellen Schwerkraft. Sehr bescheidene Ziele.';
+  if(target==='brochureStand')return has('brochure')?'Ein Exemplar der Firmenbroschüre habe ich bereits.':'In der Vitrine neben der Eingangstür liegt die Firmenbroschüre zum Mitnehmen.';
   if(target==='invitation'){note('invitationRead','Personalnummer 4711 · Ansprechpartnerin Frau Seidel, Durchwahl 100. Personaleingang hinten.');return 'EINLADUNG: „Melden Sie sich Montag zum Dienstantritt.“ Personalnummer: 4711. Ansprechpartnerin: Frau Seidel, 100. Am Empfang steht das Haustelefon. Der Personaleingang liegt hinten am Hof.';}
   if(target==='directory'){note('directoryRead','Telefon: Seidel 100 · Berger Recht 210 · Berger Vertrieb 220 · Berger IT 230 · Haustechnik 440.');return 'VERZEICHNIS: Seidel 100. Dr. Berger / Recht 210. Eva Berger / Vertrieb 220. Thomas Berger / IT 230. Haustechnik 440.';}
   if(target==='schedule'){note('scheduleRead','Terminübersicht: 09:30 Kopiererwartung · Thomas Berger · IT · Ausweis B.');return 'TERMINÜBERSICHT: 09:30, Kopiererwartung, Thomas Berger (IT), Besucherausweis B. Vorstand: heute keine Verkaufstermine.';}
@@ -52,6 +54,7 @@ function act(s,verb,target,item){
   note('keyLogged','Schlüsselausgabe an Kühlwerk GmbH für K-17 / T-03 unter Personalnummer 4711 dokumentiert.');return 'Firma, Anlage K-17, alter Raum T-03 und Personalnummer 4711 eingetragen. Jetzt den passenden Schlüssel vom Brett nehmen.';
  }
  if(verb==='Nimm'){
+  if(target==='brochureStand'){if(has('brochure'))return 'Ein Exemplar reicht. Die Rendite steigt nicht mit der Papiermenge.';add('brochure');note('brochureTaken','Firmenbroschüre aus der Vitrine: Black Hole Investments & Property Management.');return 'Ich nehme eine Firmenbroschüre mit. Mit „Schau an“ kann ich sie im Inventar aufschlagen.';}
   if(target==='badges'){
    if(!f.briefed)return 'Walter: „Erst die Übergabe. Dann stellen wir Besucherausweise aus.“';
    if(!f.visitorDone){if(!f.visitorConfirmed)return 'Zuerst den richtigen Berger ermitteln und seinen Termin bestätigen lassen.';add('visitorBadge');return 'Besucherausweis B für Thomas Berger / IT. Den gebe ich dem Übungsbesucher.';}

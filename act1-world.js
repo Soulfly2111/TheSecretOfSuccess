@@ -3,6 +3,7 @@
 const rooms={
  lobby:{name:'Herzlich willkommen.',label:'Erdgeschoss',sub:'KONZERNZENTRALE · ERDGESCHOSS',tile:0,width:1920,entry:'Ein langer Flur. Links der Empfang, rechts die Türen hinter den Kulissen.',objects:[
  ['entrance','Haupteingang',2,28,11,50,160,454,'up'],
+ ['brochureStand','Vitrine mit Firmenbroschüre',3.5,49,4.8,27,174,465,'left'],
  ['reception','Empfang',18,35,4,19,365,439,'up'],
  ['phone','Haustelefon',27.3,50,3,6,552,435,'up'],
  ['keybook','Schlüsselbuch',24.7,53,2.3,4,490,435,'up'],

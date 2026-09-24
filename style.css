@@ -12,3 +12,6 @@ body{background:#080d12}.game{max-width:1280px;padding:0 22px}header{height:66px
 
 /* Ground floor: controls stay fixed while scenery and hotspots share world coordinates. */
 .pan-edge{position:absolute;top:76%;height:13%;width:4%;min-width:24px;z-index:5;border:1px solid #c7b58b55;background:#10191dcc;color:#eed49b;font:28px monospace;line-height:1;padding:0}.pan-edge:hover{background:#3b493ded}.pan-left{left:0}.pan-right{right:0}.pan-edge[hidden],.hotspot[hidden]{display:none}
+
+.brochure-modal{width:min(1200px,96vw);max-width:96vw;padding:20px}.brochure-modal h2{font-size:20px;margin:0 0 14px}.brochure-image{display:block;width:100%;height:auto}.brochure-modal details{margin-top:14px}.brochure-modal summary{cursor:pointer;color:var(--gold)}
+.brochure-image{max-height:calc(85dvh - 170px);object-fit:contain}.brochure-modal #close-modal{position:sticky;bottom:0}
