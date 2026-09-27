@@ -2,27 +2,19 @@
 
 ## Kapitelwahl
 
-Beim Start steht die Auswahl zwischen Prolog und Akt 1 zur Verfügung. Beide Kapitel sind frei spielbar. Über „Kapitel“ kann jederzeit gewechselt werden. Bestehende Prolog-Spielstände bleiben unter `success-prolog-v1` erhalten; Akt 1 verwendet `success-act1-v1`. Nach dem Prolog führt ein Link direkt zu Akt 1. `act1.html` öffnet das neue Kapitel direkt.
+Beim Start steht die Auswahl zwischen Prolog und Akt 1 zur Verfügung. Beide Kapitel sind frei spielbar. Über „Kapitel“ kann jederzeit gewechselt werden. Bestehende Prolog-Spielstände bleiben unter `success-prolog-v1` erhalten; Akt 1 verwendet `success-act1-exploration-v1`. Nach dem Prolog führt ein Link direkt zu Akt 1. `act1.html` öffnet das neue Kapitel direkt.
 
 ## Akt 1: Herzlich willkommen. Personaleingang hinten.
 
-Vier zusammenhängend erreichbare Schauplätze: ein 1920 × 540 Weltpunkte breites Erdgeschoss mit 960 × 540 Sichtfenster, Lieferhof, Technikraum und WC. Die Kamera folgt horizontal; Start links bei Eingang, Empfang und Aufzug. Rechts folgen Treppenhaus, WC, Technikraum und der Nebeneingang zum Hof. Die früher getrennte Pförtnerloge und Personalschleuse sind in das Erdgeschoss integriert. Vorhandene Spielstände aus diesen Ansichten werden ins Erdgeschoss übernommen, ohne Rätsel-Fortschritt zu löschen. Die Abschlusssequenz spielt im Lastenaufzug. Enthält Walter, Empfang, Übungsbesucher, Verkäufer, Technikerin, Lieferfahrer, Direktor, Rita und die optionale Begegnung mit Mara. Frau Seidel und die drei Bergers werden über das Haustelefon erreicht.
+Sechs verbundene Räume: Erdgeschoss, 1. Etage, Officeküche, Lieferhof, Technikraum und WC. Erdgeschoss und 1. Etage sind seitlich scrollende Panoramen (1920 × 540 Weltpunkte; Sichtfenster 960 × 540). Die 1. Etage enthält links die Küchentür, offene Büros, Aufzug und Treppenhaus sowie rechts den begehbaren Besprechungsraum. Das WC-Schild oben verweist auf das WC im Erdgeschoss.
 
-„Rede mit“ öffnet zusätzliche Gesprächsthemen unter dem Dialog; „Benutze“ öffnet das Haustelefon. Dokumente im Inventar mit „Schau an“ lesen. Das Notizbuch sammelt Hinweise. Ortswechsel und Interaktionen werden erst nach dem Hinlaufen ausgeführt. Gesperrte Zugänge werden geprüft; falsche Berger-Anrufe und Schlüssel verursachen keine Sackgassen.
+Akt 1 ist vorerst frei erkundbar. Alte Rätsel, Gegenstände, Voraussetzungen und Abschlusssequenzen sind entfernt. Nur die Firmenbroschüre aus der Vitrine ist aufnehmbar und im Inventar mit „Schau an“ lesbar. Empfang, Walter und Mitarbeiter haben wiederholbare Gespräche.
 
-Boden anklicken oder Randpfeile verwenden, um durch das Erdgeschoss zu gehen. Links/rechts-Pfeiltasten laufen solange sie gehalten werden. Hotspots und Figuren scrollen mit dem Hintergrund; Bedienleiste und Dialog bleiben fest. „Gehe zu“ oder „Benutze“ auf Nebeneingang/Techniktür betritt den jeweiligen Raum erst nach dem Hinlaufen. Die Ortsleiste führt ebenfalls über die Türen. Der WC-Raum ist durch die WC-Tür begehbar und enthält untersuchbare Einrichtung sowie einen benutzbaren Wasserhahn. Die Figur läuft um Waschtisch, Toilette und vordere Ablage. Nur das Treppenhaus ist weiterhin Kulisse.
+Treppe und Aufzug verbinden beide Etagen mit getrennten Ankunftspunkten. Alle Übergänge erfolgen erst nach dem Hinlaufen; der Aufzug öffnet sichtbar seine Türen. Die Ortsleiste sucht einen Weg durch das Raumnetz, auch zwischen Küche und Räumen im Erdgeschoss. Offene Ausgänge wählen automatisch „Gehe zu“; „Schließe“ und „Schau an“ sind weiterhin bewusst auswählbar. Alle vier Pfeiltasten und Boden-Klicks bewegen die Figur. Möbel sperren ihre Standflächen, Vordergrundteile verdecken die Figur entsprechend ihrer Tiefe.
 
-### Lösung Akt 1
+Der neue Speicherstand übernimmt Broschüre und gültigen Raum aus `success-act1-v1`, solange noch kein neuer Erkundungsspielstand existiert. Frühere Abschlussstände starten im Erdgeschoss. Der alte Spielstand wird weder überschrieben noch gelöscht. Neustart betrifft ausschließlich den neuen Speicherstand. Der Prolog ist unverändert.
 
-1. Einladung anschauen, zum Empfang gehen. Telefon benutzen und Seidel mit Personalnummer 4711 kontaktieren. Walter ansprechen, Ausweis erhalten, Übergabe erklären lassen.
-2. Übungsbesucher nach Anlass und Abteilung fragen. Terminübersicht und Telefonverzeichnis lesen. Thomas Berger / IT anrufen. Besucherausweis B nehmen und dem Besucher geben.
-3. Seidel zum unangemeldeten Besucher anrufen. Verkäufer am Haupteingang auf einen regulären Termin verweisen. Optional Mara die Tür aufhalten.
-4. Technikerin im Lieferhof ansprechen. Serviceauftrag im Inventar lesen und mit Wartungsbuch am Empfang abgleichen. Haustechnik anrufen, Technikausweis nehmen und der Technikerin geben.
-5. Vollständigen Lieferschein lesen. Seidel zum Zielort anrufen. Schutzmatten nehmen und mit Aufzug am Haupteingang benutzen. Beim Fahrer den Transport freigeben.
-6. Mitarbeiterausweis mit Leser rechts im Erdgeschoss benutzen. Aushang lesen. Schlüsselbuch am Empfang benutzen. Am Schlüsselbrett T-03 / Kühlung nehmen und mit Techniktür im Erdgeschoss benutzen.
-7. Technikraum betreten und die Technikerin ansprechen. Anschließend Direktor am Haupteingang ansprechen, Walter die Schicht übergeben und mit Rita sprechen. Lastenaufzug im Technikraum benutzen.
-
-`node test-act1.cjs` prüft die vollständige Handlung, Voraussetzungen, Fehlversuche, visuelle Zustände, Speicherung und alle Laufziele. Akt 2 ist noch nicht spielbar. Die tatsächliche Spielzeit hängt vom Erkunden und der Nutzung der Hinweise ab; die im Konzept genannten 45–60 Minuten sind kein gemessener Wert.
+`node test-act1.cjs` prüft freie Interaktionen, Broschüre, Save-Migration, sämtliche Raumverbindungen und Laufziele, Kameragrenzen und Möbelhindernisse. Die vier Prolog-Testdateien prüfen die unveränderte Prologlogik.
 
 Ein eigenständiger deutscher Point-and-Click-Prototyp mit vier Schauplätzen: Hof, Garage, Scheune und ländliches Haus. Start mit `python -m http.server 8765 --bind 127.0.0.1` in diesem Ordner, dann `http://127.0.0.1:8765/` öffnen. Der lokale Server ist für das Auslesen der transparenten Spritebögen erforderlich; direktes Öffnen über `file://` wird nicht unterstützt.
 

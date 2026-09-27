@@ -6,22 +6,11 @@ const rooms={
  ['brochureStand','Vitrine mit Firmenbroschüre',3.5,49,4.8,27,174,465,'left'],
  ['reception','Empfang',18,35,4,19,365,439,'up'],
  ['phone','Haustelefon',27.3,50,3,6,552,435,'up'],
- ['keybook','Schlüsselbuch',24.7,53,2.3,4,490,435,'up'],
- ['badges','Besucherausweise',30.5,47,2.5,8,600,435,'up'],
- ['schedule','Terminübersicht',25.4,35,4.2,7,540,436,'up'],
  ['directory','Telefonverzeichnis',15.4,35,2.2,9,320,437,'up'],
- ['maintenance','Wartungsbuch',25.4,43,4.2,6,535,437,'up'],
- ['keyboard','Schlüsselbrett',19.5,35,5,13,430,439,'up'],
  ['walter','Walter',34,48,3.7,28,635,448,'right'],
- ['visitor','Übungsbesucher',45.6,48,4,28,845,454,'right'],
  ['elevator','Aufzug',38.5,32,7.7,38,806,432,'up'],
- ['salesman','Anzugträger',47.2,48,4,28,880,454,'right'],
- ['mara','Mara mit Modellkiste',36.8,51,4,28,670,456,'right'],
- ['uncle','Herr Direktor',47.2,48,4,28,880,454,'right'],
- ['rita','Rita',36.8,51,4,28,670,456,'right'],
  ['stairs','Treppenhaus',52,12,10,58,1085,429,'up'],
  ['wc','WC',64.5,33,7,37,1303,429,'up'],
- ['reader','Ausweisleser',75.3,47,1.6,9,1450,434,'up'],
  ['notice','Raumzuordnung und Aushang',73,30,3,13,1410,433,'up'],
  ['techDoor','Tür zum Technikraum',77.5,33,7,37,1550,434,'up'],
  ['extinguisher','Feuerlöscher',85.5,34,4.5,33,1670,431,'up'],
@@ -40,19 +29,82 @@ const rooms={
  ['window','Fenster zum Hof',83,8,12,38,805,389,'up'],
  ['amenities','Pflegeartikel und Seife',31,73,40,18,490,420,'down']
  ]},
- ending:{name:'Die erste Beförderung.',label:'Lastenaufzug',sub:'ETAGE 0 → −1 · FORTSETZUNG IN AKT 2',tile:5,entry:'Ich dachte, es geht hier aufwärts.',objects:[]}
+ upper:{name:'Über den Empfang hinaus.',label:'1. Etage',sub:'KONZERNZENTRALE · 1. ETAGE',width:1920,entry:'Büros links, Besprechungsraum rechts. Ganz links duftet es nach Kaffee.',objects:[
+ ['kitchenDoor','Tür zur Officeküche',1,34,5.5,42,83,418,'up'],
+ ['desks','Büros und Schreibtische',14,47,23,22,500,383,'up'],
+ ['officeStaff','Mitarbeiterin im Büro',23.3,43,4,28,440,388,'right'],
+ ['elevator','Aufzug ins Erdgeschoss',44,35,6,38,905,405,'up'],
+ ['stairs','Treppe ins Erdgeschoss',55.5,15,10,58,1125,406,'up'],
+ ['wcSign','WC-Wegweiser',67,39,3.5,7,1323,405,'up'],
+ ['meetingTable','Besprechungsraum',76,49,17,23,1635,393,'up'],
+ ['meetingStaff','Mitarbeiter im Besprechungsraum',92,42,4,28,1740,390,'right']
+ ]},
+ kitchen:{name:'Die wichtigste Abteilung.',label:'Officeküche',sub:'1. ETAGE · OFFICEKÜCHE',entry:'Kaffee, Tassen und ein Platz für die Pause.',objects:[
+ ['upperExit','Tür zur 1. Etage',3,15,13,62,147,426,'left'],
+ ['cabinets','Küchenzeile',24,15,41,20,480,378,'up'],
+ ['coffeeMachine','Kaffeemaschine',28,38,5,10,295,383,'up'],
+ ['sink','Spüle',40,41,9,8,432,380,'up'],
+ ['fridge','Kühlschrank',66,23,11,43,690,390,'up'],
+ ['seating','Sitzbereich',79,50,20,27,763,451,'right'],
+ ['window','Fenster mit Stadtblick',81,14,14,35,770,435,'up']
+ ]}
 };
-const npcs={reception:[1,381,380],walter:[0,689,425],visitor:[2,913,427],salesman:[3,945,427],technician:[4,756,467],driver:[5,310,475],uncle:[6,945,427],rita:[7,744,442],mara:[8,744,442]};
+const npcs={reception:[1,381,380],walter:[0,689,425],technician:[4,651,467],driver:[5,310,475],officeStaff:[8,489,370],meetingStaff:[3,1795,374]};
+rooms.delivery.objects=rooms.delivery.objects.filter(object=>['driver','intercom','lobbyExit'].includes(object[0]));
+rooms.delivery.entry='Der Lieferhof. Ein ruhiger Moment zwischen zwei Lieferungen.';
+const connections={
+ lobby:[
+  {target:'stairs',to:'upper',entry:'stairs',kind:'stairs'},
+  {target:'elevator',to:'upper',entry:'elevator',kind:'elevator'},
+  {target:'wc',to:'restroom',entry:'door',flag:'wcOpen'},
+  {target:'techDoor',to:'corridor',entry:'door',flag:'technicalOpen'},
+  {target:'sideDoor',to:'delivery',entry:'door',flag:'sideOpen'}
+ ],
+ upper:[
+  {target:'stairs',to:'lobby',entry:'stairs',kind:'stairs'},
+  {target:'elevator',to:'lobby',entry:'elevator',kind:'elevator'},
+  {target:'kitchenDoor',to:'kitchen',entry:'door',flag:'kitchenOpen'}
+ ],
+ kitchen:[{target:'upperExit',to:'upper',entry:'kitchen',flag:'kitchenOpen'}],
+ restroom:[{target:'lobbyExit',to:'lobby',entry:'wc',flag:'wcOpen'}],
+ corridor:[{target:'lobbyExit',to:'lobby',entry:'tech',flag:'technicalOpen'}],
+ delivery:[{target:'lobbyExit',to:'lobby',entry:'side',flag:'sideOpen'}]
+};
+const entries={
+ lobby:{stairs:[1085,445,'down'],elevator:[806,445,'down'],wc:[1303,445,'down'],tech:[1550,451,'down'],side:[1810,478,'left']},
+ upper:{stairs:[1125,421,'down'],elevator:[905,421,'down'],kitchen:[100,437,'right']},
+ kitchen:{door:[147,426,'right']},restroom:{door:[145,401,'right']},corridor:{door:[125,491,'right']},delivery:{door:[865,491,'left']}
+};
 function cameraX(room,x){return Math.round(Math.max(0,Math.min((rooms[room].width||960)-960,x-480)));}
-function migrate(s){if(s.room==='lodge'||s.room==='vestibule')s.room='lobby';return s;}
 function install(movement){for(const [id,room] of Object.entries(rooms)){
- movement.maps[id]={width:room.width||960,floor:[[55,460],[905,460],[928,518],[45,518]],obstacles:[],spawn:[865,497],minY:450,maxY:520,minScale:2.5,maxScale:2.9,spots:{exit:[890,493,'right']}};
- if(id==='lobby')Object.assign(movement.maps[id],{floor:[[88,424],[1760,424],[1870,463],[1870,514],[65,514],[65,459]],spawn:[180,466],minY:420,maxY:520,minScale:1.95,maxScale:2.25});
- if(id==='restroom')Object.assign(movement.maps[id],{floor:[[94,378],[252,350],[755,350],[874,412],[911,504],[62,504],[62,422]],obstacles:[[275,0,625,337],[654,0,748,336],[167,245,241,358],[245,447,755,540]],spawn:[145,401],minY:350,maxY:500,minScale:3.1,maxScale:3.55,spots:{}});
- for(const o of room.objects)movement.maps[id].spots[o[0]]=[o[6],o[7],o[8]];
- }}
-function nextRoom(from,to){return from===to?to:from==='lobby'?to:'lobby';}
-function exitTarget(from,to){return from==='lobby'?(to==='corridor'?'techDoor':to==='restroom'?'wc':'sideDoor'):'lobbyExit';}
-function entry(room,from){if(room==='lobby')return from==='corridor'?[1550,448]:from==='restroom'?[1303,448]:[1810,467];if(room==='restroom')return [145,401];if(room==='delivery')return [865,491];if(room==='corridor')return [125,491];return null;}
-const api={rooms,npcs,install,nextRoom,cameraX,migrate,exitTarget,entry};if(typeof module!=='undefined')module.exports=api;else root.ActOneWorld=api;
+ const geometry={width:room.width||960,floor:[[55,460],[905,460],[928,518],[45,518]],obstacles:[],spawn:[865,497],minY:450,maxY:520,minScale:2.5,maxScale:2.9,spots:{}};
+ if(id==='lobby')Object.assign(geometry,{floor:[[88,424],[1760,424],[1870,463],[1870,514],[65,514],[65,459]],spawn:[180,466],minY:420,maxY:520,minScale:1.95,maxScale:2.25});
+ if(id==='upper')Object.assign(geometry,{
+  floor:[[45,415],[200,397],[205,340],[735,340],[735,393],[1380,393],[1380,340],[1850,340],[1870,415],[1870,514],[45,514]],
+  obstacles:[[272,330,464,367],[548,330,734,367],[1490,328,1778,374]],
+  spawn:[1125,421],minY:340,maxY:520,minScale:1.8,maxScale:2.25
+ });
+ if(id==='kitchen')Object.assign(geometry,{floor:[[65,424],[169,370],[731,370],[760,418],[915,472],[925,514],[62,514]],obstacles:[[225,0,631,350],[638,0,744,357],[749,270,959,413]],spawn:[147,426],minY:370,maxY:520,minScale:3.05,maxScale:3.5});
+ if(id==='restroom')Object.assign(geometry,{floor:[[94,378],[252,350],[755,350],[874,412],[911,504],[62,504],[62,422]],obstacles:[[275,0,625,337],[654,0,748,336],[167,245,241,358],[245,447,755,540]],spawn:[145,401],minY:350,maxY:500,minScale:3.1,maxScale:3.55});
+ for(const object of room.objects)geometry.spots[object[0]]=[object[6],object[7],object[8]];
+ room.connections=connections[id];room.entries=entries[id];room.geometry=geometry;room.camera=[0,(room.width||960)-960];movement.maps[id]=geometry;
+}}
+function route(from,to){
+ if(from===to)return [];
+ const queue=[{room:from,path:[]}],visited=new Set([from]);
+ while(queue.length){
+  const current=queue.shift();
+  for(const edge of connections[current.room]||[]){
+   if(visited.has(edge.to))continue;
+   const path=[...current.path,edge];
+   if(edge.to===to)return path;
+   visited.add(edge.to);queue.push({room:edge.to,path});
+  }
+ }
+ return [];
+}
+function connection(room,target){return connections[room]?.find(edge=>edge.target===target);}
+function entry(edge){return entries[edge.to][edge.entry];}
+const api={rooms,npcs,install,cameraX,connections,entries,route,connection,entry};
+if(typeof module!=='undefined')module.exports=api;else root.ActOneWorld=api;
 })(typeof window!=='undefined'?window:globalThis);
