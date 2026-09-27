@@ -9,7 +9,7 @@ const rooms={
  ['directory','Telefonverzeichnis',15.4,35,2.2,9,320,437,'up'],
  ['walter','Walter',34,48,3.7,28,635,448,'right'],
  ['elevator','Aufzug',38.5,32,7.7,38,806,432,'up'],
- ['stairs','Treppenhaus',52,12,10,58,1085,429,'up'],
+ ['stairs','Treppe zur 1. Etage',52,12,10,58,1085,429,'up'],
  ['wc','WC',64.5,33,7,37,1303,429,'up'],
  ['notice','Raumzuordnung und Aushang',73,30,3,13,1410,433,'up'],
  ['techDoor','Tür zum Technikraum',77.5,33,7,37,1550,434,'up'],
@@ -33,8 +33,9 @@ const rooms={
  ['kitchenDoor','Tür zur Officeküche',1,34,5.5,42,83,418,'up'],
  ['desks','Büros und Schreibtische',14,47,23,22,500,383,'up'],
  ['officeStaff','Mitarbeiterin im Büro',23.3,43,4,28,440,388,'right'],
- ['elevator','Aufzug ins Erdgeschoss',44,35,6,38,905,405,'up'],
- ['stairs','Treppe ins Erdgeschoss',55.5,15,10,58,1125,406,'up'],
+ ['elevator','Aufzug · Etage wählen',44,35,6,38,905,405,'up'],
+ ['stairs','Treppe ins Erdgeschoss',55.5,43,4,28,1098,406,'up'],
+ ['stairsUp','Treppe zur 2. Etage',59.5,15,5.5,56,1176,406,'up'],
  ['wcSign','WC-Wegweiser',67,39,3.5,7,1323,405,'up'],
  ['meetingTable','Besprechungsraum',76,49,17,23,1635,393,'up'],
  ['meetingStaff','Mitarbeiter im Besprechungsraum',92,42,4,28,1740,390,'right']
@@ -49,22 +50,81 @@ const rooms={
  ['window','Fenster mit Stadtblick',81,14,14,35,770,435,'up']
  ]}
 };
-const npcs={reception:[1,381,380],walter:[0,689,425],technician:[4,651,467],driver:[5,310,475],officeStaff:[8,489,370],meetingStaff:[3,1795,374]};
+Object.assign(rooms,{
+ second:{name:'Zwischen Kopien und Kaffeepause.',label:'2. Etage',sub:'KONZERNZENTRALE · 2. ETAGE',width:1920,entry:'Links Büro und Kopierraum. Rechts Training und Pause. Dazwischen der Weg nach unten.',objects:[
+ ['officeDoor','Tür zum Teamleiterbüro',1,34,5.5,40,80,420,'up'],
+ ['copier','Kopierer',19,39,6.5,24,438,364,'up'],
+ ['fax','Faxgerät',14.5,46,5,11,325,376,'up'],
+ ['paperShelf','Papierregal',26,31,9,32,590,352,'up'],
+ ['waterDispenser','Wasserspender',10,47,3.5,24,263,395,'left'],
+ ['copyStaff','Mitarbeiterin am Kopierer',32.4,43,4,28,598,387,'right'],
+ ['elevator','Aufzug · Etage wählen',44,35,6,38,905,405,'up'],
+ ['stairs','Treppe zur 1. Etage',60,60,8,13,1228,408,'up'],
+ ['floorGuide','Etagenübersicht',68,35,2.5,16,1320,418,'up'],
+ ['emsDoor','Tür zum EMS-Trainingsraum',76.5,35,6.5,38,1534,407,'up'],
+ ['loungeDoor','Tür zum Pausenraum',89.5,35,6.5,38,1775,407,'up']
+ ]},
+ teamOffice:{name:'Ein Büro für große Entscheidungen.',label:'Teamleiterbüro',sub:'2. ETAGE · TEAMLEITERBÜRO',entry:'Ein Schreibtisch, viele Akten und ein Blick über die Stadt.',objects:[
+ ['secondExit','Tür zur 2. Etage',3,8,13,63,143,405,'left'],
+ ['teamDesk','Schreibtisch des Teamleiters',39,40,31,20,570,367,'up'],
+ ['teamComputer','Computer',57,31,7,11,646,354,'up'],
+ ['teamFiles','Aktenschrank',31,24,12,29,331,322,'up'],
+ ['visitorChair','Besucherstuhl',38,43,13,20,415,376,'up'],
+ ['teamLeader','Teamleiter',71,23,10,43,715,382,'up'],
+ ['window','Fenster mit Stadtblick',79,8,16,31,769,373,'up']
+ ]},
+ ems:{name:'Karriere braucht Ausdauer.',label:'EMS-Training',sub:'2. ETAGE · EMS-TRAININGSRAUM',entry:'Trainingsgeräte, eine Matte und eine überraschend ruhige Pause vom Büro.',objects:[
+ ['secondExit','Tür zur 2. Etage',2,9,11,56,132,389,'left'],
+ ['emsConsole','EMS-Trainingsgerät',24,30,10,24,277,318,'up'],
+ ['trainingVest','Trainingsweste',35,30,12,22,401,319,'up'],
+ ['trainingMat','Trainingsmatte',39,54,27,5,503,330,'up'],
+ ['locker','Spind',63,22,9,31,661,312,'up'],
+ ['trainer','Trainer',67,27,9,39,665,367,'right'],
+ ['weights','Hanteln',78,40,11,19,789,357,'up'],
+ ['towels','Handtücher',56,36,7,4,548,313,'up']
+ ]},
+ lounge:{name:'Erfolg macht auch mal Pause.',label:'Pausenraum',sub:'2. ETAGE · PAUSENRAUM',entry:'Rote und grüne Sofas. Hier darf sogar die Karriere kurz sitzen bleiben.',objects:[
+ ['secondExit','Tür zur 2. Etage',2,12,11,56,127,398,'left'],
+ ['fridge','Kühlschrank',21,28,5,26,209,321,'up'],
+ ['coffeeMachine','Kaffeemaschine',28,31,4,10,296,315,'up'],
+ ['redSofa','Rotes Sofa',36,40,28,15,376,331,'up'],
+ ['greenSofa','Grünes Sofa',73,41,20,21,739,373,'up'],
+ ['coffeeTable','Couchtisch',43,51,19,10,529,357,'up'],
+ ['beanbag','Sitzsack',65,43,7,13,652,336,'up'],
+ ['guitar','Gitarre',91,39,6,24,867,379,'up'],
+ ['breakStaff','Mitarbeiterin in der Pause',64,27,10,40,639,389,'right']
+ ]}
+});
+const npcs={reception:[1,381,380],walter:[0,689,425],technician:[4,651,467],driver:[5,310,475],officeStaff:[8,489,370],meetingStaff:[3,1795,374],copyStaff:[1,656,378,'second'],teamLeader:[0,724,344,'second'],trainer:[2,710,351,'second'],breakStaff:[3,695,358,'second']};
 rooms.delivery.objects=rooms.delivery.objects.filter(object=>['driver','intercom','lobbyExit'].includes(object[0]));
 rooms.delivery.entry='Der Lieferhof. Ein ruhiger Moment zwischen zwei Lieferungen.';
 const connections={
  lobby:[
   {target:'stairs',to:'upper',entry:'stairs',kind:'stairs'},
   {target:'elevator',to:'upper',entry:'elevator',kind:'elevator'},
+  {target:'elevator',to:'second',entry:'elevator',kind:'elevator'},
   {target:'wc',to:'restroom',entry:'door',flag:'wcOpen'},
   {target:'techDoor',to:'corridor',entry:'door',flag:'technicalOpen'},
   {target:'sideDoor',to:'delivery',entry:'door',flag:'sideOpen'}
  ],
  upper:[
   {target:'stairs',to:'lobby',entry:'stairs',kind:'stairs'},
+  {target:'stairsUp',to:'second',entry:'stairs',kind:'stairs'},
   {target:'elevator',to:'lobby',entry:'elevator',kind:'elevator'},
+  {target:'elevator',to:'second',entry:'elevator',kind:'elevator'},
   {target:'kitchenDoor',to:'kitchen',entry:'door',flag:'kitchenOpen'}
  ],
+ second:[
+  {target:'stairs',to:'upper',entry:'stairsUp',kind:'stairs'},
+  {target:'elevator',to:'lobby',entry:'elevator',kind:'elevator'},
+  {target:'elevator',to:'upper',entry:'elevator',kind:'elevator'},
+  {target:'officeDoor',to:'teamOffice',entry:'door',flag:'officeOpen'},
+  {target:'emsDoor',to:'ems',entry:'door',flag:'emsOpen'},
+  {target:'loungeDoor',to:'lounge',entry:'door',flag:'loungeOpen'}
+ ],
+ teamOffice:[{target:'secondExit',to:'second',entry:'office',flag:'officeOpen'}],
+ ems:[{target:'secondExit',to:'second',entry:'ems',flag:'emsOpen'}],
+ lounge:[{target:'secondExit',to:'second',entry:'lounge',flag:'loungeOpen'}],
  kitchen:[{target:'upperExit',to:'upper',entry:'kitchen',flag:'kitchenOpen'}],
  restroom:[{target:'lobbyExit',to:'lobby',entry:'wc',flag:'wcOpen'}],
  corridor:[{target:'lobbyExit',to:'lobby',entry:'tech',flag:'technicalOpen'}],
@@ -72,7 +132,9 @@ const connections={
 };
 const entries={
  lobby:{stairs:[1085,445,'down'],elevator:[806,445,'down'],wc:[1303,445,'down'],tech:[1550,451,'down'],side:[1810,478,'left']},
- upper:{stairs:[1125,421,'down'],elevator:[905,421,'down'],kitchen:[100,437,'right']},
+ upper:{stairs:[1098,421,'down'],stairsUp:[1176,421,'down'],elevator:[905,421,'down'],kitchen:[100,437,'right']},
+ second:{stairs:[1228,428,'down'],elevator:[905,421,'down'],office:[100,437,'right'],ems:[1534,424,'down'],lounge:[1775,424,'down']},
+ teamOffice:{door:[143,405,'right']},ems:{door:[132,389,'right']},lounge:{door:[127,398,'right']},
  kitchen:{door:[147,426,'right']},restroom:{door:[145,401,'right']},corridor:{door:[125,491,'right']},delivery:{door:[865,491,'left']}
 };
 function cameraX(room,x){return Math.round(Math.max(0,Math.min((rooms[room].width||960)-960,x-480)));}
@@ -82,7 +144,27 @@ function install(movement){for(const [id,room] of Object.entries(rooms)){
  if(id==='upper')Object.assign(geometry,{
   floor:[[45,415],[200,397],[205,340],[735,340],[735,393],[1380,393],[1380,340],[1850,340],[1870,415],[1870,514],[45,514]],
   obstacles:[[272,330,464,367],[548,330,734,367],[1490,328,1778,374]],
-  spawn:[1125,421],minY:340,maxY:520,minScale:1.8,maxScale:2.25
+  spawn:[1098,421],minY:340,maxY:520,minScale:1.8,maxScale:2.25
+ });
+ if(id==='second')Object.assign(geometry,{
+  floor:[[45,415],[263,393],[263,346],[740,346],[740,393],[1870,393],[1870,514],[45,514]],
+  obstacles:[[194,0,244,384],[272,0,490,339],[492,0,732,329],[1058,0,1150,395],[1295,0,1398,395]],
+  spawn:[1228,428],minY:340,maxY:520,minScale:1.8,maxScale:2.25
+ });
+ if(id==='teamOffice')Object.assign(geometry,{
+  floor:[[65,401],[190,344],[300,300],[718,300],[889,377],[920,508],[55,508]],
+  obstacles:[[300,0,365,285],[374,0,676,332],[374,230,485,348],[808,0,960,375],[230,0,290,294]],
+  spawn:[143,405],minY:300,maxY:510,minScale:2.8,maxScale:3.45
+ });
+ if(id==='ems')Object.assign(geometry,{
+  floor:[[65,371],[170,330],[265,300],[825,300],[900,374],[920,510],[55,510]],
+  obstacles:[[237,0,465,288],[603,0,745,288],[748,0,855,328],[860,0,960,370]],
+  spawn:[132,389],minY:300,maxY:510,minScale:2.8,maxScale:3.45
+ });
+ if(id==='lounge')Object.assign(geometry,{
+  floor:[[65,380],[184,319],[230,300],[718,300],[899,385],[925,510],[55,510]],
+  obstacles:[[202,0,342,296],[355,0,620,300],[413,274,602,327],[632,0,697,297],[698,0,910,348],[128,0,179,334]],
+  spawn:[127,398],minY:300,maxY:510,minScale:2.8,maxScale:3.45
  });
  if(id==='kitchen')Object.assign(geometry,{floor:[[65,424],[169,370],[731,370],[760,418],[915,472],[925,514],[62,514]],obstacles:[[225,0,631,350],[638,0,744,357],[749,270,959,413]],spawn:[147,426],minY:370,maxY:520,minScale:3.05,maxScale:3.5});
  if(id==='restroom')Object.assign(geometry,{floor:[[94,378],[252,350],[755,350],[874,412],[911,504],[62,504],[62,422]],obstacles:[[275,0,625,337],[654,0,748,336],[167,245,241,358],[245,447,755,540]],spawn:[145,401],minY:350,maxY:500,minScale:3.1,maxScale:3.55});
@@ -103,8 +185,10 @@ function route(from,to){
  }
  return [];
 }
-function connection(room,target){return connections[room]?.find(edge=>edge.target===target);}
+const floors=['lobby','upper','second'];
+function liftOptions(room){return floors.map(id=>({id,label:rooms[id].label,current:id===room}));}
+function connection(room,target,destination){return connections[room]?.find(edge=>edge.target===target&&(!destination||edge.to===destination));}
 function entry(edge){return entries[edge.to][edge.entry];}
-const api={rooms,npcs,install,cameraX,connections,entries,route,connection,entry};
+const api={rooms,npcs,install,cameraX,connections,entries,route,connection,entry,floors,liftOptions};
 if(typeof module!=='undefined')module.exports=api;else root.ActOneWorld=api;
 })(typeof window!=='undefined'?window:globalThis);

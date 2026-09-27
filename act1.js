@@ -21,7 +21,7 @@ function renderControls(){
 function render(){
  hover='';$('hover-label').textContent='';
  const room=rooms[state.room];camera=W.cameraX(state.room,actor.x);$('scene').dataset.room=state.room;$('location-name').textContent=room.name;$('location-sub').textContent=room.sub;$('hotspots').replaceChildren();
- for(const [id,label,x,y,w,h] of room.objects){if(!A.visible(state,id))continue;const b=document.createElement('button');b.className='hotspot';b.dataset.object=id;b.dataset.worldX=x/100*(room.width||960);b.dataset.worldWidth=w/100*(room.width||960);b.style.cssText=`top:${y}%;height:${h}%`;b.setAttribute('aria-label',label);const span=document.createElement('span');span.textContent=label;b.append(span);b.onmouseenter=b.onfocus=()=>{hover=label;$('hover-label').textContent=label;sentence();if(A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb))$('sentence').textContent='Gehe zu '+label;};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();approach(id);};$('hotspots').append(b);}
+ for(const [id,label,x,y,w,h] of room.objects){if(!A.visible(state,id))continue;const b=document.createElement('button');b.className='hotspot';b.dataset.object=id;b.dataset.worldX=x/100*(room.width||960);b.dataset.worldWidth=w/100*(room.width||960);b.style.cssText=`top:${y}%;height:${h}%`;b.setAttribute('aria-label',label);const span=document.createElement('span');span.textContent=label;b.append(span);b.onmouseenter=b.onfocus=()=>{if(transition)return;hover=label;$('hover-label').textContent=label;sentence();if(A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb))$('sentence').textContent='Gehe zu '+label;};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();approach(id);};$('hotspots').append(b);}
  $('map').replaceChildren();for(const [id,r] of Object.entries(rooms)){const b=document.createElement('button');b.textContent=r.label;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);}
  updateCamera();renderControls();sentence();$('progress').textContent='AKT 1 · FREIE ERKUNDUNG';
 }
@@ -62,23 +62,39 @@ function startTransition(edge,destination){
 function arrive(action){
  if(action.room!==state.room)return;
  if(action.edge){startTransition(action.edge,action.destination);return;}
+ if(action.target==='elevator'&&!action.selected&&['Gehe zu','Benutze','Öffne','Drücke'].includes(action.verb)){showLiftMenu();return;}
  const edge=W.connection(state.room,action.target);
  if(edge&&!action.selected&&['Gehe zu','Benutze'].includes(action.verb)){startTransition(edge);return;}
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
  ping();say(A.act(state,action.verb,action.target,action.selected));selected=null;save();render();
 }
+function showLiftMenu(){
+ Movement.cancel(actor);selected=null;
+ const origin=state.room;
+ popup('Aufzug · Etage wählen',['Aktueller Standort: '+rooms[origin].label+'.']);
+ $('modal').classList.add('lift-modal');$('close-modal').textContent='Abbrechen';
+ for(const option of W.liftOptions(origin)){
+  const button=document.createElement('button');button.textContent=option.label;button.disabled=option.current;button.dataset.floor=option.id;
+  button.onclick=()=>{
+   if(state.room!==origin||transition)return;
+   const edge=W.connection(origin,'elevator',option.id);if(!edge)return;
+   $('modal').close();startTransition(edge);
+  };
+  $('modal-content').append(button);
+ }
+}
 function showBrochure(){Movement.cancel(actor);popup('Black Hole Investments & Property Management',[]);$('modal').classList.add('brochure-modal');const img=document.createElement('img');img.src='assets/company-brochure-v1.png';img.alt='Aufgeschlagene Firmenbroschüre mit schwarzem Papier, goldener Schrift, Firmenlogo und Konzernhochhaus.';img.className='brochure-image';$('modal-content').append(img);const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Broschürentext lesen';details.append(summary);for(const text of brochureText){const p=document.createElement('p');p.textContent=text;details.append(p);}$('modal-content').append(details);}
 const brochureText=['Das Zentrum der finanziellen Schwerkraft. Wo Ihr Kapital unwiderstehlich angezogen wird.','Willkommen im Zentrum der finanziellen Schwerkraft.','Wir definieren Märkte neu und verwandeln liquide Mittel in steile Renditekurven.','Kompromissloser Luxus. Chirurgische Präzision. Maximale Rendite.','Unsere Immobilien sind repräsentative Status-Symbole.','Warum wir?','Maximale Ertragseffizienz: Wir schöpfen Ihr Portfolio bis zum Limit aus. Was bei uns eintritt, verlässt uns nur als Reingewinn.','Architektonische Exzellenz: Repräsentativer Status mit Glanz und Gloria – von Marmor-Lobbys bis zu Gold-Armaturen.','Unerschütterliche Disziplin: Chirurgische Präzision ohne Verschwendung.','„Ein Investment bei uns ist wie ein physikalisches Gesetz: Die Masse wächst, die Dichte steigt, und die Konkurrenz gerät ins Wanken.“'];
-function popup(title,text){$('modal').classList.remove('brochure-modal');$('modal-content').replaceChildren();const h=document.createElement('h2');h.textContent=title;$('modal-content').append(h);for(const line of text){const p=document.createElement('p');p.textContent=line;$('modal-content').append(p);}if(!$('modal').open)$('modal').showModal();}
+function popup(title,text){$('modal').classList.remove('brochure-modal','lift-modal');$('close-modal').textContent='Weiter geht’s';$('modal-content').replaceChildren();const h=document.createElement('h2');h.textContent=title;$('modal-content').append(h);for(const line of text){const p=document.createElement('p');p.textContent=line;$('modal-content').append(p);}if(!$('modal').open)$('modal').showModal();}
 function chapterMenu(){Movement.cancel(actor);popup('Kapitel auswählen',['Prolog und Akt 1 speichern ihren Fortschritt getrennt.']);for(const [label,url] of [['Prolog · Raus hier!','index.html?chapter=prolog'],['Akt 1 · Weiterspielen',null]]){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{save();if(url)location.href=url+(scratch?'&test=chapters':'');else $('modal').close();};$('modal-content').append(b);}}
 $('chapters').onclick=chapterMenu;
 document.querySelector('.wordmark').onclick=e=>{e.preventDefault();chapterMenu();};
-$('journal').onclick=()=>popup('Notizbuch · Mein erster Arbeitstag',state.journal.length?state.journal:['Freie Erkundung: Erdgeschoss und 1. Etage sind über Treppe und Aufzug verbunden. Die Firmenbroschüre liegt neben dem Haupteingang.']);
+$('journal').onclick=()=>popup('Notizbuch · Mein erster Arbeitstag',state.journal.length?state.journal:['Freie Erkundung: Erdgeschoss, 1. und 2. Etage sind über Treppe und Aufzug verbunden. Die Firmenbroschüre liegt neben dem Haupteingang.']);
 $('help').onclick=()=>popup('Das Gebäude erkunden',[
 'Wähle ein Verb und klicke auf ein Objekt oder eine Person. Die Figur geht zuerst dorthin. Nur die Firmenbroschüre lässt sich mitnehmen.',
 'Broschüre lesen: „Schau an“ wählen und die Firmenbroschüre im Inventar anklicken.',
-'Erdgeschoss und 1. Etage sind breite Panoramen. Klicke auf den Boden oder die Randpfeile. Die Kamera folgt. Die Pfeiltasten bewegen die Figur nach links, rechts, oben und unten.',
-'Treppe und Aufzug verbinden die Etagen. Die Ortsleiste nutzt dieselben Wege. Offene Türen wechseln automatisch auf „Gehe zu“; „Schließe“ und „Schau an“ bleiben gezielt wählbar.',
+'Erdgeschoss, 1. und 2. Etage sind breite Panoramen. Klicke auf den Boden oder die Randpfeile. Die Kamera folgt. Die Pfeiltasten bewegen die Figur nach links, rechts, oben und unten.',
+'Treppen verbinden benachbarte Etagen. In der 1. Etage gibt es getrennte Auf- und Abgänge. Am Aufzug wählst du Erdgeschoss, 1. oder 2. Etage. Die Ortsleiste nutzt dieselben Wege. Offene Türen wechseln automatisch auf „Gehe zu“; „Schließe“ und „Schau an“ bleiben gezielt wählbar.',
 'Akt 1 ist vorerst frei erkundbar. Es gibt keine Aufgaben, Rätselsperren oder einen Schichtabschluss.'
 ]);
 $('close-modal').onclick=()=>$('modal').close();$('hint').onclick=()=>say(A.hint(state));

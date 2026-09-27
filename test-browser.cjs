@@ -25,7 +25,7 @@ fs.mkdirSync(output,{recursive:true});
  assert(await page.locator('.brochure-image').isVisible());await shot('brochure');
  await page.locator('#close-modal').click();
  await map('1. Etage','upper');await shot('upper-arrival');
- assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-1125)<1);
+ assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-1098)<1);
  await map('Officeküche','kitchen');await shot('kitchen');
  await verb('Schau an');await object('sink');await settle();
  assert.match(await page.locator('#speech').innerText(),/Spüle/);
@@ -42,11 +42,11 @@ fs.mkdirSync(output,{recursive:true});
  await page.keyboard.down('ArrowLeft');
  await page.waitForFunction(()=>actor.x<1250);
  await page.keyboard.up('ArrowLeft');await settle();
- await verb('Gehe zu');await object('elevator');
+ await verb('Gehe zu');await object('elevator');await page.locator('[data-floor="lobby"]').click();
  await page.waitForFunction(()=>transition?.edge.kind==='elevator'&&liftVisual?.elapsed>=750);
  await shot('elevator-opening');await room('lobby');
  assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-806)<1);
- await object('elevator');await room('upper');
+ await object('elevator');await page.locator('[data-floor="upper"]').click();await room('upper');
  assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-905)<1);
  await object('stairs');await room('lobby');
  assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-1085)<1);
@@ -58,6 +58,39 @@ fs.mkdirSync(output,{recursive:true});
  await map('Officeküche','kitchen');
  await map('Lieferhof','delivery');
  assert.equal(await page.locator('#inventory .item').count(),1);
+
+ await map('2. Etage','second');await shot('second-arrival');
+ await verb('Schau an');await object('floorGuide');await settle();
+ assert.match(await page.locator('#speech').innerText(),/WC: Erdgeschoss/);
+ await verb('Gehe zu');await object('stairs');await room('upper');
+ assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-1176)<1);
+ await object('stairsUp');await room('second');
+ assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-1228)<1);
+ await object('elevator');await page.locator('.lift-modal').waitFor();
+ assert(await page.locator('[data-floor="second"]').isDisabled());
+ await shot('lift-menu');await page.locator('#close-modal').click();await settle();
+ assert.equal(await page.locator('#scene').getAttribute('data-room'),'second');
+ for(const destination of ['lobby','second','upper','second','lobby','upper']){
+  await object('elevator');await page.locator('[data-floor="'+destination+'"]').click();await room(destination);
+ }
+ await map('2. Etage','second');
+ for(const [label,id,door] of [['Teamleiterbüro','teamOffice','officeDoor'],['EMS-Training','ems','emsDoor'],['Pausenraum','lounge','loungeDoor']]){
+  await map(label,id);await shot(id);
+  assert.equal(await page.locator('#inventory .item').count(),1);
+  const person={teamOffice:'teamLeader',ems:'trainer',lounge:'breakStaff'}[id];
+  await verb('Rede mit');await object(person);await settle();
+  assert.match(await page.locator('#speech').innerText(),/Teamleiter:|Trainer:|Mitarbeiterin:/);
+  await map('2. Etage','second');
+  await verb('Schließe');await object(door);await settle();await shot(id+'-closed');
+  await verb('Öffne');await object(door);await settle();await shot(id+'-open');
+  assert.equal(await page.locator('#scene').getAttribute('data-room'),'second');
+  await object(door);await room(id);
+  await verb('Gehe zu');await object('secondExit');await room('second');
+ }
+ await page.locator('#pan-left').click();await settle();await shot('second-copy-room');
+ await verb('Rede mit');await object('copyStaff');await settle();
+ assert.match(await page.locator('#speech').innerText(),/Kopierer/);
+ await map('Officeküche','kitchen');await map('EMS-Training','ems');
  await page.goto(base+'index.html?chapter=prolog&test=explore');
  await page.waitForFunction(()=>document.querySelector('#hotspots').children.length>0);
  await shot('prolog');
@@ -76,6 +109,13 @@ fs.mkdirSync(output,{recursive:true});
  const saves=await savedPage.evaluate(()=>({legacy:JSON.parse(localStorage.getItem('success-act1-v1')),current:JSON.parse(localStorage.getItem('success-act1-exploration-v1')),prolog:localStorage.getItem('success-prolog-v1')}));
  assert.equal(saves.legacy.room,'ending');assert.equal(saves.current.room,'lobby');assert.deepEqual(saves.current.inventory,['brochure']);assert.equal(saves.prolog,'preserve-prolog');
  await savedPage.reload();await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===1);
+
+ for(const [label,id] of [['2. Etage','second'],['Teamleiterbüro','teamOffice'],['EMS-Training','ems'],['Pausenraum','lounge']]){
+  await savedPage.locator('#map').getByRole('button',{name:label,exact:true}).click();
+  await savedPage.waitForFunction(id=>state.room===id&&!actor.moving&&!transition,id);
+  await savedPage.reload();await savedPage.waitForFunction(id=>state.room===id,id);
+  assert.equal(await savedPage.locator('#inventory .item').count(),1);
+ }
  await browser.close();
- console.log('PASS browser: brochure, all rooms, kitchen door states, stairs/elevator arrivals, multi-room paths, conversations, no finale, migration/reload, prolog and no JS errors.');
+ console.log('PASS browser: three floors, all elevator directions/cancel, new room doors both ways, conversations, all new room save/reloads, brochure and prolog regressions, no JS errors.');
 })().catch(error=>{console.error(error);process.exit(1);});

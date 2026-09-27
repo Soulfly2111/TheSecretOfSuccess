@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const Act=require('./act1-engine'),Movement=require('./movement'),World=require('./act1-world');
 World.install(Movement);
 const roomIds=Object.keys(World.rooms);
-assert.equal(roomIds.length,6);
+assert.equal(roomIds.length,10);
 assert.deepEqual(Object.keys(Act.items),['brochure']);
 for(const room of roomIds){
  const state=Act.fresh();state.room=room;
@@ -33,7 +33,7 @@ for(const room of roomIds){
   assert.equal(Movement.tick(actor,50,room),null);
  }
 }
-for(const room of ['lobby','upper']){
+for(const room of ['lobby','upper','second']){
  assert.equal(World.cameraX(room,0),0);assert.equal(World.cameraX(room,1000),520);assert.equal(World.cameraX(room,2000),960);
  assert.notDeepEqual(World.entry(World.connection(room,'stairs')),World.entry(World.connection(room,'elevator')));
  const actor=Movement.create(room);Movement.move(actor,room,{x:1800,y:480},{target:'cancel'});Movement.cancel(actor);
@@ -54,3 +54,25 @@ assert.equal(Act.restore({room:'kitchen',inventory:[],flags:{}},null,roomIds).ro
 assert.deepEqual(Act.restore(null,{flags:{brochureTaken:true}},roomIds).inventory,['brochure']);
 assert.notEqual(Act.saveKey,Act.legacyKey);
 console.log('PASS: all routes and reachable interaction points, arrival-only actions, furniture collision, camera, sole brochure pickup, unlocked exploration and non-destructive save migration.');
+for(const origin of World.floors){
+ assert.equal(World.liftOptions(origin).filter(option=>option.current).length,1);
+ for(const destination of World.floors.filter(id=>id!==origin)){
+  const edge=World.connection(origin,'elevator',destination);
+  assert.equal(edge.to,destination);assert.equal(edge.kind,'elevator');
+  assert.deepEqual(World.entry(edge),World.entries[destination].elevator);
+ }
+}
+assert.equal(World.connection('upper','stairs').to,'lobby');
+assert.equal(World.connection('upper','stairsUp').to,'second');
+assert.equal(World.connection('second','stairs').to,'upper');
+assert(!World.connection('second','stairsUp'));
+assert.notDeepEqual(World.entry(World.connection('lobby','stairs')),World.entry(World.connection('second','stairs')));
+for(const room of ['second','teamOffice','ems','lounge']){
+ const saved={...Act.fresh(),room,inventory:['brochure'],flags:{brochureTaken:true,officeOpen:true,emsOpen:true,loungeOpen:true}};
+ const restored=Act.restore(saved,null,roomIds);
+ assert.equal(restored.room,room);assert.deepEqual(restored.inventory,['brochure']);
+ assert(restored.flags.officeOpen&&restored.flags.emsOpen&&restored.flags.loungeOpen);
+}
+for(const [room,point] of [['second',{x:420,y:335}],['teamOffice',{x:550,y:320}],['ems',{x:666,y:280}],['lounge',{x:500,y:310}]])assert(!Movement.walkable(room,point),'new furniture '+room);
+assert(Movement.walkable('ems',{x:500,y:316}),'training mat is walkable');
+console.log('PASS: three-floor elevator choices, separate stair directions, four new rooms, door persistence and furniture.');
