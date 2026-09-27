@@ -1,0 +1,33 @@
+.mobile-rail[hidden],.mobile-speech[hidden],.mobile-rotate[hidden],.mobile-toggle[hidden],.mobile-selection button[hidden]{display:none!important}
+.mobile-rail,.mobile-speech,.mobile-selection{display:none}
+.mobile-rotate{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:flex;align-items:center;gap:12px;padding:12px;background:#17292f;border:1px solid #c8b47e;font:16px/1.4 sans-serif;box-shadow:0 4px 20px #000}
+.mobile-rotate button{min-height:44px;background:#cfbd87;color:#111;border:0;padding:8px}
+.mobile-panel{width:min(540px,calc(100vw - 32px));max-height:calc(100dvh - 24px);padding:16px;font:16px/1.4 sans-serif}
+.mobile-panel h2{font:22px/1.2 'VT323',monospace;margin:0 0 12px;color:#e5cd91}
+.mobile-panel-content{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.mobile-panel-content p{grid-column:1/-1}
+.mobile-panel button{min-height:44px;margin:0;padding:10px 12px;font:16px/1.3 sans-serif;overflow-wrap:anywhere}
+.mobile-panel .mobile-close{position:sticky;bottom:0;display:block;width:100%;margin-top:12px;background:#263940;color:#e5cd91;border:1px solid #8a7e5d}
+body.mobile-game{height:var(--mobile-height,100dvh);width:var(--mobile-width,100vw);overflow:hidden;overscroll-behavior:none;background:#080f13}
+.mobile-game .game{position:fixed;inset:0;max-width:none!important;min-width:0!important;width:100%;height:100%;padding:0!important;margin:0}
+.mobile-game header,.mobile-game .console,.mobile-game #map,.mobile-game .under-note{display:none}
+.mobile-game .scene-wrap{position:absolute;left:env(safe-area-inset-left,0px);right:calc(88px + env(safe-area-inset-right,0px));top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center}
+.mobile-game .scene{width:var(--mobile-scene-width);max-width:100%;max-height:100%;flex:none;aspect-ratio:16/9;touch-action:manipulation}
+.mobile-game .location{top:2%;left:2%}.mobile-game .location span{display:none}.mobile-game .location h1{font:18px/1 'VT323',monospace;margin:2px;text-shadow:1px 2px #000}
+.mobile-game .scene-bottom,.mobile-game #hover-label{display:none}
+.mobile-game .pan-edge{width:44px;min-height:44px;top:48%;height:44px;background:#10191d99}
+.mobile-game .hotspot{touch-action:manipulation}.mobile-game .hotspot span{font:14px sans-serif;white-space:normal;max-width:160px}
+.mobile-game .mobile-rail{display:flex;position:fixed;right:env(safe-area-inset-right,0px);top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);width:88px;flex-direction:column;justify-content:center;gap:6px;padding:6px;background:#101d23;border-left:1px solid #645e48;z-index:6}
+.mobile-rail button{min-height:44px;padding:6px 2px;font:14px sans-serif;border:1px solid #746d50;background:#24353a;color:#efdba8;touch-action:manipulation}
+.mobile-game .mobile-speech{display:flex;position:fixed;left:max(10px,env(safe-area-inset-left,0px));right:calc(98px + env(safe-area-inset-right,0px));bottom:max(8px,env(safe-area-inset-bottom,0px));gap:8px;align-items:center;padding:8px 10px;background:#09171ee8;border:1px solid #506367;z-index:5;pointer-events:none}
+.mobile-speech p{font:16px/1.25 sans-serif;color:#a4eef1;margin:0;flex:1}.mobile-speech:has(p:empty){display:none!important}
+.mobile-speech button{pointer-events:auto;min-height:44px;min-width:68px;background:#263940;color:#ead9a9;border:1px solid #8a7e5d;font:14px sans-serif}
+.mobile-game .mobile-selection{display:flex;position:fixed;left:max(10px,env(safe-area-inset-left,0px));top:max(28px,env(safe-area-inset-top,0px));max-width:calc(100% - 110px);align-items:center;gap:8px;z-index:6;background:#13242be8;color:#eed49b;font:15px sans-serif}
+.mobile-selection span:not(:empty){padding:6px}.mobile-selection button{min-height:44px;background:#cfbd87;color:#111;border:0;padding:8px}
+.mobile-game #modal{max-width:calc(100vw - 24px);max-height:calc(var(--mobile-height,100dvh) - 24px);padding:16px;font:16px sans-serif}
+.mobile-game #modal button,.mobile-game #modal a{min-height:44px;padding:10px 12px;font-size:16px}.mobile-game #modal h2{font-size:22px;margin:0 0 12px}.mobile-game #modal p{font:16px/1.4 sans-serif}
+.mobile-game .brochure-image{max-height:none}.mobile-game .brochure-modal{width:94vw}.mobile-game .brochure-modal details{font:16px sans-serif}
+.mobile-game #choices:not(:empty){display:flex;position:fixed;z-index:7;left:12px;right:100px;bottom:80px;max-height:50dvh;overflow:auto;background:#13242b}
+.mobile-game .console:has(#choices:not(:empty)){display:contents}.mobile-game .console:has(#choices:not(:empty))>:not(#choices){display:none}
+.mobile-game #choices button{min-height:44px;font:16px sans-serif}
+@media(max-height:340px){.mobile-game .mobile-rail{gap:3px}.mobile-speech p{font-size:14px}.mobile-game .mobile-speech{padding:4px 8px}}

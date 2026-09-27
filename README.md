@@ -22,7 +22,15 @@ Bilddateien und vollständige Imagegen-Prompts zur 2. Etage: `assets/ACT1-SECOND
 
 Ein eigenständiger deutscher Point-and-Click-Prototyp mit vier Schauplätzen: Hof, Garage, Scheune und ländliches Haus. Start mit `python -m http.server 8765 --bind 127.0.0.1` in diesem Ordner, dann `http://127.0.0.1:8765/` öffnen. Der lokale Server ist für das Auslesen der transparenten Spritebögen erforderlich; direktes Öffnen über `file://` wird nicht unterstützt.
 
-## Steuerung
+## Mobile Steuerung
+
+Auf Touch-Geräten im Querformat startet die mobile Oberfläche automatisch: große 16:9-Szene, rechts Aktionen, Inventar, Orte, Hotspots und Menü. Objekte antippen und eine Aktion auswählen; offene Durchgänge werden direkt betreten. Alle zwölf Verben bleiben erreichbar. Bei kleinen überlappenden Zielen erscheint eine Objektauswahl. Inventargegenstand wählen, „Benutze“ oder „Gib“ auswählen und das Ziel antippen; für Kombinationen das Inventar erneut öffnen. Lange Texte werden mit „Weiter“ gelesen. Im Menü lässt sich die klassische Ansicht aktivieren, dort führt „Mobile Ansicht“ zurück. Die Darstellungseinstellung verwendet ausschließlich `success-interface-v1`; Spielstände und Rätsellogik bleiben erhalten.
+
+`mobile.js` und `mobile.css` stellen die gemeinsame Oberfläche bereit. Die beiden Kapitel liefern Adapter für Raum, Gegenstände, beschreibende Objektaktionen und vorhandene Interaktionsfunktionen. Touch-Menüs pausieren laufende Bewegung, führen aber keine Spielaktionen selbst aus. Die Hit-Prüfung erweitert kleine sichtbare Ziele auf mindestens 44 CSS-Pixel, ohne die Weltkoordinaten zu verändern.
+
+`node test-mobile.cjs` prüft mit Playwright/Chrome-Touchemulation den vollständigen Prolog, Kombinationen, überlappende Ziele, verzögerte Interaktionen, Bildschirmdrehung, Dialogseiten, Ansichtswechsel und Speichern sowie Türen, Treppen, Aufzugziele und Broschüre in Akt 1. Ansichtsgrößen: 667×375, 844×390, 932×430 und 1180×820. `QA_URL` und `QA_OUTPUT` funktionieren wie im Desktop-Test. Dies sind Browseremulationen, keine Prüfungen auf physischen Mobilgeräten.
+
+## Klassische Steuerung
 
 Verb wählen, dann ein Objekt anklicken. Die Figur läuft zunächst zum zugehörigen Interaktionspunkt und führt die Aktion erst dort aus. Auf freien Boden klicken, um sich nach links, rechts, hinten oder vorne zu bewegen. Inventargegenstand anklicken, dann ein Objekt oder einen zweiten Gegenstand. Kombinationen innerhalb des Inventars funktionieren direkt. Türen und Ortsnavigation führen über die tatsächlichen Ausgänge zum nächsten Schauplatz. Ein neuer Laufbefehl oder Escape bricht die ausstehende Aktion ab. Hotspots über den Knopf anzeigen. Alle Objektinteraktionen sind mit Tab und Enter erreichbar. Fortschritt wird lokal im Browser gespeichert. Der Tonknopf aktiviert kurze Interaktionsklänge; keine Hintergrundmusik.
 

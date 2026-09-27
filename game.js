@@ -7,7 +7,7 @@ try{const saved=scratch?null:JSON.parse(localStorage.getItem('success-prolog-v1'
 let actor=Movement.create(state.room),endTimer=null;
 const verbs=['Öffne','Schließe','Drücke','Ziehe','Gehe zu','Nimm','Rede mit','Gib','Benutze','Schau an','Mach an','Mach aus'];
 function save(){if(scratch)return;try{localStorage.setItem('success-prolog-v1',JSON.stringify(state));}catch{}}
-function say(t){$('speech').textContent=t;}
+function say(t){$('speech').textContent=t;window.MobileUI?.speak(t);}
 function ping(){if(!sound)return;audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.setValueAtTime(330,audio.currentTime);o.frequency.exponentialRampToValueAtTime(440,audio.currentTime+.08);g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.13);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.14);}
 function sentence(){let item=selected?A.items[selected]:'';$('sentence').textContent=selected?`${verb==='Gib'?'Gib':'Benutze'} ${item} ${verb==='Gib'?'an':'mit'} ${hover||'…'}`:`${verb} ${hover||'…'}`;}
 function selectVerb(v){Movement.cancel(actor);verb=v;selected=null;renderVerbs();renderInventory();sentence();}
@@ -75,7 +75,7 @@ const ctx=$('actors').getContext('2d');
 $('actors').width=640;$('actors').height=360;
 function frame(t){
  let dt=Math.min(t-lastTime,50);lastTime=t;
- if(!$('modal').open){let arrived=Movement.tick(actor,dt,state.room);if(arrived)completeAction(arrived);}
+ if(!$('modal').open&&!window.MobileUI?.blocking()){let arrived=Movement.tick(actor,dt,state.room);if(arrived)completeAction(arrived);}
  PixelScene.render(ctx,state,actor,t);
  // Visible DOM diagnostics also support deterministic movement regression tests.
  $('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);
@@ -86,6 +86,18 @@ function frame(t){
  requestAnimationFrame(frame);
 }
 render();if(state.won)say('Der Wagen ist repariert. Prolog abgeschlossen! Mit „Neustart“ kannst du noch einmal spielen.');else if(state.inventory.length||Object.keys(state.flags).length)say('Zurück auf dem Land. Deine Taschen und dein Fortschritt sind noch da.');requestAnimationFrame(frame);
+MobileUI.init({
+ verbs,room:()=>state.room,busy:()=>false,label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
+ rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
+ inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>!!rooms[id],
+ actions:id=>{
+  const metadata={mechanic:['Rede mit','Schau an'],manual:['Schau an','Nimm'],key:['Nimm','Schau an'],cup:['Nimm','Schau an'],grounds:['Nimm','Schau an'],rag:['Nimm','Schau an'],toolbox:['Öffne','Schließe','Nimm','Schau an'],cupboard:['Öffne','Schließe','Schau an'],chest:['Öffne','Schließe','Schau an'],car:['Schau an','Öffne','Schließe','Mach an'],stove:['Schau an','Mach an','Mach aus']};
+  return metadata[id]||['Schau an','Benutze'];
+ },
+ object:(id,v,item)=>{verb=v;selected=item;renderVerbs();renderInventory();approach(id);},
+ item:(id,v,item)=>{Movement.cancel(actor);interact(id,v,item);},
+ cancel:()=>{Movement.cancel(actor);selected=null;verb='Gehe zu';renderVerbs();renderInventory();sentence();}
+});
 
 
 

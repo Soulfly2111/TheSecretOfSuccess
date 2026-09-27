@@ -7,7 +7,7 @@ if(!scratch)state=A.restore(readSave(saveKey),readSave(A.legacyKey),Object.keys(
 let actor=Movement.create(state.room),camera=0,transition=null,liftVisual=null;
 const verbs=['Öffne','Schließe','Drücke','Ziehe','Gehe zu','Nimm','Rede mit','Gib','Benutze','Schau an','Mach an','Mach aus'];
 function save(){if(!scratch)try{localStorage.setItem(saveKey,JSON.stringify(state));}catch{}}
-function say(text){$('speech').textContent=text;}
+function say(text){$('speech').textContent=text;window.MobileUI?.speak(text);}
 function ping(){if(!sound)return;audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.value=380;g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.1);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.12);}
 function sentence(){$('sentence').textContent=selected?`${verb==='Gib'?'Gib':'Benutze'} ${A.items[selected]} ${verb==='Gib'?'an':'mit'} ${hover||'…'}`:`${verb} ${hover||'…'}`;}
 function clearChoices(){$('choices').replaceChildren();}
@@ -25,7 +25,7 @@ function render(){
  $('map').replaceChildren();for(const [id,r] of Object.entries(rooms)){const b=document.createElement('button');b.textContent=r.label;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);}
  updateCamera();renderControls();sentence();$('progress').textContent='AKT 1 · FREIE ERKUNDUNG';
 }
-function approach(id){if(transition)return;if(A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb)){verb='Gehe zu';selected=null;renderControls();}clearChoices();const p=Movement.maps[state.room].spots[id];if(!p)return;Movement.move(actor,state.room,{x:p[0],y:p[1]},{target:id,verb,selected,room:state.room,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[state.room].objects.find(o=>o[0]===id)[1]+' …';}
+function approach(id,explicit=false){if(transition)return;if(!explicit&&A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb)){verb='Gehe zu';selected=null;renderControls();}clearChoices();const p=Movement.maps[state.room].spots[id];if(!p)return;Movement.move(actor,state.room,{x:p[0],y:p[1]},{target:id,verb,selected,room:state.room,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[state.room].objects.find(o=>o[0]===id)[1]+' …';}
 function updateCamera(){
  camera=W.cameraX(state.room,actor.x);
  for(const b of $('hotspots').children){const x=Number(b.dataset.worldX)-camera,w=Number(b.dataset.worldWidth);b.style.left=`${x/960*100}%`;b.style.width=`${w/960*100}%`;b.hidden=x+w<=0||x>=960;}
@@ -109,5 +109,14 @@ $('pan-left').onclick=e=>{e.stopPropagation();walkAcross(-1);};$('pan-right').on
 document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!$('modal').open&&!transition){e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight')walkAcross(e.key==='ArrowLeft'?-1:1);else{clearChoices();Movement.move(actor,state.room,{x:actor.x,y:e.key==='ArrowUp'?300:510});}}});
 document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!transition){Movement.cancel(actor);sentence();}});
 const ctx=$('actors').getContext('2d');$('actors').width=640;$('actors').height=360;
-function frame(t){const dt=Math.min(t-lastTime,50);lastTime=t;if(!$('modal').open){if(liftVisual){liftVisual.elapsed+=dt;if(liftVisual.arrival&&liftVisual.elapsed>1100)liftVisual=null;}if(transition){transition.elapsed+=dt;if(transition.elapsed>=transition.duration){const completed=transition;transition=null;enter(completed.edge,completed.destination);}}else{const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}}updateCamera();ActOneScene.render(ctx,state,actor,t,camera,liftVisual);$('scene').dataset.transition=transition?.edge.kind|| (transition?'door':'');$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);}
+function frame(t){const dt=Math.min(t-lastTime,50);lastTime=t;if(!$('modal').open&&!window.MobileUI?.blocking()){if(liftVisual){liftVisual.elapsed+=dt;if(liftVisual.arrival&&liftVisual.elapsed>1100)liftVisual=null;}if(transition){transition.elapsed+=dt;if(transition.elapsed>=transition.duration){const completed=transition;transition=null;enter(completed.edge,completed.destination);}}else{const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}}updateCamera();ActOneScene.render(ctx,state,actor,t,camera,liftVisual);$('scene').dataset.transition=transition?.edge.kind|| (transition?'door':'');$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);}
 render();save();say(rooms[state.room].entry);requestAnimationFrame(frame);
+MobileUI.init({
+ verbs,room:()=>state.room,busy:()=>!!transition,label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
+ rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
+ inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>A.walkExit(state,id),
+ actions:id=>W.connection(state.room,id)?['Gehe zu','Öffne','Schließe','Schau an']:W.npcs?.[id]?['Rede mit','Schau an']:id==='brochureStand'?['Nimm','Schau an']:['Schau an','Benutze','Rede mit'],
+ object:(id,v,item)=>{verb=v;selected=item;renderControls();approach(id,true);},
+ item:(id,v,item)=>{Movement.cancel(actor);say(A.act(state,v,id,item));save();render();if(id==='brochure'&&v==='Schau an')showBrochure();},
+ cancel:()=>{Movement.cancel(actor);selected=null;verb='Gehe zu';clearChoices();renderControls();sentence();}
+});
