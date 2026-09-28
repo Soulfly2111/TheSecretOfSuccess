@@ -27,6 +27,8 @@ const rooms={
  ['wasteBin','Abfalleimer',18,46,7,17,263,392,'left'],
  ['toilet','Toilette',67,41,10,20,685,374,'up'],
  ['window','Fenster zum Hof',83,8,12,38,805,389,'up'],
+ ['radiator','Heizung unter dem Fenster',84,49,13,22,808,390,'right'],
+ ['keycard','Walters Schlüsselkarte',89,48,3,4,808,390,'right'],
  ['amenities','Pflegeartikel und Seife',31,73,40,18,490,420,'down']
  ]},
  upper:{name:'Über den Empfang hinaus.',label:'1. Etage',sub:'KONZERNZENTRALE · 1. ETAGE',width:1920,entry:'Büros links, Besprechungsraum rechts. Ganz links duftet es nach Kaffee.',objects:[
@@ -44,6 +46,8 @@ const rooms={
  ['upperExit','Tür zur 1. Etage',3,15,13,62,147,426,'left'],
  ['cabinets','Küchenzeile',24,15,41,20,480,378,'up'],
  ['coffeeMachine','Kaffeemaschine',28,38,5,10,295,383,'up'],
+ ['drawer','Besteckschublade',23,49,8,9,337,383,'left'],
+ ['knife','Tafelmesser',25,49,4,3,337,383,'left'],
  ['sink','Spüle',40,41,9,8,432,380,'up'],
  ['fridge','Kühlschrank',66,23,11,43,690,390,'up'],
  ['seating','Sitzbereich',79,50,20,27,763,451,'right'],
@@ -167,7 +171,7 @@ function install(movement){for(const [id,room] of Object.entries(rooms)){
   spawn:[127,398],minY:300,maxY:510,minScale:2.8,maxScale:3.45
  });
  if(id==='kitchen')Object.assign(geometry,{floor:[[65,424],[169,370],[731,370],[760,418],[915,472],[925,514],[62,514]],obstacles:[[225,0,631,350],[638,0,744,357],[749,270,959,413]],spawn:[147,426],minY:370,maxY:520,minScale:3.05,maxScale:3.5});
- if(id==='restroom')Object.assign(geometry,{floor:[[94,378],[252,350],[755,350],[874,412],[911,504],[62,504],[62,422]],obstacles:[[275,0,625,337],[654,0,748,336],[167,245,241,358],[245,447,755,540]],spawn:[145,401],minY:350,maxY:500,minScale:3.1,maxScale:3.55});
+ if(id==='restroom')Object.assign(geometry,{floor:[[94,378],[252,350],[755,350],[874,412],[911,504],[62,504],[62,422]],obstacles:[[275,0,625,337],[654,0,748,336],[167,245,241,358],[245,447,755,540],[845,0,940,389]],spawn:[145,401],minY:350,maxY:500,minScale:3.1,maxScale:3.55});
  for(const object of room.objects)geometry.spots[object[0]]=[object[6],object[7],object[8]];
  room.connections=connections[id];room.entries=entries[id];room.geometry=geometry;room.camera=[0,(room.width||960)-960];movement.maps[id]=geometry;
 }}

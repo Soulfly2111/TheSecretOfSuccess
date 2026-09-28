@@ -43,7 +43,7 @@ await item('key');await p.locator('.mobile-selection button').tap();assert(await
 // Rotation preserves a pending walk, and the preference is independent of game saves.
 await target('garage');await p.setViewportSize({width:390,height:844});await p.locator('.mobile-rotate button').tap();await p.setViewportSize({width:844,height:390});await room('garage');await map('Vor dem Haus','yard');
 await p.reload();await p.waitForFunction(()=>state.flags.tight&&state.flags.belt);await use('key','car');assert(await p.evaluate(()=>state.won));await p.waitForTimeout(800);await p.locator('#close-modal').tap();
-await p.goto(base+'act1.html');await p.waitForFunction(()=>document.body.classList.contains('mobile-game'));
+await p.goto(base+'act1.html');await p.waitForFunction(()=>document.body.classList.contains('mobile-game'));for(let i=0;i<3;i++)await p.locator('#story-dialogue').getByRole('button',{name:'Weiter',exact:true}).tap();await p.waitForFunction(()=>state.flags.introDone);
 await action('brochureStand','Nimm');await item('brochure','Schau an');assert(await p.locator('.brochure-image').isVisible());await p.locator('#close-modal').tap();
 await map('1. Etage','upper');await target('stairsUp');await room('second');await target('stairs');await room('upper');
 await target('elevator');await p.locator('.lift-modal').waitFor();assert(await p.locator('[data-floor="upper"]').isDisabled());await p.locator('#close-modal').tap();assert.equal(await p.evaluate(()=>state.room),'upper');

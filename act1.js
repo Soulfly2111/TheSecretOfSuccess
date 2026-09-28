@@ -12,7 +12,7 @@ function ping(){if(!sound)return;audio??=new(window.AudioContext||window.webkitA
 function sentence(){$('sentence').textContent=selected?`${verb==='Gib'?'Gib':'Benutze'} ${A.items[selected]} ${verb==='Gib'?'an':'mit'} ${hover||'…'}`:`${verb} ${hover||'…'}`;}
 function clearChoices(){$('choices').replaceChildren();}
 function chooseVerb(v){if(transition)return;Movement.cancel(actor);verb=v;selected=null;clearChoices();renderControls();sentence();}
-function icon(canvas){const context=canvas.getContext('2d');for(const [left,top,width,height,color] of [[3,2,18,21,'#c3a56a'],[4,3,16,19,'#1b2022'],[6,5,6,5,'#c3a56a'],[14,5,4,12,'#636f85'],[6,13,6,1,'#d5c79c'],[6,16,6,1,'#d5c79c'],[6,19,12,1,'#d5c79c']]){context.fillStyle=color;context.fillRect(left,top,width,height);}}
+function icon(canvas,id){const g=canvas.getContext('2d');if(id==='knife'){g.fillStyle='#b8cad1';g.fillRect(4,10,12,3);g.fillStyle='#866242';g.fillRect(16,10,6,3);return;}if(id==='keycard'){g.fillStyle='#dac28a';g.fillRect(2,5,20,14);g.fillStyle='#244955';g.fillRect(4,8,16,3);g.fillRect(5,14,6,2);return;}const context=canvas.getContext('2d');for(const [left,top,width,height,color] of [[3,2,18,21,'#c3a56a'],[4,3,16,19,'#1b2022'],[6,5,6,5,'#c3a56a'],[14,5,4,12,'#636f85'],[6,13,6,1,'#d5c79c'],[6,16,6,1,'#d5c79c'],[6,19,12,1,'#d5c79c']]){context.fillStyle=color;context.fillRect(left,top,width,height);}}
 function renderControls(){
  $('verbs').replaceChildren();for(const v of verbs){const b=document.createElement('button');b.textContent=v;b.className=v===verb?'active':'';b.setAttribute('aria-pressed',String(v===verb));b.onclick=()=>chooseVerb(v);$('verbs').append(b);}
  $('inventory').replaceChildren();$('item-count').textContent=`${state.inventory.length} ${state.inventory.length===1?'GEGENSTAND':'GEGENSTÄNDE'}`;
@@ -23,12 +23,12 @@ function render(){
  const room=rooms[state.room];camera=W.cameraX(state.room,actor.x);$('scene').dataset.room=state.room;$('location-name').textContent=room.name;$('location-sub').textContent=room.sub;$('hotspots').replaceChildren();
  for(const [id,label,x,y,w,h] of room.objects){if(!A.visible(state,id))continue;const b=document.createElement('button');b.className='hotspot';b.dataset.object=id;b.dataset.worldX=x/100*(room.width||960);b.dataset.worldWidth=w/100*(room.width||960);b.style.cssText=`top:${y}%;height:${h}%`;b.setAttribute('aria-label',label);const span=document.createElement('span');span.textContent=label;b.append(span);b.onmouseenter=b.onfocus=()=>{if(transition)return;hover=label;$('hover-label').textContent=label;sentence();if(A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb))$('sentence').textContent='Gehe zu '+label;};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();approach(id);};$('hotspots').append(b);}
  $('map').replaceChildren();for(const [id,r] of Object.entries(rooms)){const b=document.createElement('button');b.textContent=r.label;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);}
- updateCamera();renderControls();sentence();$('progress').textContent='AKT 1 · FREIE ERKUNDUNG';
+ updateCamera();renderControls();sentence();$('progress').textContent=state.flags.cardReturned?'WALTERS EMPFEHLUNG ERHALTEN':'AKT 1 · WALTERS SCHLÜSSELKARTE';
 }
 function approach(id,explicit=false){if(transition)return;if(!explicit&&A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb)){verb='Gehe zu';selected=null;renderControls();}clearChoices();const p=Movement.maps[state.room].spots[id];if(!p)return;Movement.move(actor,state.room,{x:p[0],y:p[1]},{target:id,verb,selected,room:state.room,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[state.room].objects.find(o=>o[0]===id)[1]+' …';}
 function updateCamera(){
  camera=W.cameraX(state.room,actor.x);
- for(const b of $('hotspots').children){const x=Number(b.dataset.worldX)-camera,w=Number(b.dataset.worldWidth);b.style.left=`${x/960*100}%`;b.style.width=`${w/960*100}%`;b.hidden=x+w<=0||x>=960;}
+ for(const b of $('hotspots').children){if(b.dataset.object==='walter'&&ActOneCast.actors.walter){const person=ActOneCast.actors.walter;b.dataset.worldX=person.x-35;b.style.top=(person.y-160)/540*100+'%';b.style.height='30%';}const x=Number(b.dataset.worldX)-camera,w=Number(b.dataset.worldWidth);b.style.left=`${x/960*100}%`;b.style.width=`${w/960*100}%`;b.hidden=x+w<=0||x>=960;}
  $('scene').dataset.cameraX=camera;
  $('pan-left').hidden=(rooms[state.room].width||960)<=960||actor.x<110;
  $('pan-right').hidden=(rooms[state.room].width||960)<=960||actor.x>(rooms[state.room].width||960)-85;
@@ -66,7 +66,8 @@ function arrive(action){
  const edge=W.connection(state.room,action.target);
  if(edge&&!action.selected&&['Gehe zu','Benutze'].includes(action.verb)){startTransition(edge);return;}
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
- ping();say(A.act(state,action.verb,action.target,action.selected));selected=null;save();render();
+ if(action.target==='walter'&&!action.selected&&['Rede mit','Benutze'].includes(action.verb)){ActOneStory.walter();selected=null;renderControls();return;}
+ const returned=state.flags.cardReturned;ping();say(A.act(state,action.verb,action.target,action.selected));if(action.selected==='knife'&&state.flags.cardTaken)actor.gesture=650;selected=null;save();render();if(!returned&&state.flags.cardReturned)ActOneStory.thanks();
 }
 function showLiftMenu(){
  Movement.cancel(actor);selected=null;
@@ -91,14 +92,14 @@ $('chapters').onclick=chapterMenu;
 document.querySelector('.wordmark').onclick=e=>{e.preventDefault();chapterMenu();};
 $('journal').onclick=()=>popup('Notizbuch · Mein erster Arbeitstag',state.journal.length?state.journal:['Freie Erkundung: Erdgeschoss, 1. und 2. Etage sind über Treppe und Aufzug verbunden. Die Firmenbroschüre liegt neben dem Haupteingang.']);
 $('help').onclick=()=>popup('Das Gebäude erkunden',[
-'Wähle ein Verb und klicke auf ein Objekt oder eine Person. Die Figur geht zuerst dorthin. Nur die Firmenbroschüre lässt sich mitnehmen.',
+'Wähle ein Verb und klicke auf ein Objekt oder eine Person. Die Figur geht zuerst dorthin. Neben der Firmenbroschüre findest du Gegenstände für Walters verlorene Schlüsselkarte.',
 'Broschüre lesen: „Schau an“ wählen und die Firmenbroschüre im Inventar anklicken.',
 'Erdgeschoss, 1. und 2. Etage sind breite Panoramen. Klicke auf den Boden oder die Randpfeile. Die Kamera folgt. Die Pfeiltasten bewegen die Figur nach links, rechts, oben und unten.',
 'Treppen verbinden benachbarte Etagen. In der 1. Etage gibt es getrennte Auf- und Abgänge. Am Aufzug wählst du Erdgeschoss, 1. oder 2. Etage. Die Ortsleiste nutzt dieselben Wege. Offene Türen wechseln automatisch auf „Gehe zu“; „Schließe“ und „Schau an“ bleiben gezielt wählbar.',
-'Akt 1 ist vorerst frei erkundbar. Es gibt keine Aufgaben, Rätselsperren oder einen Schichtabschluss.'
+'Hilf Walter, seine Schlüsselkarte wiederzufinden. Frag ihn bei einem weiteren Gespräch nach dem letzten Fundort. Alle Etagen bleiben zugänglich.'
 ]);
 $('close-modal').onclick=()=>$('modal').close();$('hint').onclick=()=>say(A.hint(state));
-$('restart').onclick=()=>{popup('Akt 1 neu beginnen?',['Nur der neue Erkundungsspielstand wird ersetzt. Der alte Rätselspielstand und der Prolog bleiben erhalten.']);const b=document.createElement('button');b.textContent='Akt 1 neu beginnen';b.onclick=()=>{transition=null;liftVisual=null;state=A.fresh();actor=Movement.create(state.room);selected=null;verb='Gehe zu';save();clearChoices();render();say(rooms.lobby.entry);$('modal').close();};$('modal-content').append(b);};
+$('restart').onclick=()=>{popup('Akt 1 neu beginnen?',['Nur der neue Erkundungsspielstand wird ersetzt. Der alte Rätselspielstand und der Prolog bleiben erhalten.']);const b=document.createElement('button');b.textContent='Akt 1 neu beginnen';b.onclick=()=>{transition=null;liftVisual=null;state=A.fresh();ActOneStory.reset();actor=Movement.create(state.room);selected=null;verb='Gehe zu';save();clearChoices();render();say(rooms.lobby.entry);$('modal').close();};$('modal-content').append(b);};
 $('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'Ton an':'Ton aus';ping();};
 $('reveal').onclick=()=>{showAll=!showAll;$('scene').classList.toggle('reveal',showAll);$('reveal').setAttribute('aria-pressed',String(showAll));};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!transition){Movement.cancel(actor);selected=null;clearChoices();renderControls();sentence();}if(e.code==='Space'&&!$('modal').open&&document.activeElement.tagName!=='BUTTON'){e.preventDefault();$('scene').classList.add('reveal');}});
@@ -109,13 +110,26 @@ $('pan-left').onclick=e=>{e.stopPropagation();walkAcross(-1);};$('pan-right').on
 document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!$('modal').open&&!transition){e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight')walkAcross(e.key==='ArrowLeft'?-1:1);else{clearChoices();Movement.move(actor,state.room,{x:actor.x,y:e.key==='ArrowUp'?300:510});}}});
 document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!transition){Movement.cancel(actor);sentence();}});
 const ctx=$('actors').getContext('2d');$('actors').width=640;$('actors').height=360;
-function frame(t){const dt=Math.min(t-lastTime,50);lastTime=t;if(!$('modal').open&&!window.MobileUI?.blocking()){if(liftVisual){liftVisual.elapsed+=dt;if(liftVisual.arrival&&liftVisual.elapsed>1100)liftVisual=null;}if(transition){transition.elapsed+=dt;if(transition.elapsed>=transition.duration){const completed=transition;transition=null;enter(completed.edge,completed.destination);}}else{const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}}updateCamera();ActOneScene.render(ctx,state,actor,t,camera,liftVisual);$('scene').dataset.transition=transition?.edge.kind|| (transition?'door':'');$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);}
+function frame(t){
+ const dt=Math.min(t-lastTime,50);lastTime=t;
+ if(!$('modal').open&&!window.MobileUI?.blocking()){
+  ActOneStory.update(dt,t);
+  if(!ActOneStory.locked()){
+   if(liftVisual){liftVisual.elapsed+=dt;if(liftVisual.arrival&&liftVisual.elapsed>1100)liftVisual=null;}
+   if(transition){transition.elapsed+=dt;if(transition.elapsed>=transition.duration){const completed=transition;transition=null;enter(completed.edge,completed.destination);}}
+   else{const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}
+  }
+ }
+ updateCamera();ActOneScene.render(ctx,state,actor,t,camera,ActOneStory.lift||liftVisual);
+ $('scene').dataset.transition=transition?.edge.kind||(transition?'door':'');$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').dataset.story=ActOneStory.phase;$('scene').dataset.speaker=ActOneCast.speaker||'';$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);
+}
+ActOneStory.init({state:()=>state,hero:()=>actor,save,render,say,ready:()=>!transition&&!$('modal').open&&!window.MobileUI?.blocking()});
 render();save();say(rooms[state.room].entry);requestAnimationFrame(frame);
 MobileUI.init({
- verbs,room:()=>state.room,busy:()=>!!transition,label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
+ verbs,room:()=>state.room,busy:()=>!!transition||ActOneStory.locked(),label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
  rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
  inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>A.walkExit(state,id),
- actions:id=>W.connection(state.room,id)?['Gehe zu','Öffne','Schließe','Schau an']:W.npcs?.[id]?['Rede mit','Schau an']:id==='brochureStand'?['Nimm','Schau an']:['Schau an','Benutze','Rede mit'],
+ actions:id=>id==='radiator'?['Schau an','Benutze']:id==='drawer'?['Öffne','Schließe','Schau an']:['knife','keycard'].includes(id)?['Nimm','Schau an']:W.connection(state.room,id)?['Gehe zu','Öffne','Schließe','Schau an']:W.npcs?.[id]?['Rede mit','Schau an']:id==='brochureStand'?['Nimm','Schau an']:['Schau an','Benutze','Rede mit'],
  object:(id,v,item)=>{verb=v;selected=item;renderControls();approach(id,true);},
  item:(id,v,item)=>{Movement.cancel(actor);say(A.act(state,v,id,item));save();render();if(id==='brochure'&&v==='Schau an')showBrochure();},
  cancel:()=>{Movement.cancel(actor);selected=null;verb='Gehe zu';clearChoices();renderControls();sentence();}

@@ -8,6 +8,7 @@ fs.mkdirSync(output,{recursive:true});
  const context=await browser.newContext({viewport:{width:1440,height:1050}});
  const page=await context.newPage(),errors=[];
  page.on('pageerror',error=>errors.push(error.message));
+ const finishIntro=async(page)=>{for(let i=0;i<3;i++)await page.locator('#story-dialogue').getByRole('button',{name:'Weiter',exact:true}).click();await page.waitForFunction(()=>state.flags.introDone);};
  const base=process.env.QA_URL||'http://127.0.0.1:8765/';
  const settle=()=>page.waitForFunction(()=>!actor.moving&&!transition);
  const room=async(id)=>{await page.waitForFunction(id=>document.querySelector('#scene').dataset.room===id,id);await settle();};
@@ -18,7 +19,7 @@ fs.mkdirSync(output,{recursive:true});
  await page.goto(base+'act1.html?test=explore');
  await page.waitForFunction(()=>document.querySelectorAll('#hotspots button').length>5);
  await page.waitForFunction(()=>ActOneScene&&document.querySelector('#actors').width===640);
- await shot('ground');
+ await finishIntro(page);await shot('ground');
  await verb('Nimm');await object('brochureStand');await settle();
  assert.equal(await page.locator('#inventory .item').count(),1);
  await verb('Schau an');await page.getByRole('button',{name:'Firmenbroschüre',exact:true}).click();
@@ -108,7 +109,7 @@ fs.mkdirSync(output,{recursive:true});
  await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===1);
  const saves=await savedPage.evaluate(()=>({legacy:JSON.parse(localStorage.getItem('success-act1-v1')),current:JSON.parse(localStorage.getItem('success-act1-exploration-v1')),prolog:localStorage.getItem('success-prolog-v1')}));
  assert.equal(saves.legacy.room,'ending');assert.equal(saves.current.room,'lobby');assert.deepEqual(saves.current.inventory,['brochure']);assert.equal(saves.prolog,'preserve-prolog');
- await savedPage.reload();await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===1);
+ await finishIntro(savedPage);await savedPage.reload();await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===1);
 
  for(const [label,id] of [['2. Etage','second'],['Teamleiterbüro','teamOffice'],['EMS-Training','ems'],['Pausenraum','lounge']]){
   await savedPage.locator('#map').getByRole('button',{name:label,exact:true}).click();

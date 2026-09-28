@@ -3,13 +3,13 @@ const Act=require('./act1-engine'),Movement=require('./movement'),World=require(
 World.install(Movement);
 const roomIds=Object.keys(World.rooms);
 assert.equal(roomIds.length,10);
-assert.deepEqual(Object.keys(Act.items),['brochure']);
+assert.deepEqual(Object.keys(Act.items),['brochure','knife','keycard']);
 for(const room of roomIds){
  const state=Act.fresh();state.room=room;
  assert.equal(Act.canEnter(state,room),'');
  for(const object of World.rooms[room].objects){
   for(const verb of ['Schau an','Rede mit','Nimm','Benutze','Wähle'])assert.equal(typeof Act.act(state,verb,object[0]),'string');
-  assert(state.inventory.every(item=>item==='brochure'));
+  assert(state.inventory.every(item=>Act.items[item]));
   assert.equal(state.room,room);
   assert(!state.won);
  }
@@ -53,7 +53,7 @@ assert.deepEqual(Act.restore({room:'kitchen',inventory:[],flags:{kitchenOpen:tru
 assert.equal(Act.restore({room:'kitchen',inventory:[],flags:{}},null,roomIds).room,'kitchen');
 assert.deepEqual(Act.restore(null,{flags:{brochureTaken:true}},roomIds).inventory,['brochure']);
 assert.notEqual(Act.saveKey,Act.legacyKey);
-console.log('PASS: all routes and reachable interaction points, arrival-only actions, furniture collision, camera, sole brochure pickup, unlocked exploration and non-destructive save migration.');
+console.log('PASS: all routes and reachable interaction points, arrival-only actions, furniture collision, camera, quest items, unlocked exploration and non-destructive save migration.');
 for(const origin of World.floors){
  assert.equal(World.liftOptions(origin).filter(option=>option.current).length,1);
  for(const destination of World.floors.filter(id=>id!==origin)){

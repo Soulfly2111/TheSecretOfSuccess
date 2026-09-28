@@ -8,7 +8,13 @@ Beim Start steht die Auswahl zwischen Prolog und Akt 1 zur Verfügung. Beide Kap
 
 Zehn verbundene Räume: Erdgeschoss, 1. Etage, Officeküche, Lieferhof, Technikraum, WC, 2. Etage, Teamleiterbüro, EMS-Training und Pausenraum. Die drei Etagen sind seitlich scrollende Panoramen (1920 × 540 Weltpunkte; Sichtfenster 960 × 540). Die 1. Etage enthält links die Küchentür, offene Büros, Aufzug und Treppenhaus sowie rechts den begehbaren Besprechungsraum. Das WC-Schild oben verweist auf das WC im Erdgeschoss.
 
-Akt 1 ist vorerst frei erkundbar. Alte Rätsel, Gegenstände, Voraussetzungen und Abschlusssequenzen sind entfernt. Nur die Firmenbroschüre aus der Vitrine ist aufnehmbar und im Inventar mit „Schau an“ lesbar. Empfang, Walter und Mitarbeiter haben wiederholbare Gespräche.
+Akt 1 beginnt mit einer animierten Begrüßung durch den Onkel. Er verweist den Protagonisten an Walter und geht zum Aufzug. Das erste Rätsel ist Walters verlorene Schlüsselkarte: Walter um Hilfe bitten hören, bei erneutem Gespräch nach dem letzten Fundort fragen, die Heizung unter dem WC-Fenster untersuchen, in der Officeküche die Besteckschublade öffnen und das Tafelmesser nehmen, damit die Karte bergen und Walter zurückgeben. Die Karte bleibt vor der Untersuchung vollständig verborgen. Messer und Karte dürfen auch vor Walters Bitte gefunden werden. Die Rückgabe bringt Walters Empfehlung beim Teamleiter; weitere Rätsel und der Büroplatz als Kapitelabschluss folgen später. Alle Räume bleiben erreichbar und die Firmenbroschüre bleibt lesbar.
+
+Onkel und Walter haben vier Blickrichtungen sowie Lauf-, Blink-, Sprech- und Ruhephasen. Walter läuft nervös auf und ab und prüft seine Taschen; nach der Rückgabe steht er ruhig. Dialoge verwenden „Weiter“ und wiederholbare Gesprächsoptionen. Grafikdateien und vollständige Prompts: `assets/ACT1-WALTER-ART.md`.
+
+Der bestehende Erkundungsspielstand wird als Version 3 erweitert: Begrüßung, Bitte, WC-Hinweis, Kartenentdeckung, Schubladenöffnung, Aufnahme und Rückgabe sind persistent. Ältere Erkundungsspielstände behalten ihren Raum, ihre Türen und die Broschüre; die Begrüßung beginnt bei der nächsten freien Rückkehr ins Erdgeschoss. Unterbrochene Begrüßungen starten erneut, abgeschlossene nicht. Legacy-Rätselstände und Prolog-Speicher bleiben getrennt.
+
+Zusätzliche Prüfungen: `node test-walter.cjs` für Rätsellogik und Migration, `node test-walter-browser.cjs` für vollständige Desktop- und Touch-Abläufe samt Animationen, Dialogen, Objektzuständen und Neuladen. Die Browserprüfung verwendet isolierte Kontexte und dieselben `QA_URL`/`QA_OUTPUT`-Variablen wie die übrigen Browsertests.
 
 Die 2. Etage zeigt von links nach rechts die Teamleiterbürotür, den offen begehbaren Kopier- und Faxraum, Aufzug und Treppenabgang, EMS-Tür und Pausenraumtür. Büro, EMS-Training und Pausenraum haben eigene Innenansichten, Möbelhindernisse und separate Mitarbeiter-Sprites.
 
