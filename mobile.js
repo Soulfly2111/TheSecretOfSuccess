@@ -7,7 +7,7 @@ const el=(tag,cls,label)=>{const n=document.createElement(tag);if(cls)n.classNam
 const button=(label,fn,parent)=>{const b=el('button','',label);b.type='button';b.onclick=fn;parent.append(b);return b;};
 function close(){if(panel.open)panel.close();}
 function open(label){close();title.textContent=label;content.replaceChildren();panel.showModal();}
-function reset(){explicit=null;sourceItem=null;status.textContent='';cancel.hidden=true;}
+function reset(){explicit=null;sourceItem=null;api.selection?.(null);status.textContent='';cancel.hidden=true;}
 function pending(label){status.textContent=label;cancel.hidden=false;}
 function chooseAction(verb,id){close();reset();api.object(id,verb,null);}
 function allActions(id){open(id?api.label(id):'Aktion wählen');for(const v of api.verbs)button(v,()=>{if(id)chooseAction(v,id);else{close();reset();explicit=v;pending(v+' · Ziel antippen');}},content);}
@@ -26,7 +26,7 @@ function inventory(){
   if(sourceItem){const from=sourceItem,v=sourceVerb;close();reset();api.item(item.id,v,from);return;}
   open(item.label);for(const v of ['Schau an','Benutze','Gib'])button(v,()=>{
    close();reset();if(v==='Schau an')api.item(item.id,v,null);
-   else{sourceItem=item.id;sourceVerb=v;pending(v+' '+item.label+' · Ziel antippen');}
+   else{sourceItem=item.id;sourceVerb=v;api.selection?.(item.id);pending(v+' '+item.label+' · Ziel antippen');}
   },content);
  },content);b.dataset.item=item.id;}
 }

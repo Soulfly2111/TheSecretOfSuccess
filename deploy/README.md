@@ -21,3 +21,7 @@ Aktives Release: `/var/www/casanova-studio/releases/20260929-dialogue-v3`. Enth�
 ## Reinigungsraum 2026-09-29
 
 Release: `/var/www/casanova-studio/releases/20260929-cleaning`. Vorheriges Release: `20260929-dialogue-v3`. Sieben geänderte öffentliche Dateien werden per SHA-256 geprüft; Umschaltung ohne Apache-Änderung. Desktop- und Touch-Browseremulation prüfen Licht, Speicherstand und Rückweg.
+
+## Marmor-Passfoto 2026-09-29
+
+Release `/var/www/casanova-studio/releases/20260929-photo` baut auf `20260929-cleaning` auf. Neu: act1-photo.js vor act1-engine.js laden. Zehn öffentliche Dateien per SHA-256 prüfen und current atomar wechseln; keine Apache-Änderung. Tests: Foto-Rätsel Desktop/Touch, unterbrochener Druck, bestehende Spielstände, Walter, Reinigungsraum und Prolog. Mobiltests sind Browseremulation.

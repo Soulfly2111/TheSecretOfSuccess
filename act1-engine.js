@@ -1,10 +1,11 @@
 (function(root){
 'use strict';
-const items={brochure:'Firmenbroschüre',knife:'Tafelmesser',keycard:'Walters Schlüsselkarte'};
+const Photo=typeof module!=='undefined'?require('./act1-photo'):root.ActOnePhoto;
+const items={...Photo.items,brochure:'Firmenbroschüre',knife:'Tafelmesser',keycard:'Walters Schlüsselkarte'};
 const questFlags=['cleaningLightOn','introDone','walterAsked','wcClue','cardSeen','drawerOpen','knifeTaken','cardTaken','cardReturned'];
 const saveKey='success-act1-exploration-v1',legacyKey='success-act1-v1';
 const doorFlags={wc:'wcOpen',sideDoor:'sideOpen',techDoor:'technicalOpen',kitchenDoor:'kitchenOpen',officeDoor:'officeOpen',emsDoor:'emsOpen',loungeDoor:'loungeOpen'};
-const fresh=()=>({version:3,room:'lobby',inventory:[],flags:{},journal:[]});
+const fresh=()=>({version:3,room:'lobby',inventory:['smartphone'],flags:{},journal:[]});
 function restore(saved,legacy,validRooms){
  const source=saved&&typeof saved==='object'?saved:legacy,state=fresh();
  if(!source||typeof source!=='object')return state;
@@ -28,6 +29,7 @@ function restore(saved,legacy,validRooms){
   if(state.flags.cardSeen)note(state,'Die Schlüsselkarte steckt hinter der Heizung. Der Spalt ist zu eng für meine Hand.');
   if(state.flags.cardReturned)note(state,'Walter empfiehlt mich beim Teamleiter. Ein erster Schritt zum Büroplatz im 1. OG.');
  }
+ Photo.restore(state,saved);
  return state;
 }
 function note(state,text){if(!state.journal.includes(text))state.journal.push(text);}
@@ -122,11 +124,12 @@ const conversations={
  breakStaff:'Mitarbeiterin: „Eine Tasse Kaffee und fünf Minuten Ruhe. Manche nennen das schon Unternehmenskultur.“'
 };
 function act(state,verb,target,item){
+ const photoResult=Photo.act(state,verb,target,item);if(photoResult!==null)return photoResult;
  if(state.room==='corridor'&&!state.inventory.includes(target)&&!visible(state,target))return 'Im Dunkeln kann ich das nicht erkennen. Erst das Licht einschalten.';
  const f=state.flags,has=id=>state.inventory.includes(id),add=id=>{if(!has(id))state.inventory.push(id);};
  if(item==='keycard'&&target==='walter'&&['Gib','Benutze'].includes(verb)&&has('keycard')){
   state.inventory=state.inventory.filter(id=>id!=='keycard');f.cardReturned=true;f.walterAsked=true;
-  note(state,'Walter empfiehlt mich beim Teamleiter. Ein erster Schritt zum Büroplatz im 1. OG.');return 'Ich gebe Walter seine Schlüsselkarte zurück. Er verspricht, mich beim Teamleiter zu empfehlen.';
+  note(state,'Walter empfiehlt mich beim Teamleiter. Ein erster Schritt zum Büroplatz im 1. OG.');Photo.journal(state);return 'Ich gebe Walter seine Schlüsselkarte zurück. Er verspricht, mich beim Teamleiter zu empfehlen.';
  }
  if(item==='knife'&&['radiator','keycard'].includes(target)&&has('knife')){
   if(f.cardTaken||f.cardReturned)return 'Hinter der Heizung steckt keine Karte mehr.';
@@ -188,6 +191,7 @@ function walkExit(state,id){
 }
 function hint(state){
  if(state.room==='corridor'&&!state.flags.cleaningLightOn)return 'Benutze den leuchtenden Schalter links neben der Tür.';
+ if(state.flags.cardReturned&&!state.flags.badgeIssued)return Photo.hint(state);
  if(!state.flags.cardReturned){
   if(state.inventory.includes('keycard'))return 'Gib Walter am Empfang seine Schlüsselkarte zurück.';
   if(!state.flags.walterAsked)return 'Sprich mit Walter am Empfang. Er sucht etwas.';
@@ -204,6 +208,6 @@ function hint(state){
  lounge:'Die Kollegen genießen ihre Pause. Die Tür führt zurück in die 2. Etage.',
  kitchen:'Sieh dich um. Durch die offene Tür kommst du zurück in die 1. Etage.'})[state.room]||'Die Tür führt zurück ins Erdgeschoss. Die Ortsleiste wählt den passenden Weg.';
 }
-const api={items,saveKey,legacyKey,doorFlags,fresh,restore,act,walkExit,hint,visible,options,dialogue,canEnter:()=>''};
+const api={Photo,items,saveKey,legacyKey,doorFlags,fresh,restore,act,walkExit,hint,visible,options,dialogue,canEnter:()=>''};
 if(typeof module!=='undefined')module.exports=api;else root.ActOne=api;
 })(typeof window!=='undefined'?window:globalThis);

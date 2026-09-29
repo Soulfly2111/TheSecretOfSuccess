@@ -51,7 +51,7 @@ await target('elevator');await p.locator('.lift-modal').waitFor();assert(await p
 for(const id of ['lobby','second','upper','second','lobby','upper']){await target('elevator');await p.locator('[data-floor="'+id+'"]').tap();await room(id);}
 await map('Pausenraum','lounge');await action('breakStaff','Rede mit');assert.match(await p.locator('#speech').textContent(),/Tasse Kaffee/);
 await map('2. Etage','second');await action('loungeDoor','Schließe');await action('loungeDoor','Öffne');assert.equal(await p.evaluate(()=>state.room),'second');await target('loungeDoor');await room('lounge');
-await p.reload();await room('lounge');assert.deepEqual(await p.evaluate(()=>state.inventory),['brochure']);
+await p.reload();await room('lounge');assert.deepEqual(await p.evaluate(()=>state.inventory.filter(id=>id!=='smartphone')),['brochure']);
 for(const [w,h] of [[667,375],[844,390],[932,430],[1180,820]]){await p.setViewportSize({width:w,height:h});await layout('act1-'+w);}
 await p.setViewportSize({width:844,height:390});await rail('Menü').tap();await panel('Klassische Ansicht').tap();assert(!await p.locator('body').evaluate(n=>n.classList.contains('mobile-game')));await p.locator('.mobile-toggle').tap();await p.reload();assert(await p.locator('body').evaluate(n=>n.classList.contains('mobile-game')));
 assert.deepEqual(errors,[]);await browser.close();console.log('PASS mobile: complete prolog via touch, inventory combinations, overlaps, arrival-only interactions, rotation, layouts, Act 1 doors/stairs/all lifts/cancel, brochure, save reload and UI preference; no JS errors.');

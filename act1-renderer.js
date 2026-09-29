@@ -31,7 +31,7 @@ const ActOneScene=(()=>{
  };
  function npc(ctx,id,x,y,t,room='lobby'){const data=ActOneWorld.npcs[id],tile=(data[3]==='second'?extraTiles:tiles)[data[0]];if(!tile)return;let h=Math.round(72*Movement.scale(room,y)*2/3),w=Math.round(h*tile.w/tile.h);ctx.drawImage(data[3]==='second'?extraPeople:people,tile.x,tile.y,tile.w,tile.h,Math.round(x*2/3-w/2),Math.round(y*2/3-h),w,h);}
  function patchImage(ctx,image,box,width){if(!image.complete||!image.naturalWidth)return;const [left,top,span,height]=box;ctx.drawImage(image,left/width*image.width,top/360*image.height,span/width*image.width,height/360*image.height,left,top,span,height);}
- function render(ctx,s,a,t,camera=0,liftVisual=null){ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,640,360);const tile=ActOneWorld.rooms[s.room].tile;ctx.save();ctx.translate(-Math.round(camera*2/3),0);
+ function render(ctx,s,a,t,camera=0,liftVisual=null,photo={}){ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,640,360);const tile=ActOneWorld.rooms[s.room].tile;ctx.save();ctx.translate(-Math.round(camera*2/3),0);
   if(s.room==='lobby'){if(panorama.complete&&panorama.naturalWidth)ctx.drawImage(panorama,0,0,1280,360);}
   else if(s.room==='corridor'){if(cleaning.complete&&cleaning.naturalWidth)ctx.drawImage(cleaning,0,0,640,360);}
   else if(s.room==='restroom'){if(restroom.complete&&restroom.naturalWidth)ctx.drawImage(restroom,0,0,640,360);}
@@ -68,7 +68,13 @@ const ActOneScene=(()=>{
    ctx.save();ctx.beginPath();ctx.rect(box[0]+box[2]*(1-opening)/2,box[1],box[2]*opening,box[3]);ctx.clip();
    const cabin=s.room==='second'?secondOpen:upperOpen;if(cabin.complete&&cabin.naturalWidth)ctx.drawImage(cabin,570/1280*cabin.width,135/360*cabin.height,67/1280*cabin.width,120/360*cabin.height,...box);ctx.restore();
   }
-  const actors=[];for(const o of ActOneWorld.rooms[s.room].objects)if(o[0]!=='walter'&&ActOneWorld.npcs[o[0]]&&ActOne.visible(s,o[0])){let [frame,x,y]=ActOneWorld.npcs[o[0]];if(o[0]==='technician'&&s.room==='corridor')x=651;actors.push({y,draw:()=>npc(ctx,o[0],x,y,t,s.room)});}
+  const actors=[];
+  if(s.room==='lobby')actors.push({y:403,draw:()=>{
+   r(307,182,32,14,'#a7aca3');r(310,180,25,4,'#d1ccaf');r(310,190,24,4,'#222e37');r(333,185,3,2,'#74db9a');
+   if(photo.job?.kind==='print'){const h=2+Math.floor(photo.job.elapsed/160);r(316,193,15,Math.min(11,h),'#d8bb73');r(319,194,5,3,'#376478');}
+  }});
+  if(s.room==='upper')actors.push({y:378,draw:()=>{r(374,174,46,25,'#1a212a');r(377,177,40,19,s.flags.photoSent?'#234d3c':'#29455c');r(394,199,5,5,'#252e34');r(386,204,21,2,'#747b77');ctx.fillStyle='#c6d9b6';ctx.font='5px monospace';ctx.fillText('GRAFIK',380,184);ctx.fillText(photo.job?.kind==='upload'?'UPLOAD':s.flags.photoSent?'GESENDET':s.flags.selfieUploaded||s.flags.marbleUploaded?'FOTO 1/2':'FOTOS 0/2',380,192);}});
+for(const o of ActOneWorld.rooms[s.room].objects)if(o[0]!=='walter'&&ActOneWorld.npcs[o[0]]&&ActOne.visible(s,o[0])){let [frame,x,y]=ActOneWorld.npcs[o[0]];if(o[0]==='technician'&&s.room==='corridor')x=651;actors.push({y,draw:()=>npc(ctx,o[0],x,y,t,s.room)});}
   if(s.room==='lobby')for(const [id,person] of Object.entries(ActOneCast.actors))if(person)actors.push({y:person.y,draw:()=>ActOneCast.draw(ctx,id,person,t,s)});
   if(s.room==='lobby'&&panorama.complete&&panorama.naturalWidth)actors.push({y:402,draw:()=>ctx.drawImage(panorama,190/1280*panorama.width,193/360*panorama.height,248/1280*panorama.width,67/360*panorama.height,190,193,248,67)});
   if(s.room==='upper')for(const [depth,box] of [[372,[175,175,140,71]],[372,[353,175,137,71]],[379,[981,180,196,73]]])actors.push({y:depth,draw:()=>patchImage(ctx,upper,box,1280)});
@@ -84,6 +90,8 @@ const ActOneScene=(()=>{
    // Foreground furniture occludes the actor, while its footprint is excluded from navigation.
    ctx.save();ctx.beginPath();const outline=[[163,360],[163,337],[186,301],[213,301],[213,283],[222,279],[227,301],[235,301],[236,282],[247,282],[249,301],[255,301],[256,282],[270,282],[272,297],[278,297],[279,285],[285,284],[284,275],[290,269],[298,277],[304,272],[305,285],[313,284],[313,301],[382,301],[382,255],[388,248],[403,248],[410,255],[410,304],[418,304],[418,282],[421,280],[418,270],[428,266],[435,270],[435,283],[443,287],[443,301],[456,301],[480,337],[480,360]];outline.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();ctx.drawImage(restroom,0,0,640,360);ctx.restore();
   }
+  if(photo.job?.kind==='capture') {const x=Math.round(a.x*2/3),y=Math.round(a.y*2/3-72*Movement.scale(s.room,a.y)*.45);r(x+8,y,15,5,'#ca986e');r(x+20,y-11,7,14,'#182733');r(x+22,y-9,3,8,'#a1dce8');}
+  if(photo.flash>0){ctx.fillStyle='rgba(255,247,213,'+(photo.flash/320*.28)+')';ctx.fillRect(camera*2/3,0,640,360);}
   if(s.room==='corridor'){
    // The foreground carts hide feet at their solid, non-walkable edges.
    patchImage(ctx,cleaning,[0,288,140,28],640);patchImage(ctx,cleaning,[537,283,103,33],640);

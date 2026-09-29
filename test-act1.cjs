@@ -3,7 +3,7 @@ const Act=require('./act1-engine'),Movement=require('./movement'),World=require(
 World.install(Movement);
 const roomIds=Object.keys(World.rooms);
 assert.equal(roomIds.length,10);
-assert.deepEqual(Object.keys(Act.items),['brochure','knife','keycard']);
+assert.deepEqual(Object.keys(Act.items),['smartphone','selfie','marble','vipBadge','brochure','knife','keycard']);
 for(const room of roomIds){
  const state=Act.fresh();state.room=room;
  assert.equal(Act.canEnter(state,room),'');
@@ -42,16 +42,16 @@ for(const room of ['lobby','upper','second']){
 for(const [room,point] of [['lobby',{x:490,y:385}],['upper',{x:350,y:350}],['upper',{x:1600,y:350}],['kitchen',{x:500,y:340}],['kitchen',{x:850,y:390}],['restroom',{x:500,y:480}]])assert(!Movement.walkable(room,point),'blocked furniture '+room);
 for(const [room,point] of [['upper',{x:500,y:360}],['upper',{x:1810,y:365}]])assert(Movement.path(room,Movement.create(room),point).length,'accessible alcove');
 const state=Act.fresh();Act.act(state,'Nimm','brochureStand');Act.act(state,'Nimm','brochureStand');
-assert.deepEqual(state.inventory,['brochure']);assert.equal(state.journal.length,1);assert.match(Act.act(state,'Schau an','brochure'),/Black Hole/);
+assert.deepEqual(state.inventory.filter(id=>id!=='smartphone'),['brochure']);assert.equal(state.journal.length,1);assert.match(Act.act(state,'Schau an','brochure'),/Black Hole/);
 for(const target of Object.keys(Act.doorFlags)){assert(!Act.walkExit(Act.fresh(),target));Act.act(state,'Öffne',target);assert(Act.walkExit(state,target));Act.act(state,'Schließe',target);assert(!Act.walkExit(state,target));}
 const legacy={room:'corridor',inventory:['badge','brochure','techKey'],flags:{repaired:true,technicalOpen:true},journal:['old puzzle']};
 const snapshot=JSON.stringify(legacy),migrated=Act.restore(null,legacy,roomIds);
-assert.equal(migrated.room,'corridor');assert.deepEqual(migrated.inventory,['brochure']);assert(!migrated.flags.repaired);assert.equal(JSON.stringify(legacy),snapshot);
+assert.equal(migrated.room,'corridor');assert.deepEqual(migrated.inventory.filter(id=>id!=='smartphone'),['brochure']);assert(!migrated.flags.repaired);assert.equal(JSON.stringify(legacy),snapshot);
 for(const room of ['ending','missing','lodge','vestibule'])assert.equal(Act.restore(null,{...legacy,room},roomIds).room,'lobby');
 assert.equal(Act.restore(null,{...legacy,won:true},roomIds).room,'lobby');
-assert.deepEqual(Act.restore({room:'kitchen',inventory:[],flags:{kitchenOpen:true}},legacy,roomIds).inventory,[]);
+assert.deepEqual(Act.restore({room:'kitchen',inventory:[],flags:{kitchenOpen:true}},legacy,roomIds).inventory,['smartphone']);
 assert.equal(Act.restore({room:'kitchen',inventory:[],flags:{}},null,roomIds).room,'kitchen');
-assert.deepEqual(Act.restore(null,{flags:{brochureTaken:true}},roomIds).inventory,['brochure']);
+assert.deepEqual(Act.restore(null,{flags:{brochureTaken:true}},roomIds).inventory,['brochure','smartphone']);
 assert.notEqual(Act.saveKey,Act.legacyKey);
 console.log('PASS: all routes and reachable interaction points, arrival-only actions, furniture collision, camera, quest items, unlocked exploration and non-destructive save migration.');
 for(const origin of World.floors){
@@ -70,7 +70,7 @@ assert.notDeepEqual(World.entry(World.connection('lobby','stairs')),World.entry(
 for(const room of ['second','teamOffice','ems','lounge']){
  const saved={...Act.fresh(),room,inventory:['brochure'],flags:{brochureTaken:true,officeOpen:true,emsOpen:true,loungeOpen:true}};
  const restored=Act.restore(saved,null,roomIds);
- assert.equal(restored.room,room);assert.deepEqual(restored.inventory,['brochure']);
+ assert.equal(restored.room,room);assert.deepEqual(restored.inventory.filter(id=>id!=='smartphone'),['brochure']);
  assert(restored.flags.officeOpen&&restored.flags.emsOpen&&restored.flags.loungeOpen);
 }
 for(const [room,point] of [['second',{x:420,y:335}],['teamOffice',{x:550,y:320}],['ems',{x:666,y:280}],['lounge',{x:500,y:310}]])assert(!Movement.walkable(room,point),'new furniture '+room);

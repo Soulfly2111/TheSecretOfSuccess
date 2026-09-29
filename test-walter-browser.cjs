@@ -25,7 +25,7 @@ for(const mobile of [false,true]){
  // The player is at the entrance after loading, so returning must wait for the walk.
  await use('keycard','Walters Schlüsselkarte','walter','Gib');assert(await p.evaluate(()=>state.flags.cardReturned));await shot('recommendation');await next();await next();await next();
  await action('walter','Rede mit');assert.match(await p.locator('#story-dialogue p').textContent(),/Empfehlung/);await next();assert(!await p.locator('[data-topic]').isVisible());
- await p.reload();await p.waitForFunction(()=>state.flags.cardReturned);assert.deepEqual(await p.evaluate(()=>state.inventory),['knife']);assert.equal(await p.evaluate(()=>state.journal.filter(x=>x.includes('empfiehlt')).length),1);assert.deepEqual(errors,[]);await c.close();
+ await p.reload();await p.waitForFunction(()=>state.flags.cardReturned);assert.deepEqual(await p.evaluate(()=>state.inventory.filter(id=>id!=='smartphone')),['knife']);assert.equal(await p.evaluate(()=>state.journal.filter(x=>x.includes('empfiehlt')).length),1);assert.deepEqual(errors,[]);await c.close();
 }
 await browser.close();console.log('PASS Walter browser: desktop/touch greeting, speakers, clue on repeat only, radiator/card/drawer states, retrieval, return, recommendation and reloads; no JS errors.');
 })().catch(e=>{console.error(e);process.exit(1);});

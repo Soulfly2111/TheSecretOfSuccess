@@ -5,6 +5,7 @@ const rooms={
  ['entrance','Haupteingang',2,28,11,50,160,454,'up'],
  ['brochureStand','Vitrine mit Firmenbroschüre',3.5,49,4.8,27,174,465,'left'],
  ['reception','Empfang',18,35,4,19,365,439,'up'],
+ ['badgePrinter','Ausweisdrucker',24,50,2.8,8,490,438,'up'],
  ['phone','Haustelefon',27.3,50,3,6,552,435,'up'],
  ['directory','Telefonverzeichnis',15.4,35,2.2,9,320,437,'up'],
  ['walter','Walter',34,48,3.7,28,635,448,'right'],
@@ -34,6 +35,7 @@ const rooms={
  upper:{name:'Über den Empfang hinaus.',label:'1. Etage',sub:'KONZERNZENTRALE · 1. ETAGE',width:1920,entry:'Büros links, Besprechungsraum rechts. Ganz links duftet es nach Kaffee.',objects:[
  ['kitchenDoor','Tür zur Officeküche',1,34,5.5,42,83,418,'up'],
  ['desks','Büros und Schreibtische',14,47,23,22,500,383,'up'],
+ ['graphicsPC','Freier Grafik-PC',29.2,48,4,9,628,385,'up'],
  ['officeStaff','Mitarbeiterin im Büro',23.3,43,4,28,440,388,'right'],
  ['elevator','Aufzug · Etage wählen',44,35,6,38,905,405,'up'],
  ['stairs','Treppe ins Erdgeschoss',55.5,43,4,28,1098,406,'up'],

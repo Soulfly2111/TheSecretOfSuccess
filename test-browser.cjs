@@ -22,7 +22,7 @@ fs.mkdirSync(output,{recursive:true});
  await page.waitForFunction(()=>ActOneScene&&document.querySelector('#actors').width===640);
  await finishIntro(page);await shot('ground');
  await verb('Nimm');await object('brochureStand');await settle();
- assert.equal(await page.locator('#inventory .item').count(),1);
+ assert.equal(await page.locator('#inventory .item').count(),2);
  await verb('Schau an');await page.getByRole('button',{name:'Firmenbroschüre',exact:true}).click();
  assert(await page.locator('.brochure-image').isVisible());await shot('brochure');
  await page.locator('#close-modal').click();
@@ -59,7 +59,7 @@ fs.mkdirSync(output,{recursive:true});
  }
  await map('Officeküche','kitchen');
  await map('Lieferhof','delivery');
- assert.equal(await page.locator('#inventory .item').count(),1);
+ assert.equal(await page.locator('#inventory .item').count(),2);
 
  await map('2. Etage','second');await shot('second-arrival');
  await verb('Schau an');await object('floorGuide');await settle();
@@ -78,7 +78,7 @@ fs.mkdirSync(output,{recursive:true});
  await map('2. Etage','second');
  for(const [label,id,door] of [['Teamleiterbüro','teamOffice','officeDoor'],['EMS-Training','ems','emsDoor'],['Pausenraum','lounge','loungeDoor']]){
   await map(label,id);await shot(id);
-  assert.equal(await page.locator('#inventory .item').count(),1);
+  assert.equal(await page.locator('#inventory .item').count(),2);
   const person={teamOffice:'teamLeader',ems:'trainer',lounge:'breakStaff'}[id];
   await verb('Rede mit');await object(person);await settle();
   assert.match(await page.locator('#story-dialogue strong').innerText(),/TEAMLEITER|TRAINER|MITARBEITERIN/);
@@ -107,16 +107,16 @@ fs.mkdirSync(output,{recursive:true});
   }
  });
  const savedPage=await migrated.newPage();await savedPage.goto(base+'act1.html');
- await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===1);
+ await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===2);
  const saves=await savedPage.evaluate(()=>({legacy:JSON.parse(localStorage.getItem('success-act1-v1')),current:JSON.parse(localStorage.getItem('success-act1-exploration-v1')),prolog:localStorage.getItem('success-prolog-v1')}));
- assert.equal(saves.legacy.room,'ending');assert.equal(saves.current.room,'lobby');assert.deepEqual(saves.current.inventory,['brochure']);assert.equal(saves.prolog,'preserve-prolog');
- await finishIntro(savedPage);await savedPage.reload();await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===1);
+ assert.equal(saves.legacy.room,'ending');assert.equal(saves.current.room,'lobby');assert.deepEqual(saves.current.inventory,['brochure','smartphone']);assert.equal(saves.prolog,'preserve-prolog');
+ await finishIntro(savedPage);await savedPage.reload();await savedPage.waitForFunction(()=>document.querySelector('#inventory')?.children.length===2);
 
  for(const [label,id] of [['2. Etage','second'],['Teamleiterbüro','teamOffice'],['EMS-Training','ems'],['Pausenraum','lounge']]){
   await savedPage.locator('#map').getByRole('button',{name:label,exact:true}).click();
   await savedPage.waitForFunction(id=>state.room===id&&!actor.moving&&!transition,id);
   await savedPage.reload();await savedPage.waitForFunction(id=>state.room===id,id);
-  assert.equal(await savedPage.locator('#inventory .item').count(),1);
+  assert.equal(await savedPage.locator('#inventory .item').count(),2);
  }
  await browser.close();
  console.log('PASS browser: three floors, all elevator directions/cancel, new room doors both ways, conversations, all new room save/reloads, brochure and prolog regressions, no JS errors.');

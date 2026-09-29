@@ -79,3 +79,9 @@ Die Sprechbilder verwenden je Blickrichtung die Skalierung des neutralen Referen
 Der frühere Technikraum ist ein Reinigungsraum mit mittiger Tür. Beim ersten Eintritt ist er fast dunkel; nur Schalter und Ausgang bleiben bedienbar. Benutze/Mach an/Mach aus steuern das gespeicherte Licht. Im Dunkeln bleiben Möbel-Hotspots verborgen. Die interne Raumkennung corridor bleibt für Spielstände erhalten.
 
 Prüfung: test-cleaning.cjs und test-cleaning-browser.cjs (Desktop und emuliertes Touch-Gerät; kein physisches Mobilgerät). Bild und Prompt: assets/ACT1-CLEANING-ART.md.
+
+## Digitales Marmor-Passfoto
+
+Parallel zu Walter: Smartphone auf Protagonist und Broschüre verwenden, Bilder am freien Grafik-PC der 1. Etage übertragen und VIP-Ausweis am Empfang abholen. Der zweite Upload montiert und sendet automatisch. Beide Aufgaben zusammen markieren die Bereitschaft zum Arbeitsbeginn. Smartphone und Fotos sind reine Spielgegenstände; kein Kamerazugriff oder externer Upload. Bestehende Spielstände bekommen das Smartphone automatisch.
+
+Logik: act1-photo.js. Prüfungen: test-photo.cjs, test-photo-browser.cjs. Protagonisten-Hotspot erscheint nur bei ausgewähltem Smartphone; mobile Auswahl meldet diesen Zustand über eine optionale Adapterfunktion. Ausweis, Selfie, PC und Drucker nutzen die vorhandene Canvas-Pixelgrafik und Heldensprites.
