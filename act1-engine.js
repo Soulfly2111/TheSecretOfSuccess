@@ -1,7 +1,7 @@
 (function(root){
 'use strict';
 const items={brochure:'Firmenbroschüre',knife:'Tafelmesser',keycard:'Walters Schlüsselkarte'};
-const questFlags=['introDone','walterAsked','wcClue','cardSeen','drawerOpen','knifeTaken','cardTaken','cardReturned'];
+const questFlags=['cleaningLightOn','introDone','walterAsked','wcClue','cardSeen','drawerOpen','knifeTaken','cardTaken','cardReturned'];
 const saveKey='success-act1-exploration-v1',legacyKey='success-act1-v1';
 const doorFlags={wc:'wcOpen',sideDoor:'sideOpen',techDoor:'technicalOpen',kitchenDoor:'kitchenOpen',officeDoor:'officeOpen',emsDoor:'emsOpen',loungeDoor:'loungeOpen'};
 const fresh=()=>({version:3,room:'lobby',inventory:[],flags:{},journal:[]});
@@ -45,19 +45,24 @@ function dialogue(state,topic){
  return [line('walter',state.inventory.includes('keycard')?'Du siehst aus, als hättest du etwas gefunden.':'Meine Taschen sind leer. Abgesehen von der Verantwortung.')];
 }
 function options(state){return state.flags.walterAsked&&!state.flags.cardReturned?[{id:'lastSeen',text:'Wo hast du die Karte denn zuletzt gesehen?'},{id:'continue',text:'Ich suche weiter'},{id:'bye',text:'Bis später'}]:[];}
-function visible(state,id){if(id==='keycard')return !!state.flags.cardSeen&&!state.flags.cardTaken&&!state.flags.cardReturned;if(id==='knife')return !!state.flags.drawerOpen&&!state.flags.knifeTaken;return true;}
+function visible(state,id){if(state.room==='corridor'&&!state.flags.cleaningLightOn&&!['lightSwitch','lobbyExit'].includes(id))return false;if(id==='keycard')return !!state.flags.cardSeen&&!state.flags.cardTaken&&!state.flags.cardReturned;if(id==='knife')return !!state.flags.drawerOpen&&!state.flags.knifeTaken;return true;}
 const descriptions={
+ lightSwitch:'Ein beleuchteter Lichtschalter. Hier lässt sich wenigstens die Erleuchtung einschalten.',
+ cleaningShelves:'Gegen jeden Fleck ein Mittel. Gegen die Konzernpolitik leider keines.',
+ cleaningCart:'Ein Dienstwagen mit erstaunlich viel Bodenhaftung.',
+ scrubber:'Die Bodenreinigungsmaschine. Sie macht mehr Fläche als der Vorstand.',
+ supplyShelf:'Tücher, Eimer und Vorräte. Eine Abteilung, die tatsächlich aufräumt.',
  brochure:'Black Hole Investments & Property Management. Das Zentrum der finanziellen Schwerkraft. Sehr bescheidene Ziele.',
  brochureStand:'In der Vitrine neben der Eingangstür liegt eine Firmenbroschüre zum Mitnehmen.',
  entrance:'Durch diese Drehtür bin ich angekommen. Ich sehe mich erst einmal im Gebäude um.',
  phone:'Das Haustelefon am Empfang. Heute klingelt es erfreulich selten.',
  directory:'Büros und Besprechungsraum liegen in der 1. Etage.',
- notice:'Erdgeschoss: Empfang, WC, Technikraum und Lieferhof. 1. Etage: Büros, Besprechungsraum und Officeküche. 2. Etage: Teamleiterbüro, Kopierer, EMS-Training und Pausenraum.',
+ notice:'Erdgeschoss: Empfang, WC, Reinigungsraum und Lieferhof. 1. Etage: Büros, Besprechungsraum und Officeküche. 2. Etage: Teamleiterbüro, Kopierer, EMS-Training und Pausenraum.',
  elevator:'Der Aufzug hält im Erdgeschoss, in der 1. Etage und in der 2. Etage. Am Aufzug wähle ich mein Ziel.',
  stairs:'Der beschilderte Abgang verbindet diese Etage mit der darunter. Im Erdgeschoss führt die Treppe nach oben.',
  stairsUp:'Dieser Aufgang führt von der 1. Etage in die 2. Etage.',
  wc:'Der Waschraum liegt hinter dieser Tür.',
- techDoor:'Hier geht es in den Technikraum. Die Tür ist nicht abgeschlossen.',
+ techDoor:'Hier geht es in den Reinigungsraum. Die Tür ist nicht abgeschlossen.',
  sideDoor:'Der Nebeneingang führt auf den Lieferhof.',
  extinguisher:'Ein geprüfter Feuerlöscher. Der bleibt für echte Notfälle hier.',
  cooling:'Die Kühlung summt gleichmäßig. Ein angenehm unaufgeregter Mitarbeiter.',
@@ -117,6 +122,7 @@ const conversations={
  breakStaff:'Mitarbeiterin: „Eine Tasse Kaffee und fünf Minuten Ruhe. Manche nennen das schon Unternehmenskultur.“'
 };
 function act(state,verb,target,item){
+ if(state.room==='corridor'&&!state.inventory.includes(target)&&!visible(state,target))return 'Im Dunkeln kann ich das nicht erkennen. Erst das Licht einschalten.';
  const f=state.flags,has=id=>state.inventory.includes(id),add=id=>{if(!has(id))state.inventory.push(id);};
  if(item==='keycard'&&target==='walter'&&['Gib','Benutze'].includes(verb)&&has('keycard')){
   state.inventory=state.inventory.filter(id=>id!=='keycard');f.cardReturned=true;f.walterAsked=true;
@@ -128,6 +134,7 @@ function act(state,verb,target,item){
   f.cardTaken=true;add('keycard');return 'Mit der flachen Klinge schiebe ich die Karte aus dem Spalt. Da ist sie! Das Tafelmesser behalte ich erst einmal.';
  }
  if(item)return item==='brochure'?'Die Broschüre behalte ich zum Nachlesen.':has(item)?'Das passt hier nicht zusammen.':'Diesen Gegenstand habe ich nicht dabei.';
+ if(target==='lightSwitch'&&['Benutze','Mach an','Mach aus','Drücke'].includes(verb)){f.cleaningLightOn=verb==='Mach an'?true:verb==='Mach aus'?false:!f.cleaningLightOn;return f.cleaningLightOn?'Licht an. Endlich eine übersichtliche Abteilung.':'Licht aus. Der Schalter leuchtet weiter.';}
  if(target==='walter'&&['Rede mit','Benutze'].includes(verb))return dialogue(state,'walter').map(l=>l.text).join(' ');
  if(target==='drawer'){
   if(verb==='Öffne'){f.drawerOpen=true;return f.knifeTaken?'Die Besteckschublade ist offen. Das Tafelmesser habe ich bereits.':'In der Schublade liegt ein stumpfes Tafelmesser.';}
@@ -180,6 +187,7 @@ function walkExit(state,id){
  return !!state.flags[doorFlags[id]];
 }
 function hint(state){
+ if(state.room==='corridor'&&!state.flags.cleaningLightOn)return 'Benutze den leuchtenden Schalter links neben der Tür.';
  if(!state.flags.cardReturned){
   if(state.inventory.includes('keycard'))return 'Gib Walter am Empfang seine Schlüsselkarte zurück.';
   if(!state.flags.walterAsked)return 'Sprich mit Walter am Empfang. Er sucht etwas.';
@@ -188,7 +196,7 @@ function hint(state){
   if(!state.inventory.includes('knife'))return 'Du brauchst etwas Flaches. In der Officeküche gibt es eine Besteckschublade.';
   return 'Benutze das Tafelmesser mit der entdeckten Karte hinter der Heizung.';
  }
- return ({lobby:'Neben dem Eingang gibt es eine Firmenbroschüre. Treppe und Aufzug verbinden die drei Etagen; rechts liegen WC, Technikraum und Hof.',
+ return ({lobby:'Neben dem Eingang gibt es eine Firmenbroschüre. Treppe und Aufzug verbinden die drei Etagen; rechts liegen WC, Reinigungsraum und Hof.',
  upper:'Links liegt die Officeküche. Büros und Besprechungsraum kannst du direkt betreten. Die Treppe führt nach unten ins Erdgeschoss und nach oben in die 2. Etage. Im Aufzug wählst du die Etage.',
  second:'Der Kopierraum ist offen. Büro, EMS-Training und Pausenraum liegen hinter den beschrifteten Türen. Der Treppenabgang führt in die 1. Etage.',
  teamOffice:'Durch die Tür geht es zurück in die 2. Etage. Hier gibt es gerade keine Aufgaben.',

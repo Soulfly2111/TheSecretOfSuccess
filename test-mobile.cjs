@@ -8,12 +8,13 @@ const rail=name=>p.locator('.mobile-rail').getByRole('button',{name,exact:true})
 const panel=name=>p.locator('#mobile-panel').getByRole('button',{name,exact:true});
 const settled=()=>p.waitForFunction(()=>!actor.moving&&(typeof transition==='undefined'||!transition));
 const room=id=>p.waitForFunction(id=>state.room===id&&!actor.moving&&(typeof transition==='undefined'||!transition),id);
-async function map(label,id){await rail('Orte').tap();await panel(label).tap();await room(id);}
+async function map(label,id){await dismiss();await rail('Orte').tap();await panel(label).tap();await room(id);}
 async function target(id){
  const b=p.locator('[data-object="'+id+'"]');const label=await b.getAttribute('aria-label');await b.tap();
  if(await p.locator('#mobile-panel[open]').isVisible()&&await p.locator('#mobile-panel h2').textContent()==='Welches Objekt?')await panel(label).tap();
 }
-async function action(id,v){await rail('Aktionen').tap();await panel(v).tap();await target(id);await settled();}
+async function dismiss(){while(await p.evaluate(()=>SceneDialogue.locked))await p.locator('#story-dialogue button').last().tap();}
+async function action(id,v){await dismiss();await rail('Aktionen').tap();await panel(v).tap();await target(id);await settled();}
 async function item(id,v='Benutze'){await rail('Inventar').tap();await p.locator('#mobile-panel [data-item="'+id+'"]').tap();await panel(v).tap();}
 async function use(itemId,targetId,v='Benutze'){await item(itemId,v);await target(targetId);await settled();}
 async function layout(name){
@@ -30,7 +31,7 @@ await target('cup');assert.equal(await p.locator('#mobile-panel h2').textContent
 const before=await p.locator('#scene').getAttribute('data-actor-x');await p.waitForTimeout(150);assert.equal(await p.locator('#scene').getAttribute('data-actor-x'),before);
 await panel('Nimm').tap();assert.equal(await p.evaluate(()=>state.inventory.includes('cup')),false);await settled();
 await action('manual','Nimm');await item('manual','Schau an');assert(await p.evaluate(()=>state.flags.read));
-assert(await p.locator('.mobile-speech button').isVisible());const firstPage=await p.locator('.mobile-speech p').textContent();await p.locator('.mobile-speech button').tap();assert.notEqual(await p.locator('.mobile-speech p').textContent(),firstPage);
+assert(await p.locator('#story-dialogue button').isVisible());const firstPage=await p.locator('#story-dialogue p').textContent();await p.locator('#story-dialogue button').tap();assert.notEqual(await p.locator('#story-dialogue p').textContent(),firstPage);
 await action('key','Nimm');await action('cupboard','Öffne');
 // The tiny coffee hotspot overlaps the cabinet; choosing the object is mandatory.
 await p.locator('[data-object="grounds"]').tap();assert.equal(await p.locator('#mobile-panel h2').textContent(),'Welches Objekt?');await panel('Kaffeepulver').tap();await panel('Nimm').tap();await settled();assert.equal(await p.locator('[data-object="grounds"]').count(),0);
@@ -48,7 +49,7 @@ await action('brochureStand','Nimm');await item('brochure','Schau an');assert(aw
 await map('1. Etage','upper');await target('stairsUp');await room('second');await target('stairs');await room('upper');
 await target('elevator');await p.locator('.lift-modal').waitFor();assert(await p.locator('[data-floor="upper"]').isDisabled());await p.locator('#close-modal').tap();assert.equal(await p.evaluate(()=>state.room),'upper');
 for(const id of ['lobby','second','upper','second','lobby','upper']){await target('elevator');await p.locator('[data-floor="'+id+'"]').tap();await room(id);}
-await map('Pausenraum','lounge');await action('breakStaff','Rede mit');assert.match(await p.locator('#speech').textContent(),/Mitarbeiterin/);
+await map('Pausenraum','lounge');await action('breakStaff','Rede mit');assert.match(await p.locator('#speech').textContent(),/Tasse Kaffee/);
 await map('2. Etage','second');await action('loungeDoor','Schließe');await action('loungeDoor','Öffne');assert.equal(await p.evaluate(()=>state.room),'second');await target('loungeDoor');await room('lounge');
 await p.reload();await room('lounge');assert.deepEqual(await p.evaluate(()=>state.inventory),['brochure']);
 for(const [w,h] of [[667,375],[844,390],[932,430],[1180,820]]){await p.setViewportSize({width:w,height:h});await layout('act1-'+w);}

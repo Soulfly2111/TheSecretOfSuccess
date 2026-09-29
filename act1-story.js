@@ -1,21 +1,22 @@
 const ActOneStory=(()=>{
- let api,box,speaker,text,buttons,conversation=null,intro=null;
- const names={uncle:'ONKEL',hero:'DU',walter:'WALTER'};
+ let api,conversation=null,intro=null;
  function locked(){return !!intro||!!conversation;}
- function hide(){conversation=null;box.hidden=true;document.body.classList.remove('story-speaking');ActOneCast.setSpeaker(null);}
+ function hide(){conversation=null;SceneDialogue.hide();ActOneCast.setSpeaker(null);}
  function showLine(){
-  const line=conversation.lines[conversation.index];speaker.textContent=names[line.speaker]||line.speaker;text.textContent=line.text;
-  api.say(line.text);ActOneCast.setSpeaker(line.speaker);box.hidden=false;document.body.classList.add('story-speaking');buttons.replaceChildren();
-  const next=document.createElement('button');next.textContent='Weiter';next.onclick=()=>{conversation.index++;if(conversation.index<conversation.lines.length)showLine();else{const done=conversation.done;hide();done?.();}};buttons.append(next);next.focus({preventScroll:true});
+  const line=conversation.lines[conversation.index];ActOneCast.setSpeaker(line.speaker);
+  SceneDialogue.show(line.text,{speaker:line.speaker,blocking:true,onDone:()=>{
+   conversation.index++;if(conversation.index<conversation.lines.length)showLine();else{const done=conversation.done;hide();done?.();}
+  }});
  }
  function talk(lines,done){conversation={lines,index:0,done};showLine();}
  function options(){
   const choices=ActOne.options(api.state());if(!choices.length)return;
-  conversation={choices:true};speaker.textContent='WALTER';text.textContent='Was möchtest du Walter fragen?';ActOneCast.setSpeaker(null);box.hidden=false;document.body.classList.add('story-speaking');buttons.replaceChildren();
-  for(const choice of choices){const b=document.createElement('button');b.textContent=choice.text;b.dataset.topic=choice.id;b.onclick=()=>{
-   hide();if(choice.id==='lastSeen'){const lines=ActOne.dialogue(api.state(),'lastSeen');api.save();talk(lines,options);}
-   else{api.say(choice.id==='continue'?'Ich suche weiter.':'Bis später, Walter.');}
-  };buttons.append(b);}
+  conversation={choices:true};ActOneCast.setSpeaker(null);
+  SceneDialogue.choices(choices,choice=>{
+   talk([{speaker:'hero',text:choice.text}],()=>{
+    if(choice.id==='lastSeen'){const lines=ActOne.dialogue(api.state(),'lastSeen');api.save();talk(lines,options);}
+   });
+  });
  }
  function walter(){const repeat=api.state().flags.walterAsked;const lines=ActOne.dialogue(api.state(),'walter');api.save();talk(lines,repeat?options:null);}
  function reset(){hide();intro=null;ActOneCast.init();}
@@ -37,7 +38,7 @@ const ActOneStory=(()=>{
    intro.elapsed+=dt;if(intro.elapsed>=1000){s.flags.introDone=true;intro=null;ActOneCast.actors.uncle=null;api.save();api.render();api.say('Mein Onkel ist unterwegs nach oben. Ich sollte mit Walter sprechen.');}
   }
  }
- function init(adapter){api=adapter;ActOneCast.init();box=document.createElement('section');box.id='story-dialogue';box.hidden=true;box.setAttribute('aria-label','Gespräch');speaker=document.createElement('strong');text=document.createElement('p');text.setAttribute('aria-live','polite');buttons=document.createElement('div');box.append(speaker,text,buttons);document.body.append(box);
+ function init(adapter){api=adapter;ActOneCast.init();
   document.addEventListener('click',e=>{if(locked()&&!e.target.closest('#story-dialogue')){e.preventDefault();e.stopImmediatePropagation();}},true);
   document.addEventListener('keydown',e=>{if(locked()&&!e.target.closest('#story-dialogue')){e.preventDefault();e.stopImmediatePropagation();}},true);
  }

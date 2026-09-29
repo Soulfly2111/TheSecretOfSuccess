@@ -6,11 +6,11 @@ Beim Start steht die Auswahl zwischen Prolog und Akt 1 zur Verfügung. Beide Kap
 
 ## Akt 1: Herzlich willkommen. Personaleingang hinten.
 
-Zehn verbundene Räume: Erdgeschoss, 1. Etage, Officeküche, Lieferhof, Technikraum, WC, 2. Etage, Teamleiterbüro, EMS-Training und Pausenraum. Die drei Etagen sind seitlich scrollende Panoramen (1920 × 540 Weltpunkte; Sichtfenster 960 × 540). Die 1. Etage enthält links die Küchentür, offene Büros, Aufzug und Treppenhaus sowie rechts den begehbaren Besprechungsraum. Das WC-Schild oben verweist auf das WC im Erdgeschoss.
+Zehn verbundene Räume: Erdgeschoss, 1. Etage, Officeküche, Lieferhof, Reinigungsraum, WC, 2. Etage, Teamleiterbüro, EMS-Training und Pausenraum. Die drei Etagen sind seitlich scrollende Panoramen (1920 × 540 Weltpunkte; Sichtfenster 960 × 540). Die 1. Etage enthält links die Küchentür, offene Büros, Aufzug und Treppenhaus sowie rechts den begehbaren Besprechungsraum. Das WC-Schild oben verweist auf das WC im Erdgeschoss.
 
 Akt 1 beginnt mit einer animierten Begrüßung durch den Onkel. Er verweist den Protagonisten an Walter und geht zum Aufzug. Das erste Rätsel ist Walters verlorene Schlüsselkarte: Walter um Hilfe bitten hören, bei erneutem Gespräch nach dem letzten Fundort fragen, die Heizung unter dem WC-Fenster untersuchen, in der Officeküche die Besteckschublade öffnen und das Tafelmesser nehmen, damit die Karte bergen und Walter zurückgeben. Die Karte bleibt vor der Untersuchung vollständig verborgen. Messer und Karte dürfen auch vor Walters Bitte gefunden werden. Die Rückgabe bringt Walters Empfehlung beim Teamleiter; weitere Rätsel und der Büroplatz als Kapitelabschluss folgen später. Alle Räume bleiben erreichbar und die Firmenbroschüre bleibt lesbar.
 
-Onkel und Walter haben vier Blickrichtungen sowie Lauf-, Blink-, Sprech- und Ruhephasen. Walter läuft nervös auf und ab und prüft seine Taschen; nach der Rückgabe steht er ruhig. Dialoge verwenden „Weiter“ und wiederholbare Gesprächsoptionen. Grafikdateien und vollständige Prompts: `assets/ACT1-WALTER-ART.md`.
+Onkel und Walter haben vier Blickrichtungen sowie Lauf-, Blink-, Sprech- und Ruhephasen. Walter läuft nervös auf und ab und prüft seine Taschen; nach der Rückgabe steht er ruhig. Alle Spieltexte erscheinen innerhalb der Szene als blaue, dunkel umrandete Pixelschrift. Klick auf den Text, „Weiter“ oder Enter schaltet Gespräche weiter. Antworten stehen untereinander, werden bei Mausberührung oder Tastaturfokus hervorgehoben und lassen sich anklicken oder antippen. Gewählte Antworten spricht zunächst der Protagonist. Lange Texte werden auf Seiten verteilt; einfache Kommentare verschwinden beim Beginn einer neuen Aktion. Prolog und Akt 1 verwenden dieselbe Anzeige auf Desktop und Mobilgeräten. Der Onkel nutzt einen streckenabhängigen Laufzyklus mit neutralen Zwischenphasen und stabilisierten Körperankern. Grafikdateien und vollständige Prompts: `assets/ACT1-WALTER-ART.md`.
 
 Der bestehende Erkundungsspielstand wird als Version 3 erweitert: Begrüßung, Bitte, WC-Hinweis, Kartenentdeckung, Schubladenöffnung, Aufnahme und Rückgabe sind persistent. Ältere Erkundungsspielstände behalten ihren Raum, ihre Türen und die Broschüre; die Begrüßung beginnt bei der nächsten freien Rückkehr ins Erdgeschoss. Unterbrochene Begrüßungen starten erneut, abgeschlossene nicht. Legacy-Rätselstände und Prolog-Speicher bleiben getrennt.
 
@@ -63,3 +63,19 @@ Version 3 zeigt feinere Pixelgrafik auf einem 640×360-Raster. Handbuch, Autosch
 Version 4 dreht das Auto in eine Front-Dreiviertelansicht: Front und Motorraum zeigen zum Spieler, das Heck nach hinten rechts. Geschlossene und geöffnete Motorhaube verwenden deckungsgleiche Fahrzeugansichten. Der Interaktionspunkt liegt vor der linken Fahrzeugecke; Laufhindernis und anklickbarer Bereich sind entsprechend angepasst.
 
 Aktuelle Grafikdateien: `assets/locations-v3.png`, `assets/locations-states-v3.png`, `assets/car-front-closed-v4.png`, `assets/car-front-open-v4.png`, `assets/hero-walk.png`, `assets/mechanic-idle.png`. Herkunft und Prompts stehen in `assets/ART-DIRECTION.md`.
+
+`node test-dialogue-browser.cjs` prüft die gemeinsame Dialoganzeige, Sprecher, Hover, Tastatur, Touch, Seitenwechsel, fehlende Klickweitergabe und die Position innerhalb der Szene. Die Bewegungstests prüfen zusätzlich gleichmäßige Bewegung über kurze Wegsegmente bei verschiedenen Bildraten.
+
+## Figurenfarben und Onkel-Sprechanimation
+
+`Speakers` ordnet stabile Figurenkennungen den Dialogfarben zu. Protagonist: blau; Onkel: rot; Walter: gelb. Auch gleich benannte Mitarbeiter haben eigene Farben. Empfang und Gegensprechanlage teilen eine Identität. Antwortoptionen bleiben blau mit heller Fokus-/Hover-Markierung.
+
+Der Onkel besitzt einen separaten transparenten Sprechbogen mit zwölf Bildern je Richtung (48 insgesamt). Die JSON-Metadaten enthalten Zuschnitte und feste Fußanker. Zwei unterschiedlich aufgebaute Sprechfolgen verwenden 90–180 ms Haltezeiten, Mundformen und kleine Gesten. Die Zeitleiste pausiert bei Spielpause und ausgeblendetem Browser-Tab. Es gibt keine lautgenaue Lippensynchronisation. `node test-speakers-browser.cjs` prüft Farben, Identitäten, zwölf Sprechphasen, Pause, Sprecherwechsel und Abgang auf Desktop und Touch.
+
+Die Sprechbilder verwenden je Blickrichtung die Skalierung des neutralen Referenzbildes. Unterschiedliche Zuschnitthöhen skalieren die Figur nicht mehr um; Fußanker werden exakt auf dieselbe Position abgebildet. `node test-uncle-scale.cjs` prüft alle 48 Bilder auf konstante Skalierung und Ankerposition sowie den Größenübergang zur neutralen Laufpose und erstellt eine Vergleichsansicht.
+
+## Reinigungsraum
+
+Der frühere Technikraum ist ein Reinigungsraum mit mittiger Tür. Beim ersten Eintritt ist er fast dunkel; nur Schalter und Ausgang bleiben bedienbar. Benutze/Mach an/Mach aus steuern das gespeicherte Licht. Im Dunkeln bleiben Möbel-Hotspots verborgen. Die interne Raumkennung corridor bleibt für Spielstände erhalten.
+
+Prüfung: test-cleaning.cjs und test-cleaning-browser.cjs (Desktop und emuliertes Touch-Gerät; kein physisches Mobilgerät). Bild und Prompt: assets/ACT1-CLEANING-ART.md.

@@ -18,7 +18,24 @@ function scale(room,y){let m=maps[room],t=Math.max(0,Math.min(1,(y-m.minY)/(m.ma
 function create(room){let m=maps[room];return {x:m.spawn[0],y:m.spawn[1],direction:'down',route:[],moving:false,phase:0,pending:null,gesture:0};}
 function cancel(actor){actor.route=[];actor.pending=null;actor.moving=false;actor.gesture=0;}
 function move(actor,room,point,pending=null){actor.route=path(room,actor,point);actor.pending=actor.route.length?pending:null;actor.moving=actor.route.length>0;return actor.moving;}
-function tick(actor,dt,room){dt=Math.min(dt,50);actor.gesture=Math.max(0,actor.gesture-dt);if(!actor.route.length){actor.moving=false;return null;}let goal=actor.route[0],dx=goal.x-actor.x,dy=goal.y-actor.y,d=Math.hypot(dx,dy),step=dt*.205*(scale(room,actor.y)/1.8);actor.direction=Math.abs(dx)>Math.abs(dy)*1.25?(dx>0?'right':'left'):(dy>0?'down':'up');actor.phase+=dt;if(d<=step){actor.x=goal.x;actor.y=goal.y;actor.route.shift();if(!actor.route.length){actor.moving=false;let action=actor.pending;actor.pending=null;if(action?.facing)actor.direction=action.facing;return action;}}else{actor.x+=dx/d*step;actor.y+=dy/d*step;}return null;}
+function tick(actor,dt,room){
+ dt=Math.max(0,Math.min(dt,50));actor.gesture=Math.max(0,actor.gesture-dt);
+ if(!actor.route.length){actor.moving=false;return null;}
+ let remaining=dt;
+ while(actor.route.length){
+  const goal=actor.route[0],dx=goal.x-actor.x,dy=goal.y-actor.y,d=Math.hypot(dx,dy),speed=.205*(scale(room,actor.y)/1.8);
+  if(d>0.001){
+   if(actor.segment!==goal){actor.segment=goal;actor.direction=Math.abs(dx)>Math.abs(dy)*1.25?(dx>0?'right':'left'):(dy>0?'down':'up');}
+   const distance=Math.min(d,remaining*speed);actor.x+=dx/d*distance;actor.y+=dy/d*distance;
+   actor.phase+=distance/speed;actor.distance=(actor.distance||0)+distance;remaining-=distance/speed;
+   if(distance<d)return null;
+  }
+  actor.x=goal.x;actor.y=goal.y;actor.route.shift();
+  if(!actor.route.length){actor.moving=false;actor.segment=null;const action=actor.pending;actor.pending=null;if(action?.facing)actor.direction=action.facing;return action;}
+  if(remaining<=0)return null;
+ }
+ return null;
+}
 const api={maps,walkable,path,clear,scale,create,cancel,move,tick};if(typeof module!=='undefined')module.exports=api;else root.Movement=api;
 })(typeof window!=='undefined'?window:globalThis);
 

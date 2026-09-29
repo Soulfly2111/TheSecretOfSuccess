@@ -15,7 +15,8 @@ fs.mkdirSync(output,{recursive:true});
  const verb=label=>page.locator('#verbs').getByRole('button',{name:label,exact:true}).click();
  const object=id=>page.locator('[data-object="'+id+'"]').click();
  const shot=name=>page.screenshot({path:output+'/'+name+'.png',fullPage:true});
- const map=async(label,id)=>{await page.locator('#map').getByRole('button',{name:label,exact:true}).click();await room(id);};
+ const dismiss=async()=>{while(await page.evaluate(()=>SceneDialogue.locked))await page.locator('#story-dialogue button').last().click();};
+ const map=async(label,id)=>{await dismiss();await page.locator('#map').getByRole('button',{name:label,exact:true}).click();await room(id);};
  await page.goto(base+'act1.html?test=explore');
  await page.waitForFunction(()=>document.querySelectorAll('#hotspots button').length>5);
  await page.waitForFunction(()=>ActOneScene&&document.querySelector('#actors').width===640);
@@ -36,10 +37,10 @@ fs.mkdirSync(output,{recursive:true});
  await object('kitchenDoor');await room('kitchen');
  await map('1. Etage','upper');
  await verb('Rede mit');await object('officeStaff');await settle();await shot('office');
- assert.match(await page.locator('#speech').innerText(),/Mitarbeiterin/);
+ assert.equal(await page.locator('#story-dialogue strong').innerText(),'MITARBEITERIN');await dismiss();
  await page.locator('#pan-right').click();await settle();await shot('meeting');
  await verb('Rede mit');await object('meetingStaff');await settle();
- assert.match(await page.locator('#speech').innerText(),/Besprechung/);
+ assert.match(await page.locator('#speech').innerText(),/Besprechung/);await dismiss();
  await page.keyboard.down('ArrowLeft');
  await page.waitForFunction(()=>actor.x<1250);
  await page.keyboard.up('ArrowLeft');await settle();
@@ -51,9 +52,9 @@ fs.mkdirSync(output,{recursive:true});
  assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-905)<1);
  await object('stairs');await room('lobby');
  assert(Math.abs(Number(await page.locator('#scene').getAttribute('data-actor-x'))-1085)<1);
- for(const [label,id] of [['WC','restroom'],['Technikraum','corridor'],['Lieferhof','delivery']]){
+ for(const [label,id] of [['WC','restroom'],['Reinigungsraum','corridor'],['Lieferhof','delivery']]){
   await map(label,id);await shot(id);
-  if(id==='corridor'){await verb('Benutze');await object('freight');await settle();assert.equal(await page.locator('#scene').getAttribute('data-room'),'corridor');assert(!await page.locator('#modal').isVisible());}
+  if(id==='corridor'){await verb('Benutze');await object('lightSwitch');await settle();assert.equal(await page.locator('#scene').getAttribute('data-room'),'corridor');assert(!await page.locator('#modal').isVisible());}
   await map('Erdgeschoss','lobby');
  }
  await map('Officeküche','kitchen');
@@ -80,7 +81,7 @@ fs.mkdirSync(output,{recursive:true});
   assert.equal(await page.locator('#inventory .item').count(),1);
   const person={teamOffice:'teamLeader',ems:'trainer',lounge:'breakStaff'}[id];
   await verb('Rede mit');await object(person);await settle();
-  assert.match(await page.locator('#speech').innerText(),/Teamleiter:|Trainer:|Mitarbeiterin:/);
+  assert.match(await page.locator('#story-dialogue strong').innerText(),/TEAMLEITER|TRAINER|MITARBEITERIN/);
   await map('2. Etage','second');
   await verb('Schließe');await object(door);await settle();await shot(id+'-closed');
   await verb('Öffne');await object(door);await settle();await shot(id+'-open');

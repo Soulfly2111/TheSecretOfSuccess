@@ -1,8 +1,8 @@
 (function(root){
 'use strict';
 const key='success-interface-v1';
-let api,active=false,preference='auto',explicit=null,sourceItem=null,sourceVerb='Benutze',room='',pages=[],page=0,portraitDismissed=false;
-let rail,panel,content,title,closeButton,speech,text,next,status,cancel,rotate,toggle;
+let api,active=false,preference='auto',explicit=null,sourceItem=null,sourceVerb='Benutze',room='',portraitDismissed=false;
+let rail,panel,content,title,closeButton,status,cancel,rotate,toggle;
 const el=(tag,cls,label)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(label)n.textContent=label;return n;};
 const button=(label,fn,parent)=>{const b=el('button','',label);b.type='button';b.onclick=fn;parent.append(b);return b;};
 function close(){if(panel.open)panel.close();}
@@ -52,7 +52,7 @@ function layout(){
  active=preference==='mobile'||(preference==='auto'&&touch&&innerWidth>innerHeight);
  document.body.classList.toggle('mobile-game',active);
  toggle.textContent=active?'Klassische Ansicht':'Mobile Ansicht';
- rail.hidden=!active;speech.hidden=!active;toggle.hidden=active;
+ rail.hidden=!active;toggle.hidden=active;
  rotate.hidden=!touch||innerWidth>innerHeight||portraitDismissed;
  if(!active)close();
  const viewport=root.visualViewport,w=viewport?.width||innerWidth,h=viewport?.height||innerHeight;
@@ -61,27 +61,19 @@ function layout(){
  // The scene retains its world coordinate system at every orientation and size.
  const area=document.querySelector('.scene-wrap').getBoundingClientRect();
  document.documentElement.style.setProperty('--mobile-scene-width',Math.max(100,Math.min(area.width-16,(area.height-16)*16/9))+'px');
- if(pages.length)showSpeech();
 }
-function speak(value){
- if(!text)return;
- const words=String(value).split(/\s+/);pages=[];let part='';
- for(const word of words){if(part.length+word.length>115){pages.push(part);part='';}part+=(part?' ':'')+word;}if(part)pages.push(part);
- page=0;showSpeech();
-}
-function showSpeech(){text.textContent=pages[page]||'';next.hidden=pages.length<2;next.textContent=page<pages.length-1?'Weiter ('+(page+1)+'/'+pages.length+')':'Schließen';}
+function speak(value){SceneDialogue.show(value);}
 function init(adapter){
  api=adapter;room=api.room();try{const saved=localStorage.getItem(key);if(['auto','mobile','classic'].includes(saved))preference=saved;}catch{}
  rail=el('nav','mobile-rail');rail.setAttribute('aria-label','Mobile Spielsteuerung');
  for(const [label,fn] of [['Aktionen',()=>allActions()],['Inventar',inventory],['Orte',()=>{open('Orte');for(const r of api.rooms())button(r.label,()=>{close();reset();api.travel(r.id);},content);}],['Hotspots',()=>{const b=document.getElementById('reveal');b.click();rail.querySelector('[data-hotspots]').setAttribute('aria-pressed',b.getAttribute('aria-pressed'));}],['Menü',menu]]){const b=button(label,fn,rail);if(label==='Hotspots')b.dataset.hotspots='true';}
  panel=el('dialog','mobile-panel');panel.id='mobile-panel';title=el('h2');title.id='mobile-panel-title';panel.setAttribute('aria-labelledby',title.id);content=el('div','mobile-panel-content');closeButton=el('button','mobile-close','Zurück');closeButton.onclick=close;panel.append(title,content,closeButton);
- speech=el('section','mobile-speech');text=el('p');text.setAttribute('aria-live','polite');next=el('button','','Weiter');next.onclick=()=>{if(page<pages.length-1){page++;showSpeech();}else{text.textContent='';next.hidden=true;}};speech.append(text,next);
  const selection=el('div','mobile-selection');status=el('span');cancel=el('button','','Abbrechen');cancel.hidden=true;cancel.onclick=()=>{reset();api.cancel();};selection.append(status,cancel);
  rotate=el('aside','mobile-rotate');rotate.append(el('span','','Für mehr Platz drehe dein Gerät ins Querformat.'));button('Schließen',()=>{portraitDismissed=true;rotate.hidden=true;},rotate);
  toggle=el('button','mobile-toggle','Mobile Ansicht');toggle.onclick=()=>setPreference(active?'classic':'mobile');document.querySelector('.tools').append(toggle);
- document.body.append(rail,panel,speech,selection,rotate);
+ document.body.append(rail,panel,selection,rotate);
  document.getElementById('scene').addEventListener('click',e=>{
-  if(!active)return;
+  if(!active||e.target.closest('#story-dialogue'))return;
   if(api.busy()){e.stopImmediatePropagation();return;}
   if(e.target.closest('.pan-edge')){reset();return;}
   if(e.target.closest('button:not(.hotspot)'))return;
@@ -99,7 +91,7 @@ function init(adapter){
  document.getElementById('modal').addEventListener('close',()=>{if(active)reset();});
  root.addEventListener('resize',layout);root.visualViewport?.addEventListener('resize',layout);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&active){close();reset();}});
- layout();speak(document.getElementById('speech').textContent);
+ layout();
 }
 root.MobileUI={init,speak,blocking:()=>!!panel?.open};
 })(window);

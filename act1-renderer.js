@@ -1,5 +1,6 @@
 'use strict';
 const ActOneScene=(()=>{
+ const cleaning=new Image();cleaning.src='assets/act1-cleaning-room-v1.png';
  const upper=new Image(),upperOpen=new Image(),kitchen=new Image();upper.src='assets/act1-first-floor-v1.png';upperOpen.src='assets/act1-first-floor-open-v1.png';kitchen.src='assets/act1-office-kitchen-v1.png';
  const upperStairs=new Image();upperStairs.src='assets/act1-first-floor-stairs-v2.png';
  const second=new Image(),secondOpen=new Image(),teamOffice=new Image(),ems=new Image(),lounge=new Image();
@@ -32,6 +33,7 @@ const ActOneScene=(()=>{
  function patchImage(ctx,image,box,width){if(!image.complete||!image.naturalWidth)return;const [left,top,span,height]=box;ctx.drawImage(image,left/width*image.width,top/360*image.height,span/width*image.width,height/360*image.height,left,top,span,height);}
  function render(ctx,s,a,t,camera=0,liftVisual=null){ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,640,360);const tile=ActOneWorld.rooms[s.room].tile;ctx.save();ctx.translate(-Math.round(camera*2/3),0);
   if(s.room==='lobby'){if(panorama.complete&&panorama.naturalWidth)ctx.drawImage(panorama,0,0,1280,360);}
+  else if(s.room==='corridor'){if(cleaning.complete&&cleaning.naturalWidth)ctx.drawImage(cleaning,0,0,640,360);}
   else if(s.room==='restroom'){if(restroom.complete&&restroom.naturalWidth)ctx.drawImage(restroom,0,0,640,360);}
   else if(s.room==='upper'){if(upper.complete&&upper.naturalWidth)ctx.drawImage(upper,0,0,1280,360);}
   else if(s.room==='kitchen'){if(kitchen.complete&&kitchen.naturalWidth)ctx.drawImage(kitchen,0,0,640,360);}
@@ -46,8 +48,9 @@ const ActOneScene=(()=>{
    if(s.flags.wcOpen&&wcDoor.complete&&wcDoor.naturalWidth)ctx.drawImage(wcDoor,829/1280*wcDoor.width,119/360*wcDoor.height,83/1280*wcDoor.width,133/360*wcDoor.height,829,119,83,133);
    if(s.flags.technicalOpen)patch(988,119,89,133);
    if(s.flags.sideOpen)patch(1182,113,75,170);
+   r(983,83,101,27,'#39271e');ctx.fillStyle='#ead9ab';ctx.font='9px monospace';ctx.textAlign='center';ctx.fillText('REINIGUNGS-',1033,94);ctx.fillText('RAUM',1033,105);ctx.textAlign='start';
   }
-  if(s.room==='corridor'){r(364,76,13,6,'#7bd49b');}
+
   if(s.room==='upper'){
    patchImage(ctx,upperStairs,[708,56,138,203],1280);
    r(858,143,40,28,'#bc9d58');ctx.fillStyle='#252923';ctx.font='7px monospace';ctx.fillText('WC: EG',862,154);ctx.fillText('↓',875,164);
@@ -80,6 +83,11 @@ const ActOneScene=(()=>{
   actors.push({y:a.y,draw:()=>{PixelScene.drawActor(ctx,a,s.room,t);if(a.gesture>0&&s.room==='restroom'){r(Math.round(a.x*2/3+12),Math.round(a.y*2/3-70),12,4,'#d39b70');}}});actors.sort((x,y)=>x.y-y.y).forEach(x=>x.draw());if(s.room==='restroom'&&restroom.complete&&restroom.naturalWidth){
    // Foreground furniture occludes the actor, while its footprint is excluded from navigation.
    ctx.save();ctx.beginPath();const outline=[[163,360],[163,337],[186,301],[213,301],[213,283],[222,279],[227,301],[235,301],[236,282],[247,282],[249,301],[255,301],[256,282],[270,282],[272,297],[278,297],[279,285],[285,284],[284,275],[290,269],[298,277],[304,272],[305,285],[313,284],[313,301],[382,301],[382,255],[388,248],[403,248],[410,255],[410,304],[418,304],[418,282],[421,280],[418,270],[428,266],[435,270],[435,283],[443,287],[443,301],[456,301],[480,337],[480,360]];outline.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();ctx.drawImage(restroom,0,0,640,360);ctx.restore();
+  }
+  if(s.room==='corridor'){
+   // The foreground carts hide feet at their solid, non-walkable edges.
+   patchImage(ctx,cleaning,[0,288,140,28],640);patchImage(ctx,cleaning,[537,283,103,33],640);
+   if(!s.flags.cleaningLightOn){r(0,0,640,360,'rgba(0,0,0,0.985)');r(253,151,12,21,'#514621');r(255,153,8,17,'#a09342');r(257,155,4,12,'#e3ef8e');r(258,157,2,3,'#faffd4');}
   }ctx.restore();
  }
  return {render};

@@ -7,7 +7,7 @@ try{const saved=scratch?null:JSON.parse(localStorage.getItem('success-prolog-v1'
 let actor=Movement.create(state.room),endTimer=null;
 const verbs=['Öffne','Schließe','Drücke','Ziehe','Gehe zu','Nimm','Rede mit','Gib','Benutze','Schau an','Mach an','Mach aus'];
 function save(){if(scratch)return;try{localStorage.setItem('success-prolog-v1',JSON.stringify(state));}catch{}}
-function say(t){$('speech').textContent=t;window.MobileUI?.speak(t);}
+function say(t){SceneDialogue.show(t,{blocking:/^(?!HANDBUCH:)[^:]{1,35}:\s*„/.test(t)});}
 function ping(){if(!sound)return;audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();let o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.setValueAtTime(330,audio.currentTime);o.frequency.exponentialRampToValueAtTime(440,audio.currentTime+.08);g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.13);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.14);}
 function sentence(){let item=selected?A.items[selected]:'';$('sentence').textContent=selected?`${verb==='Gib'?'Gib':'Benutze'} ${item} ${verb==='Gib'?'an':'mit'} ${hover||'…'}`:`${verb} ${hover||'…'}`;}
 function selectVerb(v){Movement.cancel(actor);verb=v;selected=null;renderVerbs();renderInventory();sentence();}
@@ -75,7 +75,7 @@ const ctx=$('actors').getContext('2d');
 $('actors').width=640;$('actors').height=360;
 function frame(t){
  let dt=Math.min(t-lastTime,50);lastTime=t;
- if(!$('modal').open&&!window.MobileUI?.blocking()){let arrived=Movement.tick(actor,dt,state.room);if(arrived)completeAction(arrived);}
+ if(!$('modal').open&&!window.MobileUI?.blocking()&&!SceneDialogue.locked){let arrived=Movement.tick(actor,dt,state.room);if(arrived)completeAction(arrived);}
  PixelScene.render(ctx,state,actor,t);
  // Visible DOM diagnostics also support deterministic movement regression tests.
  $('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);

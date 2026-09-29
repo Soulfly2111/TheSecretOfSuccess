@@ -12,12 +12,12 @@ const rooms={
  ['stairs','Treppe zur 1. Etage',52,12,10,58,1085,429,'up'],
  ['wc','WC',64.5,33,7,37,1303,429,'up'],
  ['notice','Raumzuordnung und Aushang',73,30,3,13,1410,433,'up'],
- ['techDoor','Tür zum Technikraum',77.5,33,7,37,1550,434,'up'],
+ ['techDoor','Tür zum Reinigungsraum',77.5,33,7,37,1550,434,'up'],
  ['extinguisher','Feuerlöscher',85.5,34,4.5,33,1670,431,'up'],
  ['sideDoor','Nebeneingang zum Hof',92,31,6.5,47,1810,461,'up']
  ]},
  delivery:{name:'Bitte Zufahrt freihalten.',label:'Lieferhof',sub:'WARENANNAHME · TECHNIKZUFAHRT',tile:2,entry:'Eine Lieferung steht exakt auf der schraffierten Sperrfläche. Die Markierung war offenbar eine Empfehlung.',objects:[['technician','Technikerin',73,43,12,43,650,484,'right'],['driver','Lieferfahrer',25,44,12,42,260,487,'right'],['deliveryNote','Vollständiger Lieferschein',10,50,11,11,173,487,'up'],['bust','Büste auf Palette',35,18,28,66,439,490,'right'],['mats','Schutzmatten',19,65,9,8,250,490,'up'],['intercom','Gegensprechanlage',79,32,7,18,750,485,'up'],['lobbyExit','Nebeneingang ins Erdgeschoss',85,17,12,56,865,477,'up']]},
- corridor:{name:'Einen kühlen Kopf bewahren.',label:'Technikraum',sub:'ANLAGE K-17 · VORSTANDSKÜHLUNG',tile:4,entry:'Rohre statt Marmor. Hier wird dafür gesorgt, dass oben niemand ins Schwitzen kommt.',objects:[['technician','Technikerin',63,43,12,42,535,484,'right'],['cooling','Kühlanlage K-17',28,30,20,41,354,485,'up'],['freight','Lastenaufzug',83,23,14,49,847,483,'up'],['lobbyExit','Zurück ins Erdgeschoss',1,28,12,53,112,482,'left']]},
+ corridor:{name:'Saubere Arbeit.',label:'Reinigungsraum',sub:'ERDGESCHOSS · REINIGUNGSRAUM',entry:'Dunkel. Nur der Lichtschalter neben der Tür leuchtet.',objects:[['lightSwitch','Lichtschalter',39,41,4,9,402,421,'up'],['cleaningShelves','Reinigungsmittelregale',22,19,17,59,392,452,'left'],['cleaningCart','Putzwagen',4,49,23,43,315,487,'left'],['scrubber','Bodenreinigungsmaschine',72,53,16,32,665,469,'right'],['supplyShelf','Vorratsregal',61,19,17,59,582,438,'right'],['lobbyExit','Tür ins Erdgeschoss',44,26,14,51,480,425,'up']]},
  restroom:{name:'Ein stilles Örtchen. Große Ansprüche.',label:'WC',sub:'ERDGESCHOSS · WASCHRAUM',entry:'Marmor, Messing und ein Kronleuchter. Selbst die Seife hat hier vermutlich eine Führungsposition.',objects:[
  ['lobbyExit','Tür ins Erdgeschoss',3,7,15,65,145,401,'left'],
  ['washbasin','Waschbecken',51,39,13,12,535,370,'up'],
@@ -139,7 +139,7 @@ const entries={
  upper:{stairs:[1098,421,'down'],stairsUp:[1176,421,'down'],elevator:[905,421,'down'],kitchen:[100,437,'right']},
  second:{stairs:[1228,428,'down'],elevator:[905,421,'down'],office:[100,437,'right'],ems:[1534,424,'down'],lounge:[1775,424,'down']},
  teamOffice:{door:[143,405,'right']},ems:{door:[132,389,'right']},lounge:{door:[127,398,'right']},
- kitchen:{door:[147,426,'right']},restroom:{door:[145,401,'right']},corridor:{door:[125,491,'right']},delivery:{door:[865,491,'left']}
+ kitchen:{door:[147,426,'right']},restroom:{door:[145,401,'right']},corridor:{door:[480,425,'down']},delivery:{door:[865,491,'left']}
 };
 function cameraX(room,x){return Math.round(Math.max(0,Math.min((rooms[room].width||960)-960,x-480)));}
 function install(movement){for(const [id,room] of Object.entries(rooms)){
@@ -171,6 +171,7 @@ function install(movement){for(const [id,room] of Object.entries(rooms)){
   spawn:[127,398],minY:300,maxY:510,minScale:2.8,maxScale:3.45
  });
  if(id==='kitchen')Object.assign(geometry,{floor:[[65,424],[169,370],[731,370],[760,418],[915,472],[925,514],[62,514]],obstacles:[[225,0,631,350],[638,0,744,357],[749,270,959,413]],spawn:[147,426],minY:370,maxY:520,minScale:3.05,maxScale:3.5});
+ if(id==='corridor')Object.assign(geometry,{floor:[[385,414],[590,414],[704,480],[918,514],[42,514],[295,480]],obstacles:[[0,0,376,447],[600,0,960,431],[0,390,285,498],[718,360,960,498]],spawn:[480,425],minY:410,maxY:520,minScale:2.7,maxScale:3.3});
  if(id==='restroom')Object.assign(geometry,{floor:[[94,378],[252,350],[755,350],[874,412],[911,504],[62,504],[62,422]],obstacles:[[275,0,625,337],[654,0,748,336],[167,245,241,358],[245,447,755,540],[845,0,940,389]],spawn:[145,401],minY:350,maxY:500,minScale:3.1,maxScale:3.55});
  for(const object of room.objects)geometry.spots[object[0]]=[object[6],object[7],object[8]];
  room.connections=connections[id];room.entries=entries[id];room.geometry=geometry;room.camera=[0,(room.width||960)-960];movement.maps[id]=geometry;

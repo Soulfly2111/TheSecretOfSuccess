@@ -28,3 +28,7 @@ for(const [x,y] of [[699,420],[612,430],[520,440],[440,480]]){
  assert(p.y>=446&&M.walkable('house',p),'click on furniture clamps to a safe floor point');
 }
 console.log('PASS: house cabinet, stove and table clicks stay on the floor with body clearance.');
+// Frame duration and short waypoints must not change distance travelled.
+const samples=[10,20,50].map(dt=>{const p=M.create('yard');Object.assign(p,{x:300,y:480,moving:true,route:[{x:301,y:480},{x:302,y:480},{x:700,y:480}]});for(let t=0;t<500;t+=dt)M.tick(p,dt,'yard');return p;});
+for(const p of samples){assert(Math.abs(p.x-samples[0].x)<1e-8);assert(Math.abs(p.distance-(p.x-300))<1e-8);assert.equal(p.direction,'right');}
+console.log('PASS: frame-rate independent movement across short waypoints and distance-based animation timing.');

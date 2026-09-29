@@ -7,7 +7,7 @@ if(!scratch)state=A.restore(readSave(saveKey),readSave(A.legacyKey),Object.keys(
 let actor=Movement.create(state.room),camera=0,transition=null,liftVisual=null;
 const verbs=['Öffne','Schließe','Drücke','Ziehe','Gehe zu','Nimm','Rede mit','Gib','Benutze','Schau an','Mach an','Mach aus'];
 function save(){if(!scratch)try{localStorage.setItem(saveKey,JSON.stringify(state));}catch{}}
-function say(text){$('speech').textContent=text;window.MobileUI?.speak(text);}
+function say(text,source){const spoken=/^[^:]{1,35}:\s*„/.test(text);SceneDialogue.show(text,{speaker:spoken?source:undefined,blocking:/^(?!HANDBUCH:)[^:]{1,35}:\s*„/.test(text)});}
 function ping(){if(!sound)return;audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type='triangle';o.frequency.value=380;g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.1);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.12);}
 function sentence(){$('sentence').textContent=selected?`${verb==='Gib'?'Gib':'Benutze'} ${A.items[selected]} ${verb==='Gib'?'an':'mit'} ${hover||'…'}`:`${verb} ${hover||'…'}`;}
 function clearChoices(){$('choices').replaceChildren();}
@@ -25,7 +25,7 @@ function render(){
  $('map').replaceChildren();for(const [id,r] of Object.entries(rooms)){const b=document.createElement('button');b.textContent=r.label;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);}
  updateCamera();renderControls();sentence();$('progress').textContent=state.flags.cardReturned?'WALTERS EMPFEHLUNG ERHALTEN':'AKT 1 · WALTERS SCHLÜSSELKARTE';
 }
-function approach(id,explicit=false){if(transition)return;if(!explicit&&A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb)){verb='Gehe zu';selected=null;renderControls();}clearChoices();const p=Movement.maps[state.room].spots[id];if(!p)return;Movement.move(actor,state.room,{x:p[0],y:p[1]},{target:id,verb,selected,room:state.room,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[state.room].objects.find(o=>o[0]===id)[1]+' …';}
+function approach(id,explicit=false){if(transition||!A.visible(state,id))return;if(!explicit&&A.walkExit(state,id)&&!['Schließe','Schau an'].includes(verb)){verb='Gehe zu';selected=null;renderControls();}clearChoices();const p=Movement.maps[state.room].spots[id];if(!p)return;Movement.move(actor,state.room,{x:p[0],y:p[1]},{target:id,verb,selected,room:state.room,facing:p[2]});$('sentence').textContent='Gehe zu '+rooms[state.room].objects.find(o=>o[0]===id)[1]+' …';}
 function updateCamera(){
  camera=W.cameraX(state.room,actor.x);
  for(const b of $('hotspots').children){if(b.dataset.object==='walter'&&ActOneCast.actors.walter){const person=ActOneCast.actors.walter;b.dataset.worldX=person.x-35;b.style.top=(person.y-160)/540*100+'%';b.style.height='30%';}const x=Number(b.dataset.worldX)-camera,w=Number(b.dataset.worldWidth);b.style.left=`${x/960*100}%`;b.style.width=`${w/960*100}%`;b.hidden=x+w<=0||x>=960;}
@@ -47,7 +47,7 @@ function enter(edge,destination){
  actor=Movement.create(state.room);
  const point=W.entry(edge);actor.x=point[0];actor.y=point[1];actor.direction=point[2];
  if(edge.kind==='elevator')liftVisual={room:state.room,elapsed:0,arrival:true};
- say(rooms[state.room].entry);save();render();
+ say(state.room==='corridor'&&state.flags.cleaningLightOn?'Der Reinigungsraum. Alles steht bereit für saubere Arbeit.':rooms[state.room].entry);save();render();
  if(destination&&destination!==state.room)travel(destination);
 }
 function startTransition(edge,destination){
@@ -67,7 +67,7 @@ function arrive(action){
  if(edge&&!action.selected&&['Gehe zu','Benutze'].includes(action.verb)){startTransition(edge);return;}
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
  if(action.target==='walter'&&!action.selected&&['Rede mit','Benutze'].includes(action.verb)){ActOneStory.walter();selected=null;renderControls();return;}
- const returned=state.flags.cardReturned;ping();say(A.act(state,action.verb,action.target,action.selected));if(action.selected==='knife'&&state.flags.cardTaken)actor.gesture=650;selected=null;save();render();if(!returned&&state.flags.cardReturned)ActOneStory.thanks();
+ const returned=state.flags.cardReturned;ping();say(A.act(state,action.verb,action.target,action.selected),action.target);if(action.selected==='knife'&&state.flags.cardTaken)actor.gesture=650;selected=null;save();render();if(!returned&&state.flags.cardReturned)ActOneStory.thanks();
 }
 function showLiftMenu(){
  Movement.cancel(actor);selected=null;
@@ -112,9 +112,9 @@ document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','Ar
 const ctx=$('actors').getContext('2d');$('actors').width=640;$('actors').height=360;
 function frame(t){
  const dt=Math.min(t-lastTime,50);lastTime=t;
- if(!$('modal').open&&!window.MobileUI?.blocking()){
+ if(!document.hidden&&!$('modal').open&&!window.MobileUI?.blocking()){
   ActOneStory.update(dt,t);
-  if(!ActOneStory.locked()){
+  if(!ActOneStory.locked()&&!SceneDialogue.locked){
    if(liftVisual){liftVisual.elapsed+=dt;if(liftVisual.arrival&&liftVisual.elapsed>1100)liftVisual=null;}
    if(transition){transition.elapsed+=dt;if(transition.elapsed>=transition.duration){const completed=transition;transition=null;enter(completed.edge,completed.destination);}}
    else{const action=Movement.tick(actor,dt,state.room);if(action)arrive(action);}
@@ -124,12 +124,12 @@ function frame(t){
  $('scene').dataset.transition=transition?.edge.kind||(transition?'door':'');$('scene').dataset.moving=String(actor.moving);$('scene').dataset.direction=actor.direction;$('scene').dataset.actorX=actor.x.toFixed(1);$('scene').dataset.actorY=actor.y.toFixed(1);$('scene').dataset.flags=JSON.stringify(state.flags);$('scene').dataset.story=ActOneStory.phase;$('scene').dataset.speaker=ActOneCast.speaker||'';$('scene').setAttribute('aria-busy',String(actor.moving));requestAnimationFrame(frame);
 }
 ActOneStory.init({state:()=>state,hero:()=>actor,save,render,say,ready:()=>!transition&&!$('modal').open&&!window.MobileUI?.blocking()});
-render();save();say(rooms[state.room].entry);requestAnimationFrame(frame);
+render();save();say(state.room==='corridor'&&state.flags.cleaningLightOn?'Der Reinigungsraum. Alles steht bereit für saubere Arbeit.':rooms[state.room].entry);requestAnimationFrame(frame);
 MobileUI.init({
  verbs,room:()=>state.room,busy:()=>!!transition||ActOneStory.locked(),label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
  rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
  inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>A.walkExit(state,id),
- actions:id=>id==='radiator'?['Schau an','Benutze']:id==='drawer'?['Öffne','Schließe','Schau an']:['knife','keycard'].includes(id)?['Nimm','Schau an']:W.connection(state.room,id)?['Gehe zu','Öffne','Schließe','Schau an']:W.npcs?.[id]?['Rede mit','Schau an']:id==='brochureStand'?['Nimm','Schau an']:['Schau an','Benutze','Rede mit'],
+ actions:id=>id==='lightSwitch'?[state.flags.cleaningLightOn?'Mach aus':'Mach an','Benutze','Schau an']:id==='radiator'?['Schau an','Benutze']:id==='drawer'?['Öffne','Schließe','Schau an']:['knife','keycard'].includes(id)?['Nimm','Schau an']:W.connection(state.room,id)?['Gehe zu','Öffne','Schließe','Schau an']:W.npcs?.[id]?['Rede mit','Schau an']:id==='brochureStand'?['Nimm','Schau an']:['Schau an','Benutze','Rede mit'],
  object:(id,v,item)=>{verb=v;selected=item;renderControls();approach(id,true);},
  item:(id,v,item)=>{Movement.cancel(actor);say(A.act(state,v,id,item));save();render();if(id==='brochure'&&v==='Schau an')showBrochure();},
  cancel:()=>{Movement.cancel(actor);selected=null;verb='Gehe zu';clearChoices();renderControls();sentence();}
