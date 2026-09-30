@@ -1,0 +1,8 @@
+(function(root){
+'use strict';
+function prolog(s,id){const f=s.flags,has=x=>s.inventory.includes(x),look='Schau an';if(['yard','house','barn','garage'].includes(id))return ['Gehe zu',look];
+const map={mechanic:['Rede mit',look],manual:[look,'Nimm'],key:['Nimm',look],cup:['Nimm',look],grounds:['Nimm',look],rag:['Nimm',look],toolbox:[f.toolbox?'Schließe':'Öffne',...(!has('wrench')?['Nimm']:[]),look],cupboard:[f.cupboard?'Schließe':'Öffne',look],chest:[f.chest?'Schließe':'Öffne',look],car:[look,f.hood?'Schließe':'Öffne','Mach an'],stove:[look,'Mach an','Mach aus'],tractor:[look,'Nimm'],hay:[look,'Ziehe','Drücke'],well:[look,'Benutze'],pot:[look]};return map[id]||[look];}
+function act1(s,id,world){const look='Schau an',edge=world.connection(s.room,id);if(edge){if(edge.kind==='stairs'||edge.kind==='elevator')return ['Gehe zu',look];if(edge.flag&&['wc','techDoor','sideDoor','kitchenDoor','officeDoor','emsDoor','loungeDoor'].includes(id))return [look,s.flags[edge.flag]?'Schließe':'Öffne','Gehe zu'];return ['Gehe zu',look];}
+if(world.npcs[id])return ['Rede mit',look];if(id==='lightSwitch')return [look,s.flags.cleaningLightOn?'Mach aus':'Mach an'];if(id==='drawer')return [s.flags.drawerOpen?'Schließe':'Öffne',look];if(['knife','keycard'].includes(id))return ['Nimm',look];if(id==='brochureStand')return s.flags.brochureTaken?[look]:['Nimm',look];if(['washbasin','sink','toilet','coffeeMachine','copier','waterDispenser','phone','intercom'].includes(id))return [look,'Benutze'];return [look];}
+const api={prolog,act1};if(typeof module!=='undefined')module.exports=api;else root.ContextActions=api;
+})(typeof window!=='undefined'?window:globalThis);

@@ -16,9 +16,9 @@ function renderInventory(){$('inventory').replaceChildren();$('item-count').text
 function drawItem(canvas,id){let c=canvas.getContext('2d');let r=(x,y,w,h,col)=>{c.fillStyle=col;c.fillRect(x,y,w,h)};if(id==='key'){r(4,5,8,8,'#e9ba6b');r(6,7,4,4,'#172232');r(11,11,10,3,'#e9ba6b');r(17,14,3,4,'#e9ba6b');}else if(id==='wrench'){r(5,4,4,7,'#a3b9c6');r(13,4,4,7,'#a3b9c6');r(5,9,12,4,'#b7c8cc');r(9,11,4,11,'#a3b9c6');}else if(id==='manual'){r(4,3,17,19,'#d1b57e');r(4,3,3,19,'#a4754e');r(9,7,8,2,'#4d6072');r(9,12,7,1,'#6c746d');r(9,15,7,1,'#6c746d');}else if(id==='rag'){r(3,7,16,12,'#769cae');r(6,5,13,10,'#9abcd0');r(7,9,2,9,'#537e96');r(13,8,2,7,'#759caf');}else if(id==='grounds'){r(6,3,13,18,'#784431');r(5,3,15,3,'#cba66c');r(7,9,11,7,'#e4c991');r(11,11,3,3,'#543326');}else if(['coffee','cup','water'].includes(id)){r(4,7,12,13,'#ded8b9');r(16,9,5,7,'#a99c81');r(17,11,2,3,'#172232');r(6,7,8,3,id==='coffee'?'#694534':id==='water'?'#70bbd2':'#645e52');if(id==='coffee')r(7,2,1,3,'#b4b9bd');}else{r(4,4,16,17,id==='dirtybelt'?'#756048':'#8c8c81');r(7,7,10,11,'#172232');r(7,20,10,2,'#40372f');if(id==='dirtybelt')r(4,9,4,5,'#392c23');}}
 function gone(id){const v=SceneState.objects(state);return ['manual','key','rag','cup','grounds'].includes(id)&&!v[id];}
 function renderRoom(){const room=rooms[state.room];$('scene').dataset.room=state.room;$('location-name').textContent=room.name;$('location-sub').textContent=room.sub;$('hotspots').replaceChildren();room.objects.filter(o=>!gone(o[0])).forEach(([id,label,x,y,w,h])=>{let b=document.createElement('button');b.className='hotspot';b.style.cssText=`left:${x}%;top:${y}%;width:${w}%;height:${h}%`;b.setAttribute('aria-label',label);b.dataset.object=id;let s=document.createElement('span');s.textContent=label;b.append(s);b.onmouseenter=b.onfocus=()=>{hover=label;$('hover-label').textContent=label;sentence();};b.onmouseleave=b.onblur=()=>{hover='';$('hover-label').textContent='';sentence();};b.onclick=e=>{e.stopPropagation();ping();approach(id);};$('hotspots').append(b);});$('map').replaceChildren();Object.entries(rooms).forEach(([id,r],i)=>{let b=document.createElement('button');b.innerHTML=`<span>0${i+1}</span>${r.label}`;b.className=id===state.room?'active':'';b.setAttribute('aria-current',id===state.room?'location':'false');b.onclick=()=>travel(id);$('map').append(b);});}
-function approach(id,continuation=null){
+function approach(id,continuation=null,explicit=false){
  if(state.won){ending();return;}
- if(rooms[id]){verb='Gehe zu';selected=null;renderVerbs();renderInventory();}
+ if(rooms[id]&&!explicit){verb='Gehe zu';selected=null;renderVerbs();renderInventory();}
  const spot=Movement.maps[state.room].spots[id];if(!spot)return;
  const action={target:id,verb,selected,room:state.room,facing:spot[2],continuation};
  if(Movement.move(actor,state.room,{x:spot[0],y:spot[1]},action)){
@@ -41,7 +41,7 @@ function changeRoom(id,continuation=null){
 function completeAction(action){
  $('scene').setAttribute('aria-busy','false');
  if(action.room!==state.room)return;
- if(rooms[action.target]){changeRoom(action.target,action.continuation);return;}
+ if(rooms[action.target]){if(action.verb==='Gehe zu'&&!action.selected)changeRoom(action.target,action.continuation);else say(action.selected?'Dafür brauche ich hier keinen Gegenstand.':'Dieser Weg führt '+rooms[action.target].label+'.');return;}
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
  actor.gesture=450;
  interact(action.target,action.verb,action.selected);
@@ -61,10 +61,6 @@ $('close-modal').onclick=()=>$('modal').close();
 $('hint').onclick=()=>say(A.hint(state));
 $('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'Ton an':'Ton aus';$('sound').setAttribute('aria-label',sound?'Ton ausschalten':'Ton einschalten');ping();};
 $('restart').onclick=()=>{popup('<div class="eyebrow">NOCH EIN VERSUCH?</div><h2>Zurück an den Anfang.</h2><p>Dein bisheriger Spielstand wird ersetzt.</p><button id="confirm-reset">Prolog neu beginnen</button>','Weiterspielen');$('confirm-reset').onclick=()=>{state=A.fresh();verb='Gehe zu';selected=null;clearTimeout(endTimer);actor=Movement.create('yard');save();render();say('Ein schwarzer Anzug, ein großer Plan. Und ein Auto, das anderer Meinung ist.');$('modal').close();};};
-$('reveal').onclick=()=>{showAll=!showAll;$('scene').classList.toggle('reveal',showAll);$('reveal').setAttribute('aria-pressed',showAll);};
-document.addEventListener('keydown',e=>{if(e.code==='Space'&&!$('modal').open&&!['BUTTON','INPUT'].includes(document.activeElement.tagName)){e.preventDefault();$('scene').classList.add('reveal');}if(e.key==='Escape'){Movement.cancel(actor);selected=null;renderInventory();sentence();}});
-document.addEventListener('keyup',e=>{if(e.code==='Space')$('scene').classList.toggle('reveal',showAll);});
-window.addEventListener('blur',()=>$('scene').classList.toggle('reveal',showAll));
 $('scene').onclick=e=>{
  if(e.target.closest('button')||state.won)return;
  const b=$('scene').getBoundingClientRect();
@@ -90,11 +86,12 @@ MobileUI.init({
  verbs,room:()=>state.room,busy:()=>false,label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
  rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
  inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>!!rooms[id],
- actions:id=>{
-  const metadata={mechanic:['Rede mit','Schau an'],manual:['Schau an','Nimm'],key:['Nimm','Schau an'],cup:['Nimm','Schau an'],grounds:['Nimm','Schau an'],rag:['Nimm','Schau an'],toolbox:['Öffne','Schließe','Nimm','Schau an'],cupboard:['Öffne','Schließe','Schau an'],chest:['Öffne','Schließe','Schau an'],car:['Schau an','Öffne','Schließe','Mach an'],stove:['Schau an','Mach an','Mach aus']};
-  return metadata[id]||['Schau an','Benutze'];
- },
- object:(id,v,item)=>{verb=v;selected=item;renderVerbs();renderInventory();approach(id);},
+ actions:id=>ContextActions.prolog(state,id),
+ hints:()=>[{label:'Aufbruch vorbereiten',text:A.hint(state)}],
+ drawItem,
+ itemActions:id=>id==='coffee'?['Schau an','Benutze','Gib']:['Schau an','Benutze'],
+ journal:()=>['Mein Ziel: Das Auto reparieren und in die Stadt aufbrechen.',...(state.flags.read?['Handbuch gelesen: Batterieklemme festziehen, sauberen Keilriemen einsetzen und mit dem Schlüssel starten.']:[]),...(state.flags.coffeeGiven?['Kalle hat seinen Kaffee bekommen und das Werkzeug freigegeben.']:[]),...(state.flags.brewed?['Kaffee gekocht.']:[]),...(state.won?['Der Motor läuft. Bereit für die Großstadt.']:[])],
+ object:(id,v,item)=>{verb=v;selected=item;renderVerbs();renderInventory();approach(id,null,true);},
  item:(id,v,item)=>{Movement.cancel(actor);interact(id,v,item);},
  cancel:()=>{Movement.cancel(actor);selected=null;verb='Gehe zu';renderVerbs();renderInventory();sentence();}
 });

@@ -106,14 +106,11 @@ $('help').onclick=()=>popup('Das Gebäude erkunden',[
 $('close-modal').onclick=()=>$('modal').close();$('hint').onclick=()=>{popup('Hinweise zu beiden Aufgaben',[]);for(const [label,text] of [['Walters Schlüsselkarte',state.flags.cardReturned?'Walters Empfehlung ist erledigt.':A.hint(state)],['Firmenausweis',A.Photo.hint(state)]]){const b=document.createElement('button');b.textContent=label;b.onclick=()=>{$('modal').close();say(text);};$('modal-content').append(b);}};
 $('restart').onclick=()=>{popup('Akt 1 neu beginnen?',['Nur der neue Erkundungsspielstand wird ersetzt. Der alte Rätselspielstand und der Prolog bleiben erhalten.']);const b=document.createElement('button');b.textContent='Akt 1 neu beginnen';b.onclick=()=>{transition=null;liftVisual=null;photoJob=null;photoFlash=0;state=A.fresh();ActOneStory.reset();actor=Movement.create(state.room);selected=null;verb='Gehe zu';save();clearChoices();render();say(rooms.lobby.entry);$('modal').close();};$('modal-content').append(b);};
 $('sound').onclick=()=>{sound=!sound;$('sound').textContent=sound?'Ton an':'Ton aus';ping();};
-$('reveal').onclick=()=>{showAll=!showAll;$('scene').classList.toggle('reveal',showAll);$('reveal').setAttribute('aria-pressed',String(showAll));};
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!transition){Movement.cancel(actor);selected=null;clearChoices();renderControls();sentence();}if(e.code==='Space'&&!$('modal').open&&document.activeElement.tagName!=='BUTTON'){e.preventDefault();$('scene').classList.add('reveal');}});
-document.addEventListener('keyup',e=>{if(e.code==='Space')$('scene').classList.toggle('reveal',showAll);});
 $('scene').onclick=e=>{if(e.target.closest('button')||transition)return;const b=$('scene').getBoundingClientRect();Movement.move(actor,state.room,{x:(e.clientX-b.left)/b.width*960+camera,y:(e.clientY-b.top)/b.height*540});selected=null;clearChoices();renderControls();sentence();};
 function walkAcross(direction){if($('modal').open||transition)return;clearChoices();selected=null;renderControls();Movement.move(actor,state.room,{x:direction<0?88:(rooms[state.room].width||960)-65,y:Math.max(467,actor.y)});sentence();}
 $('pan-left').onclick=e=>{e.stopPropagation();walkAcross(-1);};$('pan-right').onclick=e=>{e.stopPropagation();walkAcross(1);};
-document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!$('modal').open&&!transition){e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight')walkAcross(e.key==='ArrowLeft'?-1:1);else{clearChoices();Movement.move(actor,state.room,{x:actor.x,y:e.key==='ArrowUp'?300:510});}}});
-document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!transition){Movement.cancel(actor);sentence();}});
+document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!$('modal').open&&!transition&&!MobileUI.blocking()){e.preventDefault();if(e.repeat)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight')walkAcross(e.key==='ArrowLeft'?-1:1);else{clearChoices();Movement.move(actor,state.room,{x:actor.x,y:e.key==='ArrowUp'?300:510});}}});
+document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&!transition&&!MobileUI.blocking()){Movement.cancel(actor);sentence();}});
 const ctx=$('actors').getContext('2d');$('actors').width=640;$('actors').height=360;
 function frame(t){
  const dt=Math.min(t-lastTime,50);lastTime=t;
@@ -138,7 +135,10 @@ MobileUI.init({
  verbs,room:()=>state.room,busy:()=>!!transition||!!photoJob||ActOneStory.locked(),label:id=>id==='hero'?'Protagonist':rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
  rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
  inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>A.walkExit(state,id),
- actions:id=>id==='lightSwitch'?[state.flags.cleaningLightOn?'Mach aus':'Mach an','Benutze','Schau an']:id==='radiator'?['Schau an','Benutze']:id==='drawer'?['Öffne','Schließe','Schau an']:['knife','keycard'].includes(id)?['Nimm','Schau an']:W.connection(state.room,id)?['Gehe zu','Öffne','Schließe','Schau an']:W.npcs?.[id]?['Rede mit','Schau an']:id==='brochureStand'?['Nimm','Schau an']:['Schau an','Benutze','Rede mit'],
+ actions:id=>ContextActions.act1(state,id,W),
+ hints:()=>[{label:'Walters Schlüsselkarte',text:state.flags.cardReturned?'Walters Empfehlung ist erledigt.':A.hint(state)},{label:'Firmenausweis',text:A.Photo.hint(state)}],
+ drawItem:icon,
+ itemActions:id=>id==='keycard'?['Schau an','Benutze','Gib']:['Schau an','Benutze'],
  object:(id,v,item)=>{verb=v;selected=item;render();approach(id,true);},
  item:(id,v,item)=>{Movement.cancel(actor);say(performAction(v,id,item));save();render();if(v==='Schau an'){if(id==='brochure')showBrochure();else inspectPhoto(id);}},
  cancel:()=>{Movement.cancel(actor);selected=null;verb='Gehe zu';clearChoices();render();sentence();}
@@ -167,5 +167,5 @@ function inspectPhoto(id){
  if(id==='vipBadge'){g.fillStyle='#d8bb73';g.font='bold 13px monospace';g.fillText('BLACK HOLE',140,36);g.font='10px monospace';g.fillText('INVESTMENTS &',140,55);g.fillText('PROPERTY MANAGEMENT',140,70);g.font='bold 27px monospace';g.fillText('VIP',150,117);g.font='10px monospace';g.fillText('FIRMENAUSWEIS',140,143);g.strokeStyle='#d8bb73';g.strokeRect(3,3,314,184);}
  $('modal-content').append(canvas);
 }
-document.addEventListener('click',e=>{if(photoJob){e.stopImmediatePropagation();e.preventDefault();}},true);
-document.addEventListener('keydown',e=>{if(photoJob){e.stopImmediatePropagation();e.preventDefault();}},true);
+document.addEventListener('click',e=>{if(photoJob&&!e.target.closest('.mobile-rail,#mobile-panel,#modal')){e.stopImmediatePropagation();e.preventDefault();}},true);
+document.addEventListener('keydown',e=>{if(photoJob&&!e.target.closest('.mobile-rail,#mobile-panel,#modal')){e.stopImmediatePropagation();e.preventDefault();}},true);

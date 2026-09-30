@@ -39,8 +39,8 @@ const ActOneStory=(()=>{
   }
  }
  function init(adapter){api=adapter;ActOneCast.init();
-  document.addEventListener('click',e=>{if(locked()&&!e.target.closest('#story-dialogue')){e.preventDefault();e.stopImmediatePropagation();}},true);
-  document.addEventListener('keydown',e=>{if(locked()&&!e.target.closest('#story-dialogue')){e.preventDefault();e.stopImmediatePropagation();}},true);
+  document.addEventListener('click',e=>{if(locked()&&!e.target.closest('#story-dialogue,.mobile-rail,#mobile-panel,#modal')){e.preventDefault();e.stopImmediatePropagation();}},true);
+  document.addEventListener('keydown',e=>{if(locked()&&!e.target.closest('#story-dialogue,.mobile-rail,#mobile-panel,#modal')){e.preventDefault();e.stopImmediatePropagation();}},true);
  }
  return {init,update,locked,reset,walter,talk,thanks:()=>talk(ActOne.dialogue(api.state(),'thanks')),get lift(){return intro?.phase==='lift'?{room:'lobby',elapsed:intro.elapsed}:null;},get phase(){return intro?.phase||'';}};
 })();

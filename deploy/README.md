@@ -25,3 +25,7 @@ Release: `/var/www/casanova-studio/releases/20260929-cleaning`. Vorheriges Relea
 ## Marmor-Passfoto 2026-09-29
 
 Release `/var/www/casanova-studio/releases/20260929-photo` baut auf `20260929-cleaning` auf. Neu: act1-photo.js vor act1-engine.js laden. Zehn öffentliche Dateien per SHA-256 prüfen und current atomar wechseln; keine Apache-Änderung. Tests: Foto-Rätsel Desktop/Touch, unterbrochener Druck, bestehende Spielstände, Walter, Reinigungsraum und Prolog. Mobiltests sind Browseremulation.
+
+## Gemeinsame Radsteuerung 2026-09-30
+
+Release `/var/www/casanova-studio/releases/20260930-radial` basiert auf `20260929-photo`. Neu: context-actions.js vor mobile.js laden. Zehn öffentliche Dateien per SHA-256 prüfen; current atomar umschalten. Tests: test-radial-prolog.cjs, test-radial-act1.cjs, test-radial-ui.cjs, test-radial-pause.cjs und test-context-actions.cjs. Touchtests laufen in Browseremulation; kein reales Mobilgerät verwendet. Keine Serverkonfiguration ändern.

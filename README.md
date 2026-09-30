@@ -18,7 +18,7 @@ Zusätzliche Prüfungen: `node test-walter.cjs` für Rätsellogik und Migration,
 
 Die 2. Etage zeigt von links nach rechts die Teamleiterbürotür, den offen begehbaren Kopier- und Faxraum, Aufzug und Treppenabgang, EMS-Tür und Pausenraumtür. Büro, EMS-Training und Pausenraum haben eigene Innenansichten, Möbelhindernisse und separate Mitarbeiter-Sprites.
 
-Treppen verbinden benachbarte Etagen. In der 1. Etage gibt es getrennte Auf- und Abgänge. Am erreichten Aufzug erscheint die Auswahl Erdgeschoss / 1. Etage / 2. Etage; der aktuelle Standort ist deaktiviert. Abbrechen lässt die Figur vor dem Aufzug stehen. Die Ortsleiste wählt ihr Ziel ohne zusätzliche Rückfrage und nutzt das Raumnetz. Ankunftspunkte unterscheiden Treppe, Aufzug und Zimmertüren. Alle Übergänge erfolgen erst nach dem Hinlaufen; der Aufzug öffnet sichtbar seine Türen. Die Ortsleiste sucht einen Weg durch das Raumnetz, auch zwischen Küche und Räumen im Erdgeschoss. Offene Ausgänge wählen automatisch „Gehe zu“; „Schließe“ und „Schau an“ sind weiterhin bewusst auswählbar. Alle vier Pfeiltasten und Boden-Klicks bewegen die Figur. Möbel sperren ihre Standflächen, Vordergrundteile verdecken die Figur entsprechend ihrer Tiefe.
+Treppen verbinden benachbarte Etagen; der Aufzug bietet alle drei Etagen. Raumwechsel erfolgen nach dem Hinlaufen über die Objekte der Spielwelt. Bodenklicks am Rand führen weiter durch Panoramen, die Kamera folgt. Möbel sperren ihre Standflächen und verdecken Figuren entsprechend ihrer Tiefe.
 
 Der neue Speicherstand übernimmt Broschüre und gültigen Raum aus `success-act1-v1`, solange noch kein neuer Erkundungsspielstand existiert. Frühere Abschlussstände starten im Erdgeschoss. Der alte Spielstand wird weder überschrieben noch gelöscht. Neustart betrifft ausschließlich den neuen Speicherstand. Neue Raum- und Türzustände werden unter demselben Erkundungsschlüssel gespeichert. Vorhandene Spielstände sind weiterhin kompatibel. Der Prolog ist unverändert.
 
@@ -30,15 +30,15 @@ Ein eigenständiger deutscher Point-and-Click-Prototyp mit vier Schauplätzen: H
 
 ## Mobile Steuerung
 
-Auf Touch-Geräten im Querformat startet die mobile Oberfläche automatisch: große 16:9-Szene, rechts Aktionen, Inventar, Orte, Hotspots und Menü. Objekte antippen und eine Aktion auswählen; offene Durchgänge werden direkt betreten. Alle zwölf Verben bleiben erreichbar. Bei kleinen überlappenden Zielen erscheint eine Objektauswahl. Inventargegenstand wählen, „Benutze“ oder „Gib“ auswählen und das Ziel antippen; für Kombinationen das Inventar erneut öffnen. Lange Texte werden mit „Weiter“ gelesen. Im Menü lässt sich die klassische Ansicht aktivieren, dort führt „Mobile Ansicht“ zurück. Die Darstellungseinstellung verwendet ausschließlich `success-interface-v1`; Spielstände und Rätsellogik bleiben erhalten.
+Touch und Maus verwenden dieselbe Oberfläche: drei Symbolbuttons rechts für Menü, Inventar und gehaltene Hotspot-Anzeige. Objekte öffnen ein Rad mit zustandsabhängigen Aktionen; auch offene Türen werden über „Gehe zu“ im Rad betreten. Kopf-, Verb- und Ortsleisten sowie Laufpfeile entfallen. Gegenstände werden über das separate Inventar ausgewählt und direkt auf Ziele angewandt. Die alte Ansichtspräferenz wird ignoriert, Spielstände bleiben erhalten.
 
-`mobile.js` und `mobile.css` stellen die gemeinsame Oberfläche bereit. Die beiden Kapitel liefern Adapter für Raum, Gegenstände, beschreibende Objektaktionen und vorhandene Interaktionsfunktionen. Touch-Menüs pausieren laufende Bewegung, führen aber keine Spielaktionen selbst aus. Die Hit-Prüfung erweitert kleine sichtbare Ziele auf mindestens 44 CSS-Pixel, ohne die Weltkoordinaten zu verändern.
+`mobile.js` und `mobile.css` stellen die gemeinsame Oberfläche bereit. `context-actions.js` liefert die zustandsabhängigen Verben ohne zweite Rätsellogik. Adapter liefern Inventarsymbole, Hinweise und Objektausführung. Szene und Aktionen pausieren hinter Overlays.
 
 `node test-mobile.cjs` prüft mit Playwright/Chrome-Touchemulation den vollständigen Prolog, Kombinationen, überlappende Ziele, verzögerte Interaktionen, Bildschirmdrehung, Dialogseiten, Ansichtswechsel und Speichern sowie Türen, Treppen, Aufzugziele und Broschüre in Akt 1. Ansichtsgrößen: 667×375, 844×390, 932×430 und 1180×820. `QA_URL` und `QA_OUTPUT` funktionieren wie im Desktop-Test. Dies sind Browseremulationen, keine Prüfungen auf physischen Mobilgeräten.
 
 ## Klassische Steuerung
 
-Verb wählen, dann ein Objekt anklicken. Die Figur läuft zunächst zum zugehörigen Interaktionspunkt und führt die Aktion erst dort aus. Auf freien Boden klicken, um sich nach links, rechts, hinten oder vorne zu bewegen. Inventargegenstand anklicken, dann ein Objekt oder einen zweiten Gegenstand. Kombinationen innerhalb des Inventars funktionieren direkt. Türen und Ortsnavigation führen über die tatsächlichen Ausgänge zum nächsten Schauplatz. Ein neuer Laufbefehl oder Escape bricht die ausstehende Aktion ab. Hotspots über den Knopf anzeigen. Alle Objektinteraktionen sind mit Tab und Enter erreichbar. Fortschritt wird lokal im Browser gespeichert. Der Tonknopf aktiviert kurze Interaktionsklänge; keine Hintergrundmusik.
+Bedienung: Boden antippen zum Laufen, Objekt antippen für das Aktionsrad. Lupe oder Leertaste halten für Hotspots. Tab/Enter bedienen Buttons, Escape schließt das oberste Overlay. Spielstände bleiben lokal im Browser.
 
 ## Lösung
 
@@ -54,7 +54,7 @@ Optional: Heu und Truhe untersuchen. Kaffee für Kalle ist Voraussetzung für da
 
 ## Umfang
 
-Komplette Prolog-Rätselkette mit Abschlussdialog, zwölf Verben, Inventar, kontextabhängigen Hinweisen und Speicherstand. Akt 2 und spätere Akte sind noch nicht implementiert. Version 2 verwendet gröbere Pixelhintergründe und einen transparenten Spritebogen mit vier Blickrichtungen und vier Laufphasen pro Richtung. Kalle besitzt Ruhe-, Blinzel- und Gesprächsanimationen. Die Figur wird je nach Raum und Tiefe perspektivisch skaliert. Laufwege nutzen ein Raster mit begehbaren Bodenflächen und Hindernissen; Aktionen werden bei Ankunft einmalig ausgelöst. Rendering auf einem gemeinsamen 480×270-Pixelraster mit ungeglätteter Skalierung. Die Schrift lädt optional von Google Fonts; lokale Ersatzschriften funktionieren offline.
+Komplette Prolog-Rätselkette mit Abschlussdialog, Kontextaktionen, Inventar, kontextabhängigen Hinweisen und Speicherstand. Akt 2 und spätere Akte sind noch nicht implementiert. Version 2 verwendet gröbere Pixelhintergründe und einen transparenten Spritebogen mit vier Blickrichtungen und vier Laufphasen pro Richtung. Kalle besitzt Ruhe-, Blinzel- und Gesprächsanimationen. Die Figur wird je nach Raum und Tiefe perspektivisch skaliert. Laufwege nutzen ein Raster mit begehbaren Bodenflächen und Hindernissen; Aktionen werden bei Ankunft einmalig ausgelöst. Rendering auf einem gemeinsamen 480×270-Pixelraster mit ungeglätteter Skalierung. Die Schrift lädt optional von Google Fonts; lokale Ersatzschriften funktionieren offline.
 
 Prüfung der Rätsellogik: `node test-engine.cjs`. Laufwege, Hindernisse, perspektivische Skalierung und verzögerte Aktionen: `node test-movement.cjs`. Sichtbare Objektzustände: `node test-scene-state.cjs`. Der URL-Parameter `?test` startet einen unabhängigen Testspielstand ohne Schreiben in den gespeicherten Nutzerfortschritt.
 
@@ -85,3 +85,8 @@ Prüfung: test-cleaning.cjs und test-cleaning-browser.cjs (Desktop und emulierte
 Parallel zu Walter: Smartphone auf Protagonist und Broschüre verwenden, Bilder am freien Grafik-PC der 1. Etage übertragen und VIP-Ausweis am Empfang abholen. Der zweite Upload montiert und sendet automatisch. Beide Aufgaben zusammen markieren die Bereitschaft zum Arbeitsbeginn. Smartphone und Fotos sind reine Spielgegenstände; kein Kamerazugriff oder externer Upload. Bestehende Spielstände bekommen das Smartphone automatisch.
 
 Logik: act1-photo.js. Prüfungen: test-photo.cjs, test-photo-browser.cjs. Protagonisten-Hotspot erscheint nur bei ausgewähltem Smartphone; mobile Auswahl meldet diesen Zustand über eine optionale Adapterfunktion. Ausweis, Selfie, PC und Drucker nutzen die vorhandene Canvas-Pixelgrafik und Heldensprites.
+
+
+## Aktuelle Oberfläche prüfen
+
+`test-radial-prolog.cjs`: kompletter Prolog per Touch. `test-radial-act1.cjs`: Walter und Passfoto per Touch und Maus, Türen, Aufzüge, Etagen, Reinigungsraum und Speichern. `test-radial-ui.cjs`: Bildschirmgrößen, Ränder, Halten/Loslassen, Tastatur und Inventarüberlauf. `test-radial-pause.cjs`: Menüpause, Hilfe und Kapitelwahl während Dialogen. Gemeinsame Browserhelfer: `qa-radial.cjs`. Ältere GUI-Tests beziehen sich auf die abgelösten Leisten und werden durch diese Prüfungen ersetzt. Reine Logiktests bleiben gültig. Die Touchprüfung ist Browseremulation, kein physisches Mobilgerät.
