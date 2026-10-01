@@ -38,7 +38,7 @@ Touch und Maus verwenden dieselbe Oberfläche: drei Symbolbuttons rechts für Me
 
 ## Klassische Steuerung
 
-Bedienung: Boden antippen zum Laufen, Objekt antippen für das Aktionsrad. Lupe oder Leertaste halten für Hotspots. Tab/Enter bedienen Buttons, Escape schließt das oberste Overlay. Spielstände bleiben lokal im Browser.
+Bedienung: Boden antippen zum Laufen, Objekt kurz antippen zum Anschauen; Rechtsklick oder 500 ms Halten öffnet das Aktionsrad. Lupe oder Leertaste halten für Hotspots. Tab/Enter bedienen Standardaktionen und Buttons; Umschalt+F10 öffnet das Rad, Escape schließt das oberste Overlay. Spielstände bleiben lokal im Browser.
 
 ## Lösung
 
@@ -90,3 +90,7 @@ Logik: act1-photo.js. Prüfungen: test-photo.cjs, test-photo-browser.cjs. Protag
 ## Aktuelle Oberfläche prüfen
 
 `test-radial-prolog.cjs`: kompletter Prolog per Touch. `test-radial-act1.cjs`: Walter und Passfoto per Touch und Maus, Türen, Aufzüge, Etagen, Reinigungsraum und Speichern. `test-radial-ui.cjs`: Bildschirmgrößen, Ränder, Halten/Loslassen, Tastatur und Inventarüberlauf. `test-radial-pause.cjs`: Menüpause, Hilfe und Kapitelwahl während Dialogen. Gemeinsame Browserhelfer: `qa-radial.cjs`. Ältere GUI-Tests beziehen sich auf die abgelösten Leisten und werden durch diese Prüfungen ersetzt. Reine Logiktests bleiben gültig. Die Touchprüfung ist Browseremulation, kein physisches Mobilgerät.
+
+## Direkte Maus- und Touchsteuerung (1. Oktober 2026)
+Linksklick/kurzes Tippen untersucht Objekte nach dem Hinlaufen; offene Durchgänge werden direkt betreten. Rechtsklick oder 500 ms Halten öffnet das Aktionsrad. Mauszeiger über Objekten zeigt deren Namen. Beschreibungen bieten zusätzlich „Aktionen“. Neuer Bodenklick ersetzt einen laufenden Auftrag. Umschalt+F10 öffnet das Rad per Tastatur, Enter führt die Standardaktion aus. Die einmalige Touchhilfe wird getrennt vom Spielstand gespeichert.
+Prüfung: `test-direct-input.cjs` deckt Standardaktionen, Mouseover, Halten, Gestenabbruch und Laufzielwechsel ab. Die aktualisierten `test-radial-*` verwenden Rechtsklick bzw. echte Touchereignisse in Chrome-Emulation. Keine Prüfung auf einem physischen Mobilgerät.

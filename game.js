@@ -41,10 +41,10 @@ function changeRoom(id,continuation=null){
 function completeAction(action){
  $('scene').setAttribute('aria-busy','false');
  if(action.room!==state.room)return;
- if(rooms[action.target]){if(action.verb==='Gehe zu'&&!action.selected)changeRoom(action.target,action.continuation);else say(action.selected?'Dafür brauche ich hier keinen Gegenstand.':'Dieser Weg führt '+rooms[action.target].label+'.');return;}
+ if(rooms[action.target]){if(action.verb==='Gehe zu'&&!action.selected)changeRoom(action.target,action.continuation);else{say(action.selected?'Dafür brauche ich hier keinen Gegenstand.':'Dieser Weg führt '+rooms[action.target].label+'.');if(action.verb==='Schau an'&&!action.selected)MobileUI.inspected(action.target);}return;}
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
  actor.gesture=450;
- interact(action.target,action.verb,action.selected);
+ interact(action.target,action.verb,action.selected);if(action.verb==='Schau an'&&!action.selected)MobileUI.inspected(action.target);
 }
 function interact(id,actionVerb=verb,actionItem=selected){
  if(state.won){ending();return;}
@@ -86,6 +86,7 @@ MobileUI.init({
  verbs,room:()=>state.room,busy:()=>false,label:id=>rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
  rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
  inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>!!rooms[id],
+ defaultAction:id=>rooms[id]?'Gehe zu':'Schau an',
  actions:id=>ContextActions.prolog(state,id),
  hints:()=>[{label:'Aufbruch vorbereiten',text:A.hint(state)}],
  drawItem,

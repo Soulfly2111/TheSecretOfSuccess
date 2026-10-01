@@ -71,7 +71,7 @@ function arrive(action){
  if(action.verb==='Gehe zu'&&!action.selected){sentence();return;}
  if(action.target==='reception'&&!action.selected&&['Rede mit','Benutze'].includes(action.verb)){receptionMenu();return;}
  if(action.target==='walter'&&!action.selected&&['Rede mit','Benutze'].includes(action.verb)){ActOneStory.walter();selected=null;renderControls();return;}
- const returned=state.flags.cardReturned;ping();say(performAction(action.verb,action.target,action.selected),action.target);if(action.selected==='knife'&&state.flags.cardTaken)actor.gesture=650;selected=null;save();render();if(!returned&&state.flags.cardReturned)ActOneStory.thanks();if(action.verb==='Schau an'&&!action.selected)inspectPhoto(action.target);
+ const returned=state.flags.cardReturned;ping();say(performAction(action.verb,action.target,action.selected),action.target);if(action.selected==='knife'&&state.flags.cardTaken)actor.gesture=650;selected=null;save();render();if(!returned&&state.flags.cardReturned)ActOneStory.thanks();if(action.verb==='Schau an'&&!action.selected){inspectPhoto(action.target);MobileUI.inspected(action.target);}
 }
 function showLiftMenu(){
  Movement.cancel(actor);selected=null;
@@ -135,6 +135,7 @@ MobileUI.init({
  verbs,room:()=>state.room,busy:()=>!!transition||!!photoJob||ActOneStory.locked(),label:id=>id==='hero'?'Protagonist':rooms[state.room].objects.find(o=>o[0]===id)?.[1]||A.items[id]||id,
  rooms:()=>Object.entries(rooms).map(([id,r])=>({id,label:r.label})),travel,
  inventory:()=>state.inventory.map(id=>({id,label:A.items[id]})),direct:id=>A.walkExit(state,id),
+ defaultAction:id=>{const edge=W.connection(state.room,id);return edge&&(!edge.flag||state.flags[edge.flag]||edge.kind==='stairs'||edge.kind==='elevator')?'Gehe zu':'Schau an';},
  actions:id=>ContextActions.act1(state,id,W),
  hints:()=>[{label:'Walters Schlüsselkarte',text:state.flags.cardReturned?'Walters Empfehlung ist erledigt.':A.hint(state)},{label:'Firmenausweis',text:A.Photo.hint(state)}],
  drawItem:icon,

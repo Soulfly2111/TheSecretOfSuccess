@@ -29,3 +29,6 @@ Release `/var/www/casanova-studio/releases/20260929-photo` baut auf `20260929-cl
 ## Gemeinsame Radsteuerung 2026-09-30
 
 Release `/var/www/casanova-studio/releases/20260930-radial` basiert auf `20260929-photo`. Neu: context-actions.js vor mobile.js laden. Zehn öffentliche Dateien per SHA-256 prüfen; current atomar umschalten. Tests: test-radial-prolog.cjs, test-radial-act1.cjs, test-radial-ui.cjs, test-radial-pause.cjs und test-context-actions.cjs. Touchtests laufen in Browseremulation; kein reales Mobilgerät verwendet. Keine Serverkonfiguration ändern.
+
+## Direkte Eingabe 2026-10-01
+Release `/var/www/casanova-studio/releases/20261001-direct` basiert auf `20260930-radial`. Acht öffentliche Dateien (gemeinsame Eingabe, CSS, Dialoge, beide Controller, beide HTML-Einstiege, Website) per SHA-256 prüfen; current atomar umschalten. Regressionen: test-direct-input.cjs, test-radial-prolog.cjs, test-radial-act1.cjs, test-radial-ui.cjs und test-radial-pause.cjs sowie Rätsellogiktests. Maus und Touch-Browseremulation, kein physisches Mobilgerät. Keine Serverkonfiguration ändern.
