@@ -1,0 +1,31 @@
+{
+  "name": "secret-of-success-migration",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/assets.cjs",
+    "dev": "npm run assets && vite --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "validate": "tsx scripts/validate.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "build": "npm run typecheck && npm run validate && npm run assets && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "format": "prettier --write src scripts tests vite.config.ts",
+    "format:check": "prettier --check src scripts tests vite.config.ts"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "overrides": {
+    "esbuild": "0.28.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "playwright": "1.62.1",
+    "prettier": "3.6.2",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.6"
+  }
+}

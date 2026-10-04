@@ -1,0 +1,234 @@
+{
+  "rooms": {
+    "yard": {
+      "name": "Ein Hof. Große Pläne.",
+      "label": "Vor dem Haus",
+      "sub": "IRGENDWO AUF DEM LAND · 06:12",
+      "entry": "Da steht er. Mein rotes Ticket in die große weite Welt. Leider ohne funktionierenden Motor.",
+      "objects": [
+        ["house", "Zum Haus", 10, 40, 10, 24],
+        ["barn", "Zur Scheune", 39, 38, 25, 22],
+        ["garage", "Zur Garage", 85, 42, 14, 24],
+        ["car", "Roter Kleinwagen", 54, 60, 30, 28],
+        ["well", "Brunnen", 0, 69, 19, 25]
+      ],
+      "geometry": {
+        "floor": [
+          [60, 328],
+          [280, 310],
+          [560, 321],
+          [930, 344],
+          [936, 493],
+          [835, 512],
+          [250, 512],
+          [62, 485]
+        ],
+        "obstacles": [
+          [520, 330, 803, 470],
+          [0, 370, 184, 450]
+        ],
+        "spawn": [345, 469],
+        "minY": 320,
+        "maxY": 510,
+        "minScale": 1.45,
+        "maxScale": 1.95,
+        "spots": {
+          "house": [139, 337, "up"],
+          "barn": [474, 335, "up"],
+          "garage": [877, 369, "up"],
+          "car": [492, 474, "right"],
+          "well": [210, 468, "left"]
+        },
+        "entries": {
+          "house": [144, 349],
+          "barn": [474, 347],
+          "garage": [875, 384]
+        }
+      },
+      "camera": [0, 0]
+    },
+    "garage": {
+      "name": "Für alles ein Werkzeug.",
+      "label": "Garage",
+      "sub": "KALLES REICH · GARAGE",
+      "entry": "Es riecht nach Motoröl und jahrelanger Erfahrung. Kalle ist natürlich schon hier.",
+      "objects": [
+        ["toolbox", "Werkzeugkasten", 10, 47, 12, 11],
+        ["rag", "Putzlappen", 27, 53, 8, 15],
+        ["mechanic", "Kalle", 68, 42, 10, 42],
+        ["yard", "Zurück zum Hof", 88, 34, 11, 43]
+      ],
+      "geometry": {
+        "floor": [
+          [60, 465],
+          [445, 455],
+          [560, 434],
+          [931, 425],
+          [932, 505],
+          [52, 505]
+        ],
+        "obstacles": [
+          [681, 436, 725, 468],
+          [453, 435, 512, 461]
+        ],
+        "spawn": [877, 458],
+        "minY": 430,
+        "maxY": 505,
+        "minScale": 3.1,
+        "maxScale": 3.45,
+        "spots": {
+          "toolbox": [176, 478, "up"],
+          "rag": [316, 476, "up"],
+          "mechanic": [588, 475, "right"],
+          "yard": [910, 437, "right"]
+        },
+        "npc": [703, 451]
+      },
+      "camera": [0, 0]
+    },
+    "barn": {
+      "name": "Hier rostet die Zukunft.",
+      "label": "Scheune",
+      "sub": "STAUB, HEU UND ERSATZTEILE · SCHEUNE",
+      "entry": "Früher habe ich hier Verstecken gespielt. Heute suche ich einen Ausweg.",
+      "objects": [
+        ["hay", "Heuballen", 12, 43, 22, 34],
+        ["chest", "Alte Truhe", 40, 54, 16, 23],
+        ["tractor", "Alter Traktor", 61, 41, 25, 34],
+        ["yard", "Zurück zum Hof", 89, 35, 10, 43]
+      ],
+      "geometry": {
+        "floor": [
+          [212, 425],
+          [511, 420],
+          [741, 425],
+          [932, 395],
+          [935, 505],
+          [95, 505],
+          [96, 463]
+        ],
+        "obstacles": [],
+        "spawn": [891, 445],
+        "minY": 415,
+        "maxY": 505,
+        "minScale": 2.85,
+        "maxScale": 3.2,
+        "spots": {
+          "hay": [233, 455, "left"],
+          "chest": [447, 454, "up"],
+          "tractor": [662, 450, "up"],
+          "yard": [913, 419, "right"]
+        }
+      },
+      "camera": [0, 0]
+    },
+    "house": {
+      "name": "Noch ein letzter Kaffee.",
+      "label": "Ländliches Haus",
+      "sub": "DAS ZUHAUSE · KÜCHE",
+      "entry": "Alles wie immer. Nur ich habe heute andere Pläne.",
+      "objects": [
+        ["manual", "Reparaturhandbuch", 15, 58, 20, 13],
+        ["key", "Autoschlüssel", 68, 26, 7, 14],
+        ["cup", "Leere Tasse", 62, 48, 7, 10],
+        ["pot", "Kaffeekanne", 48, 43, 6, 13],
+        ["stove", "Herd", 40, 51, 15, 30],
+        ["cupboard", "Küchenschrank", 56, 59, 19, 25],
+        ["grounds", "Kaffeepulver", 62.5, 65, 4, 5],
+        ["yard", "Zurück zum Hof", 88, 29, 11, 49]
+      ],
+      "geometry": {
+        "floor": [
+          [464, 466],
+          [791, 466],
+          [832, 446],
+          [907, 446],
+          [913, 510],
+          [464, 510]
+        ],
+        "obstacles": [
+          [480, 0, 788, 449],
+          [400, 0, 530, 435],
+          [0, 330, 430, 540],
+          [940, 0, 960, 540]
+        ],
+        "clearance": [26, 12],
+        "spawn": [877, 485],
+        "minY": 450,
+        "maxY": 510,
+        "minScale": 3.25,
+        "maxScale": 3.65,
+        "spots": {
+          "manual": [480, 491, "left"],
+          "key": [699, 477, "up"],
+          "cup": [612, 477, "up"],
+          "pot": [552, 477, "up"],
+          "stove": [552, 477, "up"],
+          "cupboard": [650, 477, "up"],
+          "grounds": [650, 477, "up"],
+          "yard": [871, 466, "right"]
+        }
+      },
+      "camera": [0, 0]
+    }
+  },
+  "npcs": {
+    "mechanic": [0, 703, 451]
+  },
+  "connections": {
+    "yard": [
+      {
+        "target": "house",
+        "to": "house",
+        "entry": "yard"
+      },
+      {
+        "target": "barn",
+        "to": "barn",
+        "entry": "yard"
+      },
+      {
+        "target": "garage",
+        "to": "garage",
+        "entry": "yard"
+      }
+    ],
+    "house": [
+      {
+        "target": "yard",
+        "to": "yard",
+        "entry": "house"
+      }
+    ],
+    "barn": [
+      {
+        "target": "yard",
+        "to": "yard",
+        "entry": "barn"
+      }
+    ],
+    "garage": [
+      {
+        "target": "yard",
+        "to": "yard",
+        "entry": "garage"
+      }
+    ]
+  },
+  "entries": {
+    "yard": {
+      "house": [144, 349],
+      "barn": [474, 347],
+      "garage": [875, 384]
+    },
+    "house": {
+      "yard": [877, 485]
+    },
+    "barn": {
+      "yard": [891, 445]
+    },
+    "garage": {
+      "yard": [877, 458]
+    }
+  }
+}

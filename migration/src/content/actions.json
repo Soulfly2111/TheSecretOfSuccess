@@ -1,0 +1,35 @@
+{
+  "groups": {
+    "look": ["Schau an"],
+    "person": ["Rede mit", "Schau an"],
+    "pickup": ["Nimm", "Schau an"],
+    "passage": ["Gehe zu", "Schau an"],
+    "doorClosed": ["Schau an", "Öffne", "Gehe zu"],
+    "doorOpen": ["Schau an", "Schließe", "Gehe zu"],
+    "use": ["Schau an", "Benutze"]
+  },
+  "prolog": {
+    "mechanic": "person",
+    "manual": ["Schau an", "Nimm"],
+    "key": "pickup",
+    "cup": "pickup",
+    "grounds": "pickup",
+    "rag": "pickup",
+    "tractor": ["Schau an", "Nimm"],
+    "hay": ["Schau an", "Ziehe", "Drücke"],
+    "well": "use",
+    "stove": ["Schau an", "Mach an", "Mach aus"]
+  },
+  "act1": {
+    "knife": "pickup",
+    "keycard": "pickup",
+    "washbasin": "use",
+    "sink": "use",
+    "toilet": "use",
+    "coffeeMachine": "use",
+    "copier": "use",
+    "waterDispenser": "use",
+    "phone": "use",
+    "intercom": "use"
+  }
+}

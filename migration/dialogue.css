@@ -1,0 +1,14 @@
+#story-dialogue[hidden]{display:none!important}
+#scene #story-dialogue{position:absolute;z-index:8;left:18%;right:22%;bottom:2%;width:auto;max-height:44%;overflow:auto;padding:3px 4px;margin:0;border:0;background:none;box-shadow:none;transform:none;text-align:left;color:var(--speaker-color,#57a9ff);font:clamp(18px,2.1vw,28px)/1.08 'VT323',monospace;text-shadow:-2px -2px #07101c,2px -2px #07101c,-2px 2px #07101c,2px 2px #07101c,0 3px #07101c;scrollbar-width:thin;overflow-wrap:anywhere}
+#scene #story-dialogue strong{display:block;font:14px 'VT323',monospace;letter-spacing:1px;color:var(--speaker-color,#57a9ff)}
+#scene #story-dialogue p{margin:2px 0;color:inherit;font:inherit;cursor:pointer}
+#scene #story-dialogue>div{display:flex;flex-direction:column;gap:2px}
+#scene #story-dialogue button{display:block;text-align:left;white-space:normal;font:inherit;color:inherit;text-shadow:inherit;background:none;border:0;border-radius:0;padding:2px 4px;cursor:pointer;min-height:0;margin:0}
+#scene #story-dialogue .dialogue-choice::before{content:'▪ ';}
+#scene #story-dialogue button:hover,#scene #story-dialogue button:focus-visible{color:#fff0a8;background:#07101c66;outline:1px solid #fff0a880}
+#scene #story-dialogue .dialogue-next{font-size:.75em;align-self:flex-end}
+#choices:empty{display:none}
+.mobile-speech{display:none!important}
+.mobile-game #scene #story-dialogue{left:12%;right:12%;top:auto;bottom:2%;max-height:48%;font-size:20px}
+.mobile-game #scene #story-dialogue button{min-height:44px}
+@media(max-width:600px){#scene #story-dialogue{left:6%;right:6%;font-size:18px;max-height:55%}}

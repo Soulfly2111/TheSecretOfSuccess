@@ -1,5 +1,7 @@
 # The Secret of My Success – Prolog und Akt 1
 
+Eine separate, spielbare TypeScript-/Phaser-/Vite-Migration befindet sich in [migration](migration/README.md). Die bisherige Version bleibt die Referenz; die Vorschau verwendet eigene Spielstände.
+
 ## Kapitelwahl
 
 Beim Start steht die Auswahl zwischen Prolog und Akt 1 zur Verfügung. Beide Kapitel sind frei spielbar. Über „Kapitel“ kann jederzeit gewechselt werden. Bestehende Prolog-Spielstände bleiben unter `success-prolog-v1` erhalten; Akt 1 verwendet `success-act1-exploration-v1`. Nach dem Prolog führt ein Link direkt zu Akt 1. `act1.html` öffnet das neue Kapitel direkt.

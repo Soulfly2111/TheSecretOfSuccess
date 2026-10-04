@@ -1,0 +1,3746 @@
+{
+  "programs": {
+    "act": {
+      "parameters": ["s", "verb", "target", "selected"],
+      "commands": [
+        {
+          "kind": "let",
+          "name": "f",
+          "value": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["s"]
+              },
+              {
+                "literal": "flags"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["s"]
+              },
+              {
+                "literal": "won"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Der Motor läuft. Die Großstadt wartet!"
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "ref": ["selected"]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "has",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Das habe ich nicht in der Tasche."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "cup"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "well"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "In der Kaffeekanne ist bereits genug Wasser. Die Tasse bleibt zum Einschenken leer."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "remove",
+                    "args": [
+                      {
+                        "literal": "cup"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Frisches Brunnenwasser. Zurück zur Kaffeekanne in der Küche."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "pot"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "In der Kanne ist genug Wasser."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "remove",
+                    "args": [
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "cup"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "water"
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Wasser eingefüllt. Jetzt noch Kaffeepulver dazu und den Herd anmachen."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "grounds"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "pot"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "remove",
+                    "args": [
+                      {
+                        "literal": "grounds"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "grounds"
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Kaffeepulver eingefüllt. Mit Wasser und eingeschaltetem Herd wird daraus Kaffee."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "cup"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "pot"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "brewed"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Erst Wasser und Pulver in die Kanne geben und den Herd anmachen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "coffeeGiven"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Kalle hat seinen Kaffee schon."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "remove",
+                    "args": [
+                      {
+                        "literal": "cup"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "coffee"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Frisch gekochter Kaffee. Den bringe ich Kalle in die Garage."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "mechanic"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "list": [
+                          {
+                            "literal": "cup"
+                          },
+                          {
+                            "literal": "water"
+                          },
+                          {
+                            "literal": "grounds"
+                          }
+                        ]
+                      },
+                      {
+                        "ref": ["selected"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Kalle: „Ich brauche fertigen Kaffee! Wasser und Pulver in die Kanne, Herd an, dann einschenken.“"
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["selected"]
+                          },
+                          {
+                            "literal": "rag"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["target"]
+                          },
+                          {
+                            "literal": "dirtybelt"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["selected"]
+                          },
+                          {
+                            "literal": "dirtybelt"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["target"]
+                          },
+                          {
+                            "literal": "rag"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "or",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "has",
+                            "args": [
+                              {
+                                "literal": "dirtybelt"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "has",
+                            "args": [
+                              {
+                                "literal": "rag"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Dafür brauche ich beide Gegenstände."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "remove",
+                    "args": [
+                      {
+                        "literal": "dirtybelt"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "belt"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Einmal gründlich abwischen. Der Keilriemen ist noch richtig gut!"
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "wrench"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "tractor"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "beltTaken"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Am Traktor gibt es nichts mehr, das ich brauche."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "beltTaken"
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "dirtybelt"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Die Halterung ist gelöst. Der Keilriemen passt zu meinem Wagen – wenn das Öl runter ist."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "car"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "key"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "branch",
+                      "condition": {
+                        "op": "or",
+                        "args": [
+                          {
+                            "op": "not",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["f"]
+                                  },
+                                  {
+                                    "literal": "tight"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "op": "not",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["f"]
+                                  },
+                                  {
+                                    "literal": "belt"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "yes": [
+                        {
+                          "kind": "return",
+                          "value": {
+                            "literal": "Rrr … klack. Mit diesem Motor komme ich höchstens bis zum Gartentor. Ich sollte unter die Haube schauen."
+                          }
+                        }
+                      ],
+                      "no": []
+                    },
+                    {
+                      "kind": "set",
+                      "path": [
+                        {
+                          "literal": "s"
+                        },
+                        {
+                          "literal": "won"
+                        }
+                      ],
+                      "value": {
+                        "literal": true
+                      },
+                      "operator": "="
+                    },
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Er läuft! Auf Wiedersehen, Dorf. Hallo, Karriere. Was soll schon schiefgehen?"
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "hood"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Erst die Motorhaube öffnen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "read"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Bevor ich etwas kaputt repariere, sollte ich das Handbuch im Haus lesen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "wrench"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "set",
+                      "path": [
+                        {
+                          "literal": "f"
+                        },
+                        {
+                          "literal": "tight"
+                        }
+                      ],
+                      "value": {
+                        "literal": true
+                      },
+                      "operator": "="
+                    },
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Batterieklemme festgezogen. Der Kontakt sitzt wieder."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "dirtybelt"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Der ist viel zu ölig. Den muss ich erst mit einem Lappen säubern."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "belt"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "set",
+                      "path": [
+                        {
+                          "literal": "f"
+                        },
+                        {
+                          "literal": "belt"
+                        }
+                      ],
+                      "value": {
+                        "literal": true
+                      },
+                      "operator": "="
+                    },
+                    {
+                      "kind": "effect",
+                      "value": {
+                        "op": "remove",
+                        "args": [
+                          {
+                            "literal": "belt"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Der Keilriemen sitzt. Jetzt noch den Schlüssel benutzen – sofern die Batterieklemme fest ist."
+                      }
+                    }
+                  ],
+                  "no": []
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "coffee"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "mechanic"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "remove",
+                    "args": [
+                      {
+                        "literal": "coffee"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "coffeeGiven"
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Kalle: „Danke! Jetzt darfst du meinen Schraubenschlüssel aus dem Werkzeugkasten nehmen. Am Traktor in der Scheune findest du einen passenden Keilriemen.“"
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["selected"]
+                      },
+                      {
+                        "literal": "manual"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "read"
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "call:manualText",
+                    "args": []
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Das passt hier nicht zusammen. Ein guter Plan ist besser als rohe Gewalt."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "manual"
+                  }
+                ]
+              },
+              {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "or",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["verb"]
+                          },
+                          {
+                            "literal": "Schau an"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["verb"]
+                          },
+                          {
+                            "literal": "Benutze"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["verb"]
+                      },
+                      {
+                        "literal": "Öffne"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "read"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "op": "call:manualText",
+                "args": []
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "cupboard"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Öffne"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "cupboard"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "or",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "grounds"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "grounds"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Der Küchenschrank ist offen. Das Pulver hast du schon genommen."
+                  },
+                  {
+                    "literal": "Im offenen Küchenschrank steht Kaffeepulver. Nimm es mit."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "cupboard"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schließe"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "cupboard"
+                }
+              ],
+              "value": {
+                "literal": false
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Der Küchenschrank ist wieder geschlossen."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "stove"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Mach an"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["f"]
+                  },
+                  {
+                    "literal": "brewed"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Der Kaffee ist fertig. Der Herd ist wieder aus."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Erst Wasser am Brunnen holen und in die Kaffeekanne geben."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "grounds"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Das Kaffeepulver aus dem Küchenschrank fehlt noch in der Kanne."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "brewed"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Der Kaffee blubbert und duftet … fertig! Herd aus. Jetzt die leere Tasse mit der Kaffeekanne benutzen."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "stove"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Mach aus"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Der Herd ist aus. Nach dem Kochen schalte ich ihn automatisch ab."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "well"
+                  }
+                ]
+              },
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "Benutze"
+                      },
+                      {
+                        "literal": "Drücke"
+                      },
+                      {
+                        "literal": "Ziehe"
+                      },
+                      {
+                        "literal": "Nimm"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["verb"]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Benutze die leere Tasse aus der Küche mit dem Brunnen, um Wasser zu holen."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["verb"]
+              },
+              {
+                "literal": "Nimm"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "cup"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "or",
+                    "args": [
+                      {
+                        "op": "or",
+                        "args": [
+                          {
+                            "op": "or",
+                            "args": [
+                              {
+                                "op": "has",
+                                "args": [
+                                  {
+                                    "literal": "cup"
+                                  }
+                                ]
+                              },
+                              {
+                                "op": "has",
+                                "args": [
+                                  {
+                                    "literal": "water"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "op": "has",
+                            "args": [
+                              {
+                                "literal": "coffee"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "coffeeGiven"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Die Tasse habe ich bereits mitgenommen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "cup"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Eine leere Tasse. Damit kann ich am Brunnen Wasser holen."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "grounds"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "cupboard"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "cupboard"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Erst den Küchenschrank öffnen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "or",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "grounds"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "grounds"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Das Kaffeepulver habe ich schon genommen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "grounds"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Kaffeepulver. Das kommt mit Wasser in die Kaffeekanne."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "coffee"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Erst Wasser und Pulver in die Kaffeekanne geben, den Herd anmachen und mit der leeren Tasse einschenken."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "toolbox"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "coffeeGiven"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Kalle: „Halt! Erst einen frisch gekochten Kaffee für mich, dann darfst du den Schraubenschlüssel nehmen.“"
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "manual"
+                      },
+                      {
+                        "literal": "key"
+                      },
+                      {
+                        "literal": "rag"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["target"]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "or",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "ref": ["target"]
+                          }
+                        ]
+                      },
+                      {
+                        "op": "and",
+                        "args": [
+                          {
+                            "op": "eq",
+                            "args": [
+                              {
+                                "ref": ["target"]
+                              },
+                              {
+                                "literal": "coffee"
+                              }
+                            ]
+                          },
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "coffeeGiven"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Das habe ich schon mitgenommen."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "record": {
+                          "manual": {
+                            "literal": "Das Handbuch kommt mit. Lesen wäre vermutlich auch eine Idee."
+                          },
+                          "key": {
+                            "literal": "Mein Autoschlüssel. Jetzt fehlt nur noch ein funktionierendes Auto."
+                          },
+                          "rag": {
+                            "literal": "Ein sauberer Putzlappen. Im Anzug will ich mich nicht schmutzig machen."
+                          },
+                          "coffee": {
+                            "literal": "Noch warm. Kalle riecht guten Kaffee auf hundert Meter."
+                          }
+                        }
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "toolbox"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "toolbox"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Der Werkzeugkasten ist noch zu. Öffnen wäre ein Anfang."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "has",
+                    "args": [
+                      {
+                        "literal": "wrench"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Den Schraubenschlüssel habe ich schon."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "literal": "wrench"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ein solider Schraubenschlüssel. Kalle hat ihn mir für die Reparatur geliehen."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "tractor"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Der Keilriemen hängt an einer verschraubten Halterung."
+                  }
+                }
+              ],
+              "no": []
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "toolbox"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Öffne"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "toolbox"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "has",
+                    "args": [
+                      {
+                        "literal": "wrench"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Der Werkzeugkasten ist offen. Den Schraubenschlüssel habe ich bereits eingepackt."
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "coffeeGiven"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Im Werkzeugkasten liegt der Schraubenschlüssel. Kalle hat ihn freigegeben."
+                      },
+                      {
+                        "literal": "Im Werkzeugkasten liegt ein Schraubenschlüssel. Vor dem Nehmen braucht Kalle seinen Kaffee."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "toolbox"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schließe"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "toolbox"
+                }
+              ],
+              "value": {
+                "literal": false
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Werkzeugkasten geschlossen. Ordnung muss sein."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "car"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Öffne"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "hood"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "op": "concat",
+                "args": [
+                  {
+                    "literal": "Die Haube ist offen: Der Keilriemen "
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "belt"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "sitzt"
+                      },
+                      {
+                        "literal": "fehlt"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": ", die Batterieklemme "
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "tight"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "ist fest"
+                      },
+                      {
+                        "literal": "wackelt"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": ". "
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "read"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Jetzt kann ich am Motor arbeiten."
+                      },
+                      {
+                        "literal": "Das Handbuch könnte helfen."
+                      }
+                    ]
+                  },
+                  {
+                    "literal": ""
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "car"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schließe"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "hood"
+                }
+              ],
+              "value": {
+                "literal": false
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Die Haube rastet ein."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "car"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Mach an"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "has",
+                    "args": [
+                      {
+                        "literal": "key"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "call:act",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "literal": "Benutze"
+                      },
+                      {
+                        "literal": "car"
+                      },
+                      {
+                        "literal": "key"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Ohne meinen Autoschlüssel wird das nichts. Er hängt noch im Haus."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "car"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Mach aus"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Das hat der Wagen bereits ganz von selbst erledigt."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "mechanic"
+                  }
+                ]
+              },
+              {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["verb"]
+                      },
+                      {
+                        "literal": "Rede mit"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["verb"]
+                      },
+                      {
+                        "literal": "Gib"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "coffeeGiven"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Kalle: „Werkzeug an die Batterieklemme, sauberen Riemen einsetzen, Schlüssel drehen. Du schaffst das, Chef.“"
+                  },
+                  {
+                    "literal": "Kalle: „Schon im Anzug? Für den Vorstand ist es früh. Erst Kaffee, dann Werkzeug! Wasser gibt es am Brunnen, Pulver im Küchenschrank. Beides in die Kanne geben und den Herd anmachen.“"
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "hay"
+                  }
+                ]
+              },
+              {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["verb"]
+                      },
+                      {
+                        "literal": "Ziehe"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["verb"]
+                      },
+                      {
+                        "literal": "Drücke"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "hay"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Nur Staub und eine sehr beleidigte Maus. Der alte Traktor sieht nützlicher aus."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "chest"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Öffne"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "chest"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Alte Schulfotos. Auf einem steht: „Ich werde mal Chef.“ Wenigstens bin ich konsequent."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "chest"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schließe"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "chest"
+                }
+              ],
+              "value": {
+                "literal": false
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Die Truhe ist wieder zu. Die Erinnerungen bleiben sicher verstaut."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schau an"
+                  }
+                ]
+              },
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "cup"
+                      },
+                      {
+                        "literal": "water"
+                      },
+                      {
+                        "literal": "grounds"
+                      },
+                      {
+                        "literal": "well"
+                      },
+                      {
+                        "literal": "pot"
+                      },
+                      {
+                        "literal": "stove"
+                      },
+                      {
+                        "literal": "cupboard"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["target"]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "get",
+                "args": [
+                  {
+                    "record": {
+                      "cup": {
+                        "literal": "Die leere Tasse eignet sich zum Wasserholen am Brunnen."
+                      },
+                      "water": {
+                        "literal": "Frisches Brunnenwasser für die Kaffeekanne."
+                      },
+                      "grounds": {
+                        "literal": "Kaffeepulver für Kalle."
+                      },
+                      "well": {
+                        "literal": "Frisches Wasser. Benutze die leere Tasse mit dem Brunnen."
+                      },
+                      "pot": {
+                        "op": "choose",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "brewed"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "Fertiger Kaffee! Benutze die leere Tasse mit der Kanne."
+                          },
+                          {
+                            "literal": "Wasser und Kaffeepulver hier einfüllen, danach den Herd anmachen."
+                          }
+                        ]
+                      },
+                      "stove": {
+                        "literal": "Mit „Mach an“ kochst du den Kaffee, sobald Wasser und Pulver in der Kanne sind."
+                      },
+                      "cupboard": {
+                        "op": "choose",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "cupboard"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "Der Küchenschrank ist offen."
+                          },
+                          {
+                            "literal": "Hier müsste Kaffeepulver sein. Öffne den Küchenschrank."
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "ref": ["target"]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["verb"]
+              },
+              {
+                "literal": "Schau an"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "record": {
+                          "car": {
+                            "op": "choose",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["f"]
+                                  },
+                                  {
+                                    "literal": "hood"
+                                  }
+                                ]
+                              },
+                              {
+                                "op": "concat",
+                                "args": [
+                                  {
+                                    "literal": "Unter der Haube: Batterieklemme "
+                                  },
+                                  {
+                                    "op": "choose",
+                                    "args": [
+                                      {
+                                        "op": "get",
+                                        "args": [
+                                          {
+                                            "ref": ["f"]
+                                          },
+                                          {
+                                            "literal": "tight"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "literal": "fest"
+                                      },
+                                      {
+                                        "literal": "locker"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "literal": ", Keilriemen "
+                                  },
+                                  {
+                                    "op": "choose",
+                                    "args": [
+                                      {
+                                        "op": "get",
+                                        "args": [
+                                          {
+                                            "ref": ["f"]
+                                          },
+                                          {
+                                            "literal": "belt"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "literal": "eingesetzt"
+                                      },
+                                      {
+                                        "literal": "fehlt"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "literal": "."
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "Mein roter Kleinwagen. Viel Charakter. Wenig Zuverlässigkeit."
+                              }
+                            ]
+                          },
+                          "tractor": {
+                            "op": "choose",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["f"]
+                                  },
+                                  {
+                                    "literal": "beltTaken"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "Der Traktor hat seinen Keilriemen für einen guten Zweck gespendet."
+                              },
+                              {
+                                "literal": "Ein ausrangierter Traktor. Sein Keilriemen ist ölig, aber unbeschädigt. Die Halterung ist verschraubt."
+                              }
+                            ]
+                          },
+                          "toolbox": {
+                            "op": "choose",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["f"]
+                                  },
+                                  {
+                                    "literal": "toolbox"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "Ein offener Werkzeugkasten. Kalle erlaubt die Entnahme nach seinem Kaffee."
+                              },
+                              {
+                                "literal": "Kalles Werkzeugkasten. Nicht abgeschlossen."
+                              }
+                            ]
+                          },
+                          "mechanic": {
+                            "literal": "Kalle, unser Dorfmechaniker. Repariert alles außer seinem Schlafrhythmus."
+                          },
+                          "rag": {
+                            "literal": "Ein erstaunlich sauberer Putzlappen."
+                          },
+                          "key": {
+                            "literal": "Der Schlüssel zu meiner Zukunft. Zumindest zum Auto."
+                          },
+                          "coffee": {
+                            "literal": "Schwarzer Kaffee. Stark genug für zwei Karrieren."
+                          },
+                          "hay": {
+                            "literal": "Heu. Die ländliche Variante eines Aktenstapels."
+                          },
+                          "chest": {
+                            "literal": "Eine alte Truhe voller Erinnerungen."
+                          }
+                        }
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Das könnte ich mit einem anderen Gegenstand benutzen."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["verb"]
+              },
+              {
+                "literal": "Gehe zu"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Ich sehe mich hier einmal um."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["verb"]
+              },
+              {
+                "literal": "Rede mit"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Keine Antwort. Mein Charme funktioniert offenbar nur bei Menschen."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "literal": "Das bringt mich gerade nicht weiter. Anschauen hilft oft – oder den passenden Gegenstand benutzen."
+          }
+        }
+      ]
+    },
+    "manualText": {
+      "parameters": [],
+      "commands": [
+        {
+          "kind": "return",
+          "value": {
+            "literal": "HANDBUCH: „Startprobleme? 1. Batterieklemme mit Schraubenschlüssel festziehen. 2. Sauberen Keilriemen einsetzen. 3. Zündung mit Autoschlüssel starten.“"
+          }
+        }
+      ]
+    },
+    "hint": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "let",
+          "name": "f",
+          "value": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["s"]
+              },
+              {
+                "literal": "flags"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["f"]
+                  },
+                  {
+                    "literal": "read"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Im Haus liegt ein Reparaturhandbuch auf dem Tisch. Schau es dir an."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "coffeeGiven"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          },
+                          {
+                            "literal": "inventory"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "wrench"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "has",
+                "args": [
+                  {
+                    "literal": "coffee"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Gib Kalle in der Garage den frisch gekochten Kaffee."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "cup"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "water"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Nimm die leere Tasse auf der Küchenarbeitsplatte."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "water"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "water"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Benutze die Tasse Wasser mit der Kaffeekanne in der Küche."
+                      },
+                      {
+                        "literal": "Benutze die leere Tasse mit dem Brunnen vorne auf dem Hof."
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "grounds"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "grounds"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Benutze das Kaffeepulver mit der Kaffeekanne."
+                      },
+                      {
+                        "op": "choose",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "cupboard"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "Nimm das Kaffeepulver aus dem offenen Küchenschrank."
+                          },
+                          {
+                            "literal": "Öffne den Küchenschrank. Darin findest du Kaffeepulver."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "brewed"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Wähle „Mach an“ und klicke auf den Herd."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Benutze die leere Tasse mit der Kaffeekanne, dann gib Kalle den Kaffee."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "literal": "inventory"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "wrench"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "In der Garage: Werkzeugkasten öffnen, dann mit „Nimm“ den Schraubenschlüssel einpacken."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["f"]
+                  },
+                  {
+                    "literal": "beltTaken"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "In der Scheune steckt ein passender Keilriemen am Traktor. Benutze den Schraubenschlüssel damit."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "includes",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "inventory"
+                  }
+                ]
+              },
+              {
+                "literal": "dirtybelt"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          },
+                          {
+                            "literal": "inventory"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "rag"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Klicke den Putzlappen im Inventar an, danach den öligen Keilriemen."
+                  },
+                  {
+                    "literal": "In der Garage liegt ein Putzlappen. Nimm ihn mit."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "hood"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "tight"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "belt"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Zurück auf dem Hof: Öffne die Motorhaube des Autos."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["f"]
+                  },
+                  {
+                    "literal": "tight"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Benutze den Schraubenschlüssel mit dem geöffneten Auto."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["f"]
+                  },
+                  {
+                    "literal": "belt"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Benutze den sauberen Keilriemen mit dem geöffneten Auto."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "literal": "inventory"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "key"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Der Autoschlüssel hängt im Haus an der Wand."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "literal": "Benutze den Autoschlüssel mit dem Auto. Die Großstadt wartet!"
+          }
+        }
+      ]
+    }
+  },
+  "constants": {
+    "items": {
+      "manual": "Handbuch",
+      "key": "Autoschlüssel",
+      "wrench": "Schraubenschlüssel",
+      "rag": "Putzlappen",
+      "dirtybelt": "Öliger Keilriemen",
+      "belt": "Keilriemen",
+      "coffee": "Kaffee",
+      "cup": "Leere Tasse",
+      "water": "Tasse Wasser",
+      "grounds": "Kaffeepulver"
+    }
+  }
+}

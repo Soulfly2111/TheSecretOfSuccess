@@ -1,0 +1,5 @@
+migration/node_modules/
+migration/dist/
+migration/.qa/
+migration/public/assets/
+.qa/

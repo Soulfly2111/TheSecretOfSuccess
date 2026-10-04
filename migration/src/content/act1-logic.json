@@ -1,0 +1,4616 @@
+{
+  "programs": {
+    "dialogue": {
+      "parameters": ["state", "topic"],
+      "commands": [
+        {
+          "kind": "let",
+          "name": "f",
+          "value": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["state"]
+              },
+              {
+                "literal": "flags"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["topic"]
+              },
+              {
+                "literal": "intro"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "uncle"
+                      },
+                      "text": {
+                        "literal": "Hier stehen dir alle Türen offen."
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "hero"
+                      },
+                      "text": {
+                        "literal": "Auch die zur Vorstandsetage?"
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "uncle"
+                      },
+                      "text": {
+                        "literal": "Walter erklärt dir, welche davon du bewachen sollst."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["topic"]
+              },
+              {
+                "literal": "thanks"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Beim Teamleiter lege ich ein gutes Wort für dich ein."
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "hero"
+                      },
+                      "text": {
+                        "literal": "Welches?"
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Zuverlässig. „Unersetzlich“ würde dich hier unten festhalten."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["f"]
+              },
+              {
+                "literal": "cardReturned"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Meine Karte ist wieder da. Und meine Empfehlung steht: Beim Teamleiter sage ich, dass auf dich Verlass ist."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["topic"]
+              },
+              {
+                "literal": "lastSeen"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "wcClue"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["state"]
+                  },
+                  {
+                    "literal": "Walter hat die Karte zuletzt auf der Fensterbank im WC gesehen."
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Auf der Toilette. Ich habe sie kurz auf die Fensterbank gelegt, damit sie beim Händewaschen nicht nass wird."
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "hero"
+                      },
+                      "text": {
+                        "literal": "Und dann?"
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Waren wenigstens die Hände sauber."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["f"]
+                  },
+                  {
+                    "literal": "walterAsked"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "walterAsked"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["state"]
+                  },
+                  {
+                    "literal": "Walter sucht seine Schlüsselkarte. Ich helfe ihm."
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Ich passe auf sämtliche Zugänge auf. Meine eigene Karte hat sich der Aufsicht entzogen."
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "walter"
+                      },
+                      "text": {
+                        "literal": "Kannst du mir einen Gefallen tun und sie suchen? Ohne die Karte komme ich nicht einmal an meinen Ersatzschlüssel."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "list": [
+              {
+                "record": {
+                  "speaker": {
+                    "literal": "walter"
+                  },
+                  "text": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "includes",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "inventory"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "keycard"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Du siehst aus, als hättest du etwas gefunden."
+                      },
+                      {
+                        "literal": "Meine Taschen sind leer. Abgesehen von der Verantwortung."
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "options": {
+      "parameters": ["state"],
+      "commands": [
+        {
+          "kind": "return",
+          "value": {
+            "op": "choose",
+            "args": [
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "walterAsked"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "cardReturned"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "list": [
+                  {
+                    "record": {
+                      "id": {
+                        "literal": "lastSeen"
+                      },
+                      "text": {
+                        "literal": "Wo hast du die Karte denn zuletzt gesehen?"
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "id": {
+                        "literal": "continue"
+                      },
+                      "text": {
+                        "literal": "Ich suche weiter"
+                      }
+                    }
+                  },
+                  {
+                    "record": {
+                      "id": {
+                        "literal": "bye"
+                      },
+                      "text": {
+                        "literal": "Bis später"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "list": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visible": {
+      "parameters": ["state", "id"],
+      "commands": [
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "room"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "corridor"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "cleaningLightOn"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "list": [
+                          {
+                            "literal": "lightSwitch"
+                          },
+                          {
+                            "literal": "lobbyExit"
+                          }
+                        ]
+                      },
+                      {
+                        "ref": ["id"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": false
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["id"]
+              },
+              {
+                "literal": "keycard"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "not",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "op": "get",
+                                    "args": [
+                                      {
+                                        "ref": ["state"]
+                                      },
+                                      {
+                                        "literal": "flags"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "literal": "cardSeen"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["state"]
+                                  },
+                                  {
+                                    "literal": "flags"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "cardTaken"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "cardReturned"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["id"]
+              },
+              {
+                "literal": "knife"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["state"]
+                                  },
+                                  {
+                                    "literal": "flags"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "drawerOpen"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "knifeTaken"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "literal": true
+          }
+        }
+      ]
+    },
+    "act": {
+      "parameters": ["state", "verb", "target", "item"],
+      "commands": [
+        {
+          "kind": "let",
+          "name": "photoResult",
+          "value": {
+            "op": "call:photo.act",
+            "args": [
+              {
+                "ref": ["state"]
+              },
+              {
+                "ref": ["verb"]
+              },
+              {
+                "ref": ["target"]
+              },
+              {
+                "ref": ["item"]
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "ne",
+            "args": [
+              {
+                "ref": ["photoResult"]
+              },
+              {
+                "literal": null
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "ref": ["photoResult"]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "room"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "corridor"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "includes",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "inventory"
+                              }
+                            ]
+                          },
+                          {
+                            "ref": ["target"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "call:visible",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Im Dunkeln kann ich das nicht erkennen. Erst das Licht einschalten."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "let",
+          "name": "f",
+          "value": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["state"]
+              },
+              {
+                "literal": "flags"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["item"]
+                          },
+                          {
+                            "literal": "keycard"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["target"]
+                          },
+                          {
+                            "literal": "walter"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "list": [
+                          {
+                            "literal": "Gib"
+                          },
+                          {
+                            "literal": "Benutze"
+                          }
+                        ]
+                      },
+                      {
+                        "ref": ["verb"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "has",
+                "args": [
+                  {
+                    "literal": "keycard"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "state"
+                },
+                {
+                  "literal": "inventory"
+                }
+              ],
+              "value": {
+                "op": "filterOut",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "inventory"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "keycard"
+                  }
+                ]
+              },
+              "operator": "="
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "cardReturned"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "walterAsked"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["state"]
+                  },
+                  {
+                    "literal": "Walter empfiehlt mich beim Teamleiter. Ein erster Schritt zum Büroplatz im 1. OG."
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "call:photo.journal",
+                "args": [
+                  {
+                    "ref": ["state"]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Ich gebe Walter seine Schlüsselkarte zurück. Er verspricht, mich beim Teamleiter zu empfehlen."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["item"]
+                      },
+                      {
+                        "literal": "knife"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "list": [
+                          {
+                            "literal": "radiator"
+                          },
+                          {
+                            "literal": "keycard"
+                          }
+                        ]
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "op": "has",
+                "args": [
+                  {
+                    "literal": "knife"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "cardTaken"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "cardReturned"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Hinter der Heizung steckt keine Karte mehr."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "cardSeen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ich sollte mir die Heizung erst genauer anschauen."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "cardTaken"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "add",
+                "args": [
+                  {
+                    "literal": "keycard"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Mit der flachen Klinge schiebe ich die Karte aus dem Spalt. Da ist sie! Das Tafelmesser behalte ich erst einmal."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "ref": ["item"]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["item"]
+                      },
+                      {
+                        "literal": "brochure"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Die Broschüre behalte ich zum Nachlesen."
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "ref": ["item"]
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Das passt hier nicht zusammen."
+                      },
+                      {
+                        "literal": "Diesen Gegenstand habe ich nicht dabei."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "lightSwitch"
+                  }
+                ]
+              },
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "Benutze"
+                      },
+                      {
+                        "literal": "Mach an"
+                      },
+                      {
+                        "literal": "Mach aus"
+                      },
+                      {
+                        "literal": "Drücke"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["verb"]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "cleaningLightOn"
+                }
+              ],
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["verb"]
+                      },
+                      {
+                        "literal": "Mach an"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": true
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["verb"]
+                          },
+                          {
+                            "literal": "Mach aus"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": false
+                      },
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "cleaningLightOn"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "cleaningLightOn"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Licht an. Endlich eine übersichtliche Abteilung."
+                  },
+                  {
+                    "literal": "Licht aus. Der Schalter leuchtet weiter."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "walter"
+                  }
+                ]
+              },
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "Rede mit"
+                      },
+                      {
+                        "literal": "Benutze"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["verb"]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "joinLines",
+                "args": [
+                  {
+                    "op": "call:dialogue",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "walter"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["target"]
+              },
+              {
+                "literal": "drawer"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Öffne"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "drawerOpen"
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "knifeTaken"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Die Besteckschublade ist offen. Das Tafelmesser habe ich bereits."
+                      },
+                      {
+                        "literal": "In der Schublade liegt ein stumpfes Tafelmesser."
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schließe"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "drawerOpen"
+                    }
+                  ],
+                  "value": {
+                    "literal": false
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Die Schublade ist wieder geschlossen."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schau an"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Eine Besteckschublade unter der Kaffeemaschine."
+                  }
+                }
+              ],
+              "no": []
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "radiator"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schau an"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "cardTaken"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "cardReturned"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ein Heizkörper unter dem Fenster. Die Karte steckt nicht mehr dahinter."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "cardSeen"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["state"]
+                  },
+                  {
+                    "literal": "Die Schlüsselkarte steckt hinter der Heizung. Der Spalt ist zu eng für meine Hand."
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Da blitzt etwas hinter der Heizung: Walters Schlüsselkarte! Der Spalt ist sehr eng."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "keycard"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Nimm"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "call:visible",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "keycard"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Für meine Finger zu schmal. Für meine Karriere erstaunlich typisch."
+                  },
+                  {
+                    "literal": "Hier ist keine erreichbare Karte."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "knife"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Nimm"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "call:visible",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "knife"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "has",
+                        "args": [
+                          {
+                            "literal": "knife"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Das Messer habe ich bereits."
+                      },
+                      {
+                        "literal": "Erst die Schublade öffnen."
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "f"
+                },
+                {
+                  "literal": "knifeTaken"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "add",
+                "args": [
+                  {
+                    "literal": "knife"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Ein stumpfes Tafelmesser. Flach, stabil und ohne große Schneidkraft."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schau an"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "knife"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Ein stumpfes Tafelmesser mit flacher Klinge."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schau an"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "keycard"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "has",
+                    "args": [
+                      {
+                        "literal": "keycard"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Walters Schlüsselkarte. Die sollte ich ihm zurückgeben."
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "call:visible",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "keycard"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Die Karte steckt im schmalen Spalt hinter der Heizung."
+                      },
+                      {
+                        "literal": "Hier sehe ich keine Karte."
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["verb"]
+              },
+              {
+                "literal": "Nimm"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "ne",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "brochureStand"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Das bleibt hier. Ich nehme nur mit, was mir gehört oder was ich für Walters Suche brauche."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "includes",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "inventory"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "brochure"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ein Exemplar reicht. Mehr Papier bedeutet nicht mehr Rendite."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "push",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "inventory"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "brochure"
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "state"
+                },
+                {
+                  "literal": "flags"
+                },
+                {
+                  "literal": "brochureTaken"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "effect",
+              "value": {
+                "op": "push",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "journal"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Firmenbroschüre aus der Vitrine: Black Hole Investments & Property Management."
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Ich nehme die Firmenbroschüre. Mit „Schau an“ kann ich sie im Inventar aufschlagen."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["verb"]
+              },
+              {
+                "literal": "Schau an"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "brochureStand"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "brochureTaken"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Mein Exemplar liegt im Inventar. Die Vitrine bleibt hier."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "return",
+              "value": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["descriptions"]
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Ein Teil des Gebäudes. Ich kann mich hier in Ruhe umsehen."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["conversations"]
+                  },
+                  {
+                    "ref": ["target"]
+                  }
+                ]
+              },
+              {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "Rede mit"
+                      },
+                      {
+                        "literal": "Benutze"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["verb"]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["conversations"]
+                  },
+                  {
+                    "ref": ["target"]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "let",
+          "name": "flag",
+          "value": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["doorFlags"]
+              },
+              {
+                "ref": ["target"]
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "ref": ["flag"]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "Öffne"
+                      },
+                      {
+                        "literal": "Drücke"
+                      },
+                      {
+                        "literal": "Ziehe"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["verb"]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "state"
+                    },
+                    {
+                      "literal": "flags"
+                    },
+                    {
+                      "ref": ["flag"]
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Die Tür ist offen. Mit „Gehe zu“ geht es hindurch."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["verb"]
+                  },
+                  {
+                    "literal": "Schließe"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "state"
+                    },
+                    {
+                      "literal": "flags"
+                    },
+                    {
+                      "ref": ["flag"]
+                    }
+                  ],
+                  "value": {
+                    "literal": false
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Die Tür ist geschlossen, aber nicht abgeschlossen."
+                  }
+                }
+              ],
+              "no": []
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["target"]
+              },
+              {
+                "literal": "freight"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["descriptions"]
+                  },
+                  {
+                    "literal": "freight"
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "includes",
+            "args": [
+              {
+                "list": [
+                  {
+                    "literal": "Benutze"
+                  },
+                  {
+                    "literal": "Mach an"
+                  },
+                  {
+                    "literal": "Drücke"
+                  }
+                ]
+              },
+              {
+                "ref": ["verb"]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "or",
+                "args": [
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "washbasin"
+                      }
+                    ]
+                  },
+                  {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "sink"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ich wasche mir die Hände. Bereit für saubere Geschäfte."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "toilet"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Eine kurze Pause. Die Spülung funktioniert tadellos."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "coffeeMachine"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Die Kaffeemaschine brummt zufrieden. Ein vertrautes Bürogeräusch."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "copier"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ein leises Surren. Der Kopierer ist bereit, aber ich habe nichts zu kopieren."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "waterDispenser"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ein Schluck Wasser. Ganz ohne Besprechung."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "emsConsole"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Die Bedienung überlasse ich dem Trainer. Ich bin nur auf einem Rundgang."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "phone"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Ich lasse den Empfang ungestört arbeiten."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "intercom"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Empfang: „Alles ruhig auf dem Hof? Hier auch.“"
+                  }
+                }
+              ],
+              "no": []
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "literal": "Ich sehe mich weiter um. Hier gibt es gerade nichts zu erledigen."
+          }
+        }
+      ]
+    },
+    "hint": {
+      "parameters": ["state"],
+      "commands": [
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "room"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "corridor"
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "cleaningLightOn"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Benutze den leuchtenden Schalter links neben der Tür."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "flags"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "cardReturned"
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "badgeIssued"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "call:photo.hint",
+                "args": [
+                  {
+                    "ref": ["state"]
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "not",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "flags"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "cardReturned"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "includes",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "inventory"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "keycard"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Gib Walter am Empfang seine Schlüsselkarte zurück."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "walterAsked"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Sprich mit Walter am Empfang. Er sucht etwas."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "wcClue"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["state"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "cardSeen"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Frag Walter noch einmal, wo er die Karte zuletzt gesehen hat."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "cardSeen"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Schau dir die Heizung unter dem Fenster im WC an."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "includes",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["state"]
+                          },
+                          {
+                            "literal": "inventory"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "knife"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "return",
+                  "value": {
+                    "literal": "Du brauchst etwas Flaches. In der Officeküche gibt es eine Besteckschublade."
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Benutze das Tafelmesser mit der entdeckten Karte hinter der Heizung."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "op": "or",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "record": {
+                      "lobby": {
+                        "literal": "Neben dem Eingang gibt es eine Firmenbroschüre. Treppe und Aufzug verbinden die drei Etagen; rechts liegen WC, Reinigungsraum und Hof."
+                      },
+                      "upper": {
+                        "literal": "Links liegt die Officeküche. Büros und Besprechungsraum kannst du direkt betreten. Die Treppe führt nach unten ins Erdgeschoss und nach oben in die 2. Etage. Im Aufzug wählst du die Etage."
+                      },
+                      "second": {
+                        "literal": "Der Kopierraum ist offen. Büro, EMS-Training und Pausenraum liegen hinter den beschrifteten Türen. Der Treppenabgang führt in die 1. Etage."
+                      },
+                      "teamOffice": {
+                        "literal": "Durch die Tür geht es zurück in die 2. Etage. Hier gibt es gerade keine Aufgaben."
+                      },
+                      "ems": {
+                        "literal": "Die Matte ist begehbar. Durch die Tür kommst du zurück in die 2. Etage."
+                      },
+                      "lounge": {
+                        "literal": "Die Kollegen genießen ihre Pause. Die Tür führt zurück in die 2. Etage."
+                      },
+                      "kitchen": {
+                        "literal": "Sieh dich um. Durch die offene Tür kommst du zurück in die 1. Etage."
+                      }
+                    }
+                  },
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["state"]
+                      },
+                      {
+                        "literal": "room"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "literal": "Die Tür führt zurück ins Erdgeschoss. Die Ortsleiste wählt den passenden Weg."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "photo.journal": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "flags"
+                  }
+                ]
+              },
+              {
+                "literal": "photoAsked"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "Firmenausweis: digitales Porträt vor dem offiziellen Black-Hole-Marmor benötigt."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "flags"
+                  }
+                ]
+              },
+              {
+                "literal": "photoSent"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "Das montierte Passfoto wurde an Ausweisdrucker_EG gesendet. Am Empfang nachfragen."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "flags"
+                  }
+                ]
+              },
+              {
+                "literal": "badgeIssued"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "VIP-Firmenausweis erhalten."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "call:photo.ready",
+            "args": [
+              {
+                "ref": ["s"]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "effect",
+              "value": {
+                "op": "note",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "Walters Empfehlung und Firmenausweis liegen vor: Bereit für den Arbeitsbeginn."
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        }
+      ]
+    },
+    "photo.ready": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "return",
+          "value": {
+            "op": "not",
+            "args": [
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["s"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "cardReturned"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["s"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "badgeIssued"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "photo.status": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "return",
+          "value": {
+            "op": "choose",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "literal": "flags"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "photoSent"
+                  }
+                ]
+              },
+              {
+                "literal": "Datei gesendet an: Ausweisdrucker_EG"
+              },
+              {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "selfieUploaded"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Foto 1/2 geladen. Warte auf Marmor-Hintergrund…"
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["s"]
+                              },
+                              {
+                                "literal": "flags"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "marbleUploaded"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Foto 1/2 geladen. Warte auf digitales Selfie…"
+                      },
+                      {
+                        "literal": "MacroPhotoshop · Warte auf Selfie und Marmor-Hintergrund."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "photo.act": {
+      "parameters": ["s", "v", "target", "item"],
+      "commands": [
+        {
+          "kind": "let",
+          "name": "f",
+          "value": {
+            "op": "get",
+            "args": [
+              {
+                "ref": ["s"]
+              },
+              {
+                "literal": "flags"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["item"]
+                  },
+                  {
+                    "literal": "smartphone"
+                  }
+                ]
+              },
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["v"]
+                  },
+                  {
+                    "literal": "Benutze"
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "includes",
+                "args": [
+                  {
+                    "list": [
+                      {
+                        "literal": "hero"
+                      },
+                      {
+                        "literal": "brochure"
+                      },
+                      {
+                        "literal": "brochureStand"
+                      }
+                    ]
+                  },
+                  {
+                    "ref": ["target"]
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["s"]
+                              },
+                              {
+                                "literal": "room"
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "corridor"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "cleaningLightOn"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Für ein Foto ist es hier zu dunkel. Ich brauche erst Licht."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "eq",
+                        "args": [
+                          {
+                            "ref": ["target"]
+                          },
+                          {
+                            "literal": "brochure"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "includes",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["s"]
+                                  },
+                                  {
+                                    "literal": "inventory"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "brochure"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Die Broschüre liegt noch in der Vitrine."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "let",
+                  "name": "selfie",
+                  "value": {
+                    "op": "eq",
+                    "args": [
+                      {
+                        "ref": ["target"]
+                      },
+                      {
+                        "literal": "hero"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "let",
+                  "name": "id",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "ref": ["selfie"]
+                      },
+                      {
+                        "literal": "selfie"
+                      },
+                      {
+                        "literal": "marble"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "let",
+                  "name": "flag",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "ref": ["selfie"]
+                      },
+                      {
+                        "literal": "selfieTaken"
+                      },
+                      {
+                        "literal": "marbleTaken"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "ref": ["flag"]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "op": "choose",
+                        "args": [
+                          {
+                            "ref": ["selfie"]
+                          },
+                          {
+                            "literal": "Das Selfie habe ich schon. Mein Gesicht wird durch Wiederholung nicht offizieller."
+                          },
+                          {
+                            "literal": "Den offiziellen Marmor habe ich bereits fotografiert."
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "ref": ["flag"]
+                    }
+                  ],
+                  "value": {
+                    "literal": true
+                  },
+                  "operator": "="
+                },
+                {
+                  "kind": "effect",
+                  "value": {
+                    "op": "add",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "ref": ["id"]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "ref": ["selfie"]
+                      },
+                      {
+                        "literal": "Ein digitales Selfie. Gesicht: motiviert. Hintergrund: leider nicht konzernkonform."
+                      },
+                      {
+                        "literal": "Die Marmor-Textur ist gespeichert. Selbst Stein hat hier ein Corporate Design."
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            },
+            {
+              "kind": "branch",
+              "condition": {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "graphicsPC"
+                  }
+                ]
+              },
+              "yes": [
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["f"]
+                      },
+                      {
+                        "literal": "photoSent"
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "op": "call:photo.status",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "selfieTaken"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "marbleTaken"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Auf dem Smartphone fehlen die Bilder. Das Skript braucht ein Selfie und den offiziellen Marmor."
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "selfieUploaded"
+                    }
+                  ],
+                  "value": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "selfieTaken"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "operator": "||="
+                },
+                {
+                  "kind": "set",
+                  "path": [
+                    {
+                      "literal": "f"
+                    },
+                    {
+                      "literal": "marbleUploaded"
+                    }
+                  ],
+                  "value": {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "ref": ["f"]
+                              },
+                              {
+                                "literal": "marbleTaken"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "operator": "||="
+                },
+                {
+                  "kind": "branch",
+                  "condition": {
+                    "op": "and",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "selfieUploaded"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["f"]
+                          },
+                          {
+                            "literal": "marbleUploaded"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "yes": [
+                    {
+                      "kind": "set",
+                      "path": [
+                        {
+                          "literal": "f"
+                        },
+                        {
+                          "literal": "photoSent"
+                        }
+                      ],
+                      "value": {
+                        "literal": true
+                      },
+                      "operator": "="
+                    },
+                    {
+                      "kind": "effect",
+                      "value": {
+                        "op": "call:photo.journal",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "return",
+                      "value": {
+                        "literal": "Perfekt! Das MacroPhotoshop-Skript schneidet mein Gesicht frei, legt den Marmor dahinter und schickt das fertige Bild direkt runter an die Rezeption!"
+                      }
+                    }
+                  ],
+                  "no": []
+                },
+                {
+                  "kind": "return",
+                  "value": {
+                    "op": "call:photo.status",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "no": []
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["v"]
+              },
+              {
+                "literal": "Schau an"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "op": "coalesce",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "record": {
+                          "smartphone": {
+                            "literal": "Mein Smartphone. Für Selfies, Firmenmarmor und den Upload am Grafik-PC."
+                          },
+                          "selfie": {
+                            "literal": "Mein digitales Selfie vor einem völlig unpassenden Hintergrund."
+                          },
+                          "marble": {
+                            "literal": "Offizieller Black-Hole-Marmor. Als digitale Datei sogar angenehm leicht."
+                          },
+                          "vipBadge": {
+                            "literal": "Black Hole Investments & Property Management · VIP. Der Ausweis enthält mein Porträt vor dem offiziellen Marmor."
+                          },
+                          "graphicsPC": {
+                            "op": "call:photo.status",
+                            "args": [
+                              {
+                                "ref": ["s"]
+                              }
+                            ]
+                          },
+                          "badgePrinter": {
+                            "op": "choose",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["f"]
+                                  },
+                                  {
+                                    "literal": "badgeIssued"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "Der Ausweis ist gedruckt. Mein Exemplar habe ich bereits."
+                              },
+                              {
+                                "literal": "Ausweisdrucker_EG. Die Empfangsdame bedient ihn."
+                              }
+                            ]
+                          },
+                          "hero": {
+                            "literal": "Bereit für ein Foto. Ob das auch für eine Karriere reicht?"
+                          }
+                        }
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
+                  },
+                  {
+                    "literal": null
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "args": [
+                  {
+                    "ref": ["target"]
+                  },
+                  {
+                    "literal": "graphicsPC"
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "ref": ["item"]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Das MacroPhotoshop-Skript wartet auf Bilder vom Smartphone."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "eq",
+            "args": [
+              {
+                "ref": ["target"]
+              },
+              {
+                "literal": "badgePrinter"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": "Die Empfangsdame kümmert sich um den Ausweisdruck."
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "return",
+          "value": {
+            "literal": null
+          }
+        }
+      ]
+    },
+    "photo.reception": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "flags"
+                  }
+                ]
+              },
+              {
+                "literal": "badgeIssued"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "reception"
+                      },
+                      "text": {
+                        "op": "choose",
+                        "args": [
+                          {
+                            "op": "call:photo.ready",
+                            "args": [
+                              {
+                                "ref": ["s"]
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "Ausweis und Walters Empfehlung liegen vor. Sie sind bereit für den Arbeitsbeginn. Bitte verwechseln Sie VIP nicht mit Vorstand."
+                          },
+                          {
+                            "literal": "Ihren Ausweis haben Sie. Für den Arbeitsbeginn fehlt noch Walters Empfehlung."
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "get",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "ref": ["s"]
+                  },
+                  {
+                    "literal": "flags"
+                  }
+                ]
+              },
+              {
+                "literal": "photoSent"
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "set",
+              "path": [
+                {
+                  "literal": "s"
+                },
+                {
+                  "literal": "flags"
+                },
+                {
+                  "literal": "printPending"
+                }
+              ],
+              "value": {
+                "literal": true
+              },
+              "operator": "="
+            },
+            {
+              "kind": "return",
+              "value": {
+                "list": [
+                  {
+                    "record": {
+                      "speaker": {
+                        "literal": "reception"
+                      },
+                      "text": {
+                        "literal": "Aha. Sie haben es tatsächlich geschafft, mir das Bild digital rüberzubeamen. Sogar der Marmor stimmt. Wundert mich fast, dass Sie wissen, wie man einen PC bedient."
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "set",
+          "path": [
+            {
+              "literal": "s"
+            },
+            {
+              "literal": "flags"
+            },
+            {
+              "literal": "photoAsked"
+            }
+          ],
+          "value": {
+            "literal": true
+          },
+          "operator": "="
+        },
+        {
+          "kind": "effect",
+          "value": {
+            "op": "call:photo.journal",
+            "args": [
+              {
+                "ref": ["s"]
+              }
+            ]
+          }
+        },
+        {
+          "kind": "return",
+          "value": {
+            "list": [
+              {
+                "record": {
+                  "speaker": {
+                    "literal": "hero"
+                  },
+                  "text": {
+                    "literal": "Ich brauche meinen Firmenausweis."
+                  }
+                }
+              },
+              {
+                "record": {
+                  "speaker": {
+                    "literal": "reception"
+                  },
+                  "text": {
+                    "literal": "Kein Ausweis ohne digitales Foto im System. Und zwar nicht irgendein Schnappschuss, sondern ein Portrait vor unserem offiziellen „Black Hole“-Marmorhintergrund. Schicken Sie mir die digitale Datei, sonst ziehe ich hier gar nichts durchs System. Der Nächste bitte!"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "photo.issue": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "branch",
+          "condition": {
+            "op": "or",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "literal": "flags"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "badgeIssued"
+                  }
+                ]
+              },
+              {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "photoSent"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "yes": [
+            {
+              "kind": "return",
+              "value": {
+                "literal": null
+              }
+            }
+          ],
+          "no": []
+        },
+        {
+          "kind": "set",
+          "path": [
+            {
+              "literal": "s"
+            },
+            {
+              "literal": "flags"
+            },
+            {
+              "literal": "badgeIssued"
+            }
+          ],
+          "value": {
+            "literal": true
+          },
+          "operator": "="
+        },
+        {
+          "kind": "set",
+          "path": [
+            {
+              "literal": "s"
+            },
+            {
+              "literal": "flags"
+            },
+            {
+              "literal": "printPending"
+            }
+          ],
+          "value": {
+            "literal": false
+          },
+          "operator": "="
+        },
+        {
+          "kind": "effect",
+          "value": {
+            "op": "add",
+            "args": [
+              {
+                "ref": ["s"]
+              },
+              {
+                "literal": "vipBadge"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "effect",
+          "value": {
+            "op": "call:photo.journal",
+            "args": [
+              {
+                "ref": ["s"]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "photo.hint": {
+      "parameters": ["s"],
+      "commands": [
+        {
+          "kind": "return",
+          "value": {
+            "op": "choose",
+            "args": [
+              {
+                "op": "get",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "ref": ["s"]
+                      },
+                      {
+                        "literal": "flags"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "badgeIssued"
+                  }
+                ]
+              },
+              {
+                "literal": "Der Firmenausweis ist erledigt."
+              },
+              {
+                "op": "choose",
+                "args": [
+                  {
+                    "op": "get",
+                    "args": [
+                      {
+                        "op": "get",
+                        "args": [
+                          {
+                            "ref": ["s"]
+                          },
+                          {
+                            "literal": "flags"
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "photoSent"
+                      }
+                    ]
+                  },
+                  {
+                    "literal": "Das Foto ist gesendet. Sprich am Empfang über deinen Firmenausweis."
+                  },
+                  {
+                    "op": "choose",
+                    "args": [
+                      {
+                        "op": "not",
+                        "args": [
+                          {
+                            "op": "get",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "ref": ["s"]
+                                  },
+                                  {
+                                    "literal": "flags"
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "photoAsked"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "literal": "Frag am Empfang nach deinem Firmenausweis."
+                      },
+                      {
+                        "op": "choose",
+                        "args": [
+                          {
+                            "op": "not",
+                            "args": [
+                              {
+                                "op": "get",
+                                "args": [
+                                  {
+                                    "op": "get",
+                                    "args": [
+                                      {
+                                        "ref": ["s"]
+                                      },
+                                      {
+                                        "literal": "flags"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "literal": "selfieTaken"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "literal": "Benutze dein Smartphone mit dir selbst für ein Selfie."
+                          },
+                          {
+                            "op": "choose",
+                            "args": [
+                              {
+                                "op": "not",
+                                "args": [
+                                  {
+                                    "op": "get",
+                                    "args": [
+                                      {
+                                        "op": "get",
+                                        "args": [
+                                          {
+                                            "ref": ["s"]
+                                          },
+                                          {
+                                            "literal": "flags"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "literal": "marbleTaken"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "literal": "Fotografiere mit dem Smartphone die Firmenbroschüre: in der Vitrine oder im Inventar."
+                              },
+                              {
+                                "literal": "Benutze dein Smartphone mit dem freien Grafik-PC in der 1. Etage."
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "constants": {
+    "doorFlags": {
+      "wc": "wcOpen",
+      "sideDoor": "sideOpen",
+      "techDoor": "technicalOpen",
+      "kitchenDoor": "kitchenOpen",
+      "officeDoor": "officeOpen",
+      "emsDoor": "emsOpen",
+      "loungeDoor": "loungeOpen"
+    },
+    "descriptions": {
+      "lightSwitch": "Ein beleuchteter Lichtschalter. Hier lässt sich wenigstens die Erleuchtung einschalten.",
+      "cleaningShelves": "Gegen jeden Fleck ein Mittel. Gegen die Konzernpolitik leider keines.",
+      "cleaningCart": "Ein Dienstwagen mit erstaunlich viel Bodenhaftung.",
+      "scrubber": "Die Bodenreinigungsmaschine. Sie macht mehr Fläche als der Vorstand.",
+      "supplyShelf": "Tücher, Eimer und Vorräte. Eine Abteilung, die tatsächlich aufräumt.",
+      "brochure": "Black Hole Investments & Property Management. Das Zentrum der finanziellen Schwerkraft. Sehr bescheidene Ziele.",
+      "brochureStand": "In der Vitrine neben der Eingangstür liegt eine Firmenbroschüre zum Mitnehmen.",
+      "entrance": "Durch diese Drehtür bin ich angekommen. Ich sehe mich erst einmal im Gebäude um.",
+      "phone": "Das Haustelefon am Empfang. Heute klingelt es erfreulich selten.",
+      "directory": "Büros und Besprechungsraum liegen in der 1. Etage.",
+      "notice": "Erdgeschoss: Empfang, WC, Reinigungsraum und Lieferhof. 1. Etage: Büros, Besprechungsraum und Officeküche. 2. Etage: Teamleiterbüro, Kopierer, EMS-Training und Pausenraum.",
+      "elevator": "Der Aufzug hält im Erdgeschoss, in der 1. Etage und in der 2. Etage. Am Aufzug wähle ich mein Ziel.",
+      "stairs": "Der beschilderte Abgang verbindet diese Etage mit der darunter. Im Erdgeschoss führt die Treppe nach oben.",
+      "stairsUp": "Dieser Aufgang führt von der 1. Etage in die 2. Etage.",
+      "wc": "Der Waschraum liegt hinter dieser Tür.",
+      "techDoor": "Hier geht es in den Reinigungsraum. Die Tür ist nicht abgeschlossen.",
+      "sideDoor": "Der Nebeneingang führt auf den Lieferhof.",
+      "extinguisher": "Ein geprüfter Feuerlöscher. Der bleibt für echte Notfälle hier.",
+      "cooling": "Die Kühlung summt gleichmäßig. Ein angenehm unaufgeregter Mitarbeiter.",
+      "freight": "Der Lastenaufzug führt in weitere Betriebsbereiche. Die gehören noch nicht zu diesem Rundgang.",
+      "intercom": "Eine Sprechanlage zwischen Hof und Empfang.",
+      "deliveryNote": "Eine Lieferung Büromaterial. Die Unterlagen bleiben beim Fahrer.",
+      "washbasin": "Ein steinernes Waschbecken mit Messinghahn. Fließendes Kapital.",
+      "mirror": "Der Anzug sitzt. Nur meine Karriere hängt noch etwas schief.",
+      "towels": "Frisch gefaltet. Hier hat sogar ein Handtuch eine klare Position.",
+      "paperDispenser": "Papier ohne Antrag in dreifacher Ausfertigung. Erstaunlich.",
+      "wasteBin": "Ein Hochglanz-Abfalleimer für Papierhandtücher.",
+      "toilet": "Eine moderne Toilette. Für einmal ist die Zuständigkeit eindeutig.",
+      "window": "Ein Blick hinaus, weit weg vom nächsten Besprechungstermin.",
+      "amenities": "Seife, Pflegefläschchen und Tücher. Alles bleibt für die Gäste hier.",
+      "kitchenDoor": "Hinter dieser Tür liegt die Officeküche.",
+      "desks": "Monitore, Akten und Schreibtische. Die Büros sind offen zugänglich.",
+      "meetingTable": "Ein langer Tisch für kurze Entscheidungen und lange Besprechungen.",
+      "wcSign": "Ein Wegweiser zum WC im Erdgeschoss. Zurück geht es über Treppe oder Aufzug.",
+      "sink": "Eine Spüle. Die Tassen stehen schon an.",
+      "coffeeMachine": "Die Kaffeemaschine. Vermutlich die wichtigste Abteilung des Hauses.",
+      "fridge": "Der Kühlschrank für die gemeinsame Mittagspause.",
+      "cabinets": "Tassen, Teller und der übliche Vorrat für die Kaffeepause.",
+      "seating": "Ein kleiner Sitzbereich mit Aussicht auf die Stadt.",
+      "officeDoor": "Die Tür zum Einzelbüro des Teamleiters. Nicht abgeschlossen.",
+      "emsDoor": "Die Tür zum EMS-Trainingsraum. Ein kleiner Ausgleich zur Büroarbeit.",
+      "loungeDoor": "Hinter dieser Tür liegt der Pausenraum mit seinen Sofas.",
+      "copier": "Ein Kopierer mit erstaunlich vielen Tasten für eine einzige Aufgabe.",
+      "fax": "Ein Faxgerät. Hier reist die Zukunft noch auf Papier.",
+      "paperShelf": "Papier und Ordner, ordentlich sortiert. Alles bleibt für die Kollegen hier.",
+      "waterDispenser": "Ein Wasserspender. Die klarste Entscheidung auf dieser Etage.",
+      "floorGuide": "WC: Erdgeschoss. Besprechungsraum: 1. Etage. Treppe und Aufzug führen dorthin.",
+      "teamDesk": "Der Schreibtisch des Teamleiters. Zwischen zwei Akten passt noch eine Entscheidung.",
+      "teamComputer": "Ein Computer mit Tabellen. Der Bildschirm arbeitet fleißiger als der Bildschirmschoner.",
+      "teamFiles": "Ein Aktenschrank voller Vorgänge. Heute muss ich keinen davon bearbeiten.",
+      "visitorChair": "Ein Besucherstuhl. Vermutlich für die kurzen Gespräche, die länger dauern.",
+      "emsConsole": "Ein EMS-Trainingsgerät mit Anschlussleitungen. Der Trainer kümmert sich um die Bedienung.",
+      "trainingVest": "Eine Trainingsweste mit Elektroden. Die bleibt am Gerät.",
+      "trainingMat": "Eine blaue Trainingsmatte. Hier ist Platz für Bewegung.",
+      "locker": "Ein Spind für die Trainingssachen.",
+      "weights": "Hanteln, ordentlich im Ständer. Für heute reicht mir das Treppensteigen.",
+      "redSofa": "Ein rotes Sofa. Offiziell für Pausen, inoffiziell für gute Ideen.",
+      "greenSofa": "Das grüne Sofa bietet einen besonders guten Blick aus dem Fenster.",
+      "coffeeTable": "Zeitschriften und Tassen. Eine Tagesordnung liegt hier zum Glück nicht.",
+      "beanbag": "Ein blauer Sitzsack ohne erkennbare Führungsverantwortung.",
+      "guitar": "Eine Gitarre für die Pause. Ich lasse sie an ihrem Platz."
+    },
+    "conversations": {
+      "reception": "Empfang: „Willkommen. Die Büros sind in der 1. Etage. Für eine Pause empfehle ich die Officeküche.“",
+      "walter": "Walter: „Ich kenne hier jede Tür. Schau dich ruhig um. Treppe und Aufzug bringen dich nach oben.“",
+      "technician": "Technikerin: „Alles läuft. Manchmal ist das schönste Geräusch ein gleichmäßiges Summen.“",
+      "driver": "Fahrer: „Büromaterial rein, leere Kartons raus. Immerhin weiß ich, wohin meine Arbeit geht.“",
+      "officeStaff": "Mitarbeiterin: „Willkommen in der 1. Etage. Den besten Ausblick haben wir – die längsten Sitzungen leider auch.“",
+      "meetingStaff": "Mitarbeiter: „Der Raum ist gerade frei. Ich genieße die Ruhe vor der nächsten Besprechung.“",
+      "teamLeader": "Teamleiter: „Willkommen. Schau dich ruhig um. Mein Büro ist klein, die Ablage dafür ehrgeizig.“",
+      "copyStaff": "Mitarbeiterin: „Der Kopierer läuft heute tadellos. Ich will es lieber nicht zu laut sagen.“",
+      "trainer": "Trainer: „Hier machen die Kollegen Bewegungspause. Du kannst dich gern umsehen; die Geräte bediene ich.“",
+      "breakStaff": "Mitarbeiterin: „Eine Tasse Kaffee und fünf Minuten Ruhe. Manche nennen das schon Unternehmenskultur.“"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "prolog": {
+    "manual": "Handbuch",
+    "key": "Autoschlüssel",
+    "wrench": "Schraubenschlüssel",
+    "rag": "Putzlappen",
+    "dirtybelt": "Öliger Keilriemen",
+    "belt": "Keilriemen",
+    "coffee": "Kaffee",
+    "cup": "Leere Tasse",
+    "water": "Tasse Wasser",
+    "grounds": "Kaffeepulver"
+  },
+  "act1": {
+    "smartphone": "Smartphone",
+    "selfie": "Digitales Selfie",
+    "marble": "Marmor-Textur (Digital)",
+    "vipBadge": "VIP-Firmenausweis",
+    "brochure": "Firmenbroschüre",
+    "knife": "Tafelmesser",
+    "keycard": "Walters Schlüsselkarte"
+  }
+}

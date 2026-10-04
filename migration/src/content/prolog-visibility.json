@@ -1,0 +1,121 @@
+{
+  "programs": {
+    "objects": {
+      "parameters": ["state"],
+      "commands": [
+        {
+          "kind": "return",
+          "value": {
+            "record": {
+              "manual": {
+                "op": "not",
+                "args": [{ "op": "has", "args": [{ "literal": "manual" }] }]
+              },
+              "key": { "op": "not", "args": [{ "op": "has", "args": [{ "literal": "key" }] }] },
+              "coffee": { "op": "has", "args": [{ "literal": "coffee" }] },
+              "cup": {
+                "op": "not",
+                "args": [
+                  {
+                    "op": "or",
+                    "args": [
+                      { "op": "has", "args": [{ "literal": "cup" }] },
+                      {
+                        "op": "or",
+                        "args": [
+                          { "op": "has", "args": [{ "literal": "water" }] },
+                          {
+                            "op": "or",
+                            "args": [
+                              { "op": "has", "args": [{ "literal": "coffee" }] },
+                              { "ref": ["state", "flags", "coffeeGiven"] }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "grounds": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "cupboard"] }] }]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "or",
+                        "args": [
+                          { "op": "has", "args": [{ "literal": "grounds" }] },
+                          { "ref": ["state", "flags", "grounds"] }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "cupboardOpen": {
+                "op": "not",
+                "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "cupboard"] }] }]
+              },
+              "coffeeReady": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "brewed"] }] }]
+                  },
+                  {
+                    "op": "not",
+                    "args": [
+                      {
+                        "op": "or",
+                        "args": [
+                          { "op": "has", "args": [{ "literal": "coffee" }] },
+                          { "ref": ["state", "flags", "coffeeGiven"] }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "rag": { "op": "not", "args": [{ "op": "has", "args": [{ "literal": "rag" }] }] },
+              "toolboxOpen": {
+                "op": "not",
+                "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "toolbox"] }] }]
+              },
+              "wrenchInBox": {
+                "op": "and",
+                "args": [
+                  {
+                    "op": "not",
+                    "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "toolbox"] }] }]
+                  },
+                  { "op": "not", "args": [{ "op": "has", "args": [{ "literal": "wrench" }] }] }
+                ]
+              },
+              "chestOpen": {
+                "op": "not",
+                "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "chest"] }] }]
+              },
+              "hoodOpen": {
+                "op": "not",
+                "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "hood"] }] }]
+              },
+              "tractorBelt": { "op": "not", "args": [{ "ref": ["state", "flags", "beltTaken"] }] },
+              "engineBelt": {
+                "op": "not",
+                "args": [{ "op": "not", "args": [{ "ref": ["state", "flags", "belt"] }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "constants": {}
+}
