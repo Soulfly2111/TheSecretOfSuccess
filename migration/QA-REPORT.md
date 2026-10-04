@@ -1,6 +1,6 @@
 # Prüfbericht – 4. Oktober 2026
 
-Die regulären Spieladressen wurden danach auf denselben geprüften Build umgestellt. Serverrelease `20261004-phaser-live`: Beide Kapitel starten online mit Phaser ohne fehlende Ressourcen. Die anderen vorhandenen Domains antworten weiterhin erfolgreich; die Apache-Konfiguration blieb unverändert.
+Die regulären Spieladressen wurden danach auf denselben geprüften Build umgestellt. Serverrelease `20261004-phaser-live`: Beide Kapitel starten online mit Phaser ohne fehlende Ressourcen. Auf der regulären URL bestanden anschließend der vollständige Prolog per Touch, die vollständigen Akt-1-Abläufe per Touch und Maus sowie die direkte Maus- und Touchsteuerung. Die anderen vorhandenen Domains antworten weiterhin erfolgreich; die Apache-Konfiguration blieb unverändert.
 
 Ein abschließendes `npm ci` mit Typprüfung, Validierung, Build und acht Tests ist bestanden. Alle 39 Builddateien haben nach der frischen Installation dieselben SHA-256-Werte wie der veröffentlichte Build.
 
