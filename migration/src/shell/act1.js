@@ -547,7 +547,7 @@ $('help').onclick = () =>
     'Broschüre lesen: „Schau an“ wählen und die Firmenbroschüre im Inventar anklicken.',
     'Erdgeschoss, 1. und 2. Etage sind breite Panoramen. Klicke auf den Boden oder die Randpfeile. Die Kamera folgt. Die Pfeiltasten bewegen die Figur nach links, rechts, oben und unten.',
     'Treppen verbinden benachbarte Etagen. In der 1. Etage gibt es getrennte Auf- und Abgänge. Am Aufzug wählst du Erdgeschoss, 1. oder 2. Etage. Die Ortsleiste nutzt dieselben Wege. Offene Türen wechseln automatisch auf „Gehe zu“; „Schließe“ und „Schau an“ bleiben gezielt wählbar.',
-    'Dein Smartphone fotografiert dich selbst oder die Firmenbroschüre. Der freie Grafik-PC in der 1. Etage verarbeitet die Fotos für den Firmenausweis.',
+    'Dein Smartphone fotografiert dich selbst oder die Firmenbroschüre. Am freien Grafik-PC in der 1. Etage kannst du beide Bilddateien einzeln auswählen oder alle fehlenden Dateien gemeinsam über das Smartphone übertragen.',
     'Hilf Walter, seine Schlüsselkarte wiederzufinden. Frag ihn bei einem weiteren Gespräch nach dem letzten Fundort. Alle Etagen bleiben zugänglich.',
   ]);
 $('close-modal').onclick = () => $('modal').close();
@@ -802,19 +802,32 @@ function performAction(v, target, item) {
     photoJob = { kind: 'capture', elapsed: 0, duration: 650 };
     ping();
   }
+  const uploaded = [
+    !before.one && state.flags.selfieUploaded ? 'SELFIE' : null,
+    !before.two && state.flags.marbleUploaded ? 'MARMOR' : null,
+  ].filter(Boolean);
   if (
-    item === 'smartphone' &&
+    ['smartphone', 'selfie', 'marble'].includes(item) &&
     target === 'graphicsPC' &&
-    ((!before.one && state.flags.selfieUploaded) || (!before.two && state.flags.marbleUploaded))
+    uploaded.length
   ) {
+    const onlySelfie = uploaded[0] === 'SELFIE';
     photoJob = {
       kind: 'upload',
       elapsed: 0,
-      duration: 2200,
+      duration: uploaded.length === 2 ? 3000 : 2200,
+      files: uploaded,
       message,
-      first: state.flags.selfieUploaded
-        ? 'Foto 1/2 geladen. Warte auf Marmor-Hintergrund…'
-        : 'Foto 1/2 geladen. Warte auf digitales Selfie…',
+      first:
+        uploaded.length === 2
+          ? 'Digitales Selfie und Marmor-Hintergrund werden nacheinander hochgeladen …'
+          : `${onlySelfie ? 'Digitales Selfie' : 'Marmor-Hintergrund'} wird hochgeladen. ${
+              state.flags.photoSent
+                ? 'Danach startet automatisch die Montage …'
+                : onlySelfie
+                  ? 'Danach fehlt noch der Marmor-Hintergrund.'
+                  : 'Danach fehlt noch das digitale Selfie.'
+            }`,
     };
     return photoJob.first;
   }

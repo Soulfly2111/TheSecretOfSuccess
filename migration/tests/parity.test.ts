@@ -119,7 +119,15 @@ test('JSON Act 1 preserves actions, dialogue, photo and hints', () => {
               `${room} ${verb} ${item} ${target}`,
             );
             assert.deepEqual(a, b);
-            assert.equal(ActOne.hint(a), oldA.hint(b));
+            const referenceHint = oldA.hint(b);
+            if (
+              referenceHint === 'Benutze dein Smartphone mit dem freien Grafik-PC in der 1. Etage.'
+            )
+              assert.equal(
+                ActOne.hint(a),
+                'Lade Selfie und Marmor-Datei am Grafik-PC einzeln hoch oder benutze dort das Smartphone für beide Dateien.',
+              );
+            else assert.equal(ActOne.hint(a), referenceHint);
           }
   for (const topic of ['intro', 'thanks', 'walter', 'lastSeen']) {
     const a = ActOne.fresh(),
@@ -146,4 +154,32 @@ test('versioned saves import old progress without changing source', () => {
   assert(p.flags.read);
   assert.equal(p.room, 'house');
   assert.equal(restoreAct1({ ...old, won: true }, null).room, 'lobby');
+});
+
+test('photo files upload individually or together without duplicates', () => {
+  const state = ActOne.fresh();
+  state.inventory.push('selfie', 'marble');
+  state.flags.selfieTaken = true;
+  state.flags.marbleTaken = true;
+
+  assert.match(ActOne.act(state, 'Benutze', 'graphicsPC', 'marble'), /Selfie/);
+  assert.equal(state.flags.marbleUploaded, true);
+  assert.equal(state.flags.selfieUploaded, false);
+  assert.match(ActOne.act(state, 'Benutze', 'graphicsPC', 'selfie'), /MacroPhotoshop/);
+  assert.equal(state.flags.selfieUploaded, true);
+  assert.equal(state.flags.photoSent, true);
+  assert.equal(state.inventory.filter((item) => item === 'selfie').length, 1);
+  assert.equal(state.inventory.filter((item) => item === 'marble').length, 1);
+
+  const bulk = ActOne.fresh();
+  bulk.inventory.push('selfie', 'marble');
+  bulk.flags.selfieTaken = true;
+  bulk.flags.marbleTaken = true;
+  assert.match(ActOne.act(bulk, 'Benutze', 'graphicsPC', 'smartphone'), /MacroPhotoshop/);
+  assert.equal(bulk.flags.selfieUploaded, true);
+  assert.equal(bulk.flags.marbleUploaded, true);
+  assert.equal(bulk.flags.photoSent, true);
+  const snapshot = structuredClone(bulk);
+  ActOne.act(bulk, 'Benutze', 'graphicsPC', 'smartphone');
+  assert.deepEqual(bulk, snapshot);
 });

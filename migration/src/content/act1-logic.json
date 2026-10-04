@@ -3383,13 +3383,23 @@
             "op": "and",
             "args": [
               {
-                "op": "eq",
+                "op": "includes",
                 "args": [
                   {
-                    "ref": ["item"]
+                    "list": [
+                      {
+                        "literal": "smartphone"
+                      },
+                      {
+                        "literal": "selfie"
+                      },
+                      {
+                        "literal": "marble"
+                      }
+                    ]
                   },
                   {
-                    "literal": "smartphone"
+                    "ref": ["item"]
                   }
                 ]
               },
@@ -3410,23 +3420,39 @@
             {
               "kind": "branch",
               "condition": {
-                "op": "includes",
+                "op": "and",
                 "args": [
                   {
-                    "list": [
+                    "op": "eq",
+                    "args": [
                       {
-                        "literal": "hero"
+                        "ref": ["item"]
                       },
                       {
-                        "literal": "brochure"
-                      },
-                      {
-                        "literal": "brochureStand"
+                        "literal": "smartphone"
                       }
                     ]
                   },
                   {
-                    "ref": ["target"]
+                    "op": "includes",
+                    "args": [
+                      {
+                        "list": [
+                          {
+                            "literal": "hero"
+                          },
+                          {
+                            "literal": "brochure"
+                          },
+                          {
+                            "literal": "brochureStand"
+                          }
+                        ]
+                      },
+                      {
+                        "ref": ["target"]
+                      }
+                    ]
                   }
                 ]
               },
@@ -3771,11 +3797,33 @@
                     }
                   ],
                   "value": {
-                    "op": "not",
+                    "op": "or",
                     "args": [
                       {
-                        "op": "not",
+                        "op": "eq",
                         "args": [
+                          {
+                            "ref": ["item"]
+                          },
+                          {
+                            "literal": "selfie"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "and",
+                        "args": [
+                          {
+                            "op": "eq",
+                            "args": [
+                              {
+                                "ref": ["item"]
+                              },
+                              {
+                                "literal": "smartphone"
+                              }
+                            ]
+                          },
                           {
                             "op": "get",
                             "args": [
@@ -3804,11 +3852,33 @@
                     }
                   ],
                   "value": {
-                    "op": "not",
+                    "op": "or",
                     "args": [
                       {
-                        "op": "not",
+                        "op": "eq",
                         "args": [
+                          {
+                            "ref": ["item"]
+                          },
+                          {
+                            "literal": "marble"
+                          }
+                        ]
+                      },
+                      {
+                        "op": "and",
+                        "args": [
+                          {
+                            "op": "eq",
+                            "args": [
+                              {
+                                "ref": ["item"]
+                              },
+                              {
+                                "literal": "smartphone"
+                              }
+                            ]
+                          },
                           {
                             "op": "get",
                             "args": [
@@ -4511,7 +4581,7 @@
                                 "literal": "Fotografiere mit dem Smartphone die Firmenbroschüre: in der Vitrine oder im Inventar."
                               },
                               {
-                                "literal": "Benutze dein Smartphone mit dem freien Grafik-PC in der 1. Etage."
+                                "literal": "Lade Selfie und Marmor-Datei am Grafik-PC einzeln hoch oder benutze dort das Smartphone für beide Dateien."
                               }
                             ]
                           }

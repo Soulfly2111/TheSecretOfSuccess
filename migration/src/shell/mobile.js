@@ -1,4 +1,5 @@
 import { SceneDialogue } from './dialogue';
+import { resolveHitTarget } from './hit-target';
 
 ('use strict');
 let hoverTip,
@@ -316,23 +317,15 @@ function init(adapter) {
   holdRing = el('div', 'hold-progress');
   holdRing.hidden = true;
   document.body.append(hoverTip, holdRing);
-  const candidates = (point, touch = false) =>
-    [...scene.querySelectorAll('.hotspot:not([hidden])')].filter((b) => {
-      const r = b.getBoundingClientRect(),
-        sr = scene.getBoundingClientRect(),
-        dx = touch ? Math.max(0, (44 - r.width) / 2) : 0,
-        dy = touch ? Math.max(0, (44 - r.height) / 2) : 0;
-      return (
-        r.right > sr.left &&
-        r.left < sr.right &&
-        point.x >= Math.max(sr.left, r.left - dx) &&
-        point.x <= Math.min(sr.right, r.right + dx) &&
-        point.y >= Math.max(sr.top, r.top - dy) &&
-        point.y <= Math.min(sr.bottom, r.bottom + dy)
-      );
-    });
-  function choose(list, point, radial, touch) {
-    if (!list.length) return;
+  const candidate = (point, touch = false) =>
+    resolveHitTarget(
+      scene.querySelectorAll('.hotspot:not([hidden])'),
+      point,
+      scene.getBoundingClientRect(),
+      touch,
+    );
+  function choose(target, point, radial, touch) {
+    if (!target) return;
     const run = (id) => {
       if (source) {
         const item = source,
@@ -356,15 +349,7 @@ function init(adapter) {
         }
       }
     };
-    if (list.length === 1) run(list[0].dataset.object);
-    else {
-      open('Welches Objekt?', 'choice');
-      for (const b of list)
-        button(b.getAttribute('aria-label'), () => {
-          close();
-          run(b.dataset.object);
-        });
-    }
+    run(target.dataset.object);
   }
   scene.addEventListener('pointermove', (e) => {
     if (
@@ -378,8 +363,8 @@ function init(adapter) {
       clearHover();
       return;
     }
-    const list = candidates({ x: e.clientX, y: e.clientY });
-    if (list.length) showHover(list[0].dataset.object, { x: e.clientX, y: e.clientY });
+    const target = candidate({ x: e.clientX, y: e.clientY });
+    if (target) showHover(target.dataset.object, { x: e.clientX, y: e.clientY });
     else clearHover();
   });
   scene.addEventListener('pointerleave', clearHover);
@@ -412,10 +397,10 @@ function init(adapter) {
     )
       return;
     const point = { x: e.clientX, y: e.clientY },
-      list = candidates(point, true);
-    if (!list.length || source) return;
+      target = candidate(point, true);
+    if (!target || source) return;
     gesture = { id: e.pointerId, x: point.x, y: point.y };
-    showHover(list[0].dataset.object, point);
+    showHover(target.dataset.object, point);
     holdRing.hidden = false;
     holdRing.style.left = point.x - 18 + 'px';
     holdRing.style.top = point.y - 18 + 'px';
@@ -425,7 +410,7 @@ function init(adapter) {
     gesture.timer = setTimeout(() => {
       discardTouchClick = true;
       suppressClickUntil = Date.now() + 1000;
-      choose(list, point, true, true);
+      choose(target, point, true, true);
     }, 500);
   });
   document.addEventListener(
@@ -449,14 +434,14 @@ function init(adapter) {
       clearHover();
       const point = { x: e.clientX, y: e.clientY },
         touch = e.pointerType === 'touch',
-        list = candidates(point, touch);
-      if (!list.length) {
+        target = candidate(point, touch);
+      if (!target) {
         reset();
         return;
       }
       e.preventDefault();
       e.stopImmediatePropagation();
-      choose(list, point, false, touch);
+      choose(target, point, false, touch);
     },
     true,
   );
@@ -482,7 +467,7 @@ function init(adapter) {
     }
     if (api.busy() || SceneDialogue.locked || document.getElementById('modal').open) return;
     const point = { x: e.clientX, y: e.clientY };
-    choose(candidates(point), point, true, false);
+    choose(candidate(point), point, true, false);
   };
   scene.addEventListener('contextmenu', context, true);
   panel.addEventListener('contextmenu', context);
@@ -497,7 +482,7 @@ function init(adapter) {
         if (!api.busy() && !SceneDialogue.locked) {
           const r = e.target.getBoundingClientRect();
           choose(
-            [e.target],
+            e.target,
             { x: r.left + r.width / 2, y: r.top + r.height / 2 },
             e.key === 'F10',
             false,

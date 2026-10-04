@@ -307,7 +307,12 @@ export const ActOneScene = (() => {
           ctx.fillText('GRAFIK', 380, 184);
           ctx.fillText(
             photo.job?.kind === 'upload'
-              ? 'UPLOAD'
+              ? photo.job.files?.[
+                  Math.min(
+                    photo.job.files.length - 1,
+                    Math.floor((photo.job.elapsed / photo.job.duration) * photo.job.files.length),
+                  )
+                ] || 'UPLOAD'
               : s.flags.photoSent
                 ? 'GESENDET'
                 : s.flags.selfieUploaded || s.flags.marbleUploaded
