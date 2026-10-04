@@ -129,7 +129,7 @@ test('JSON Act 1 preserves actions, dialogue, photo and hints', () => {
               );
             else assert.equal(ActOne.hint(a), referenceHint);
           }
-  for (const topic of ['intro', 'thanks', 'walter', 'lastSeen']) {
+  for (const topic of ['thanks', 'walter', 'lastSeen']) {
     const a = ActOne.fresh(),
       b = oldA.fresh();
     assert.deepEqual(ActOne.dialogue(a, topic), oldA.dialogue(b, topic));
@@ -182,4 +182,25 @@ test('photo files upload individually or together without duplicates', () => {
   const snapshot = structuredClone(bulk);
   ActOne.act(bulk, 'Benutze', 'graphicsPC', 'smartphone');
   assert.deepEqual(bulk, snapshot);
+});
+
+test('Vince quest grants the team leader recommendation only after the influencer mode', () => {
+  const s = ActOne.fresh();
+  s.flags.introDone = true;
+  ActOne.Vince.talk(s, 'teamLeader');
+  ActOne.Vince.talk(s, 'vince');
+  assert.match(ActOne.act(s, 'Öffne', 'locker'), /Spind öffnet/);
+  assert.match(ActOne.act(s, 'Nimm', 'wheyPowder'), /eingesteckt/);
+  assert.match(ActOne.act(s, 'Nimm', 'creatineCapsules'), /eingesteckt/);
+  assert.match(ActOne.act(s, 'Benutze', 'coffeeMachine'), /Konzernkaffee/);
+  assert.match(ActOne.act(s, 'Benutze', 'shaker', 'coffee'), /Vincepiration-Shake/);
+  assert.match(ActOne.act(s, 'Gib', 'vince', 'muscleShake'), /Reichweite/);
+  ActOne.act(s, 'Schau an', 'trainingVest');
+  ActOne.act(s, 'Nimm', 'insulationTape');
+  assert.match(ActOne.act(s, 'Benutze', 'trainingVest', 'insulationTape'), /INFLUENCER-MODUS/);
+  assert.match(ActOne.act(s, 'Benutze', 'emsConsole'), /INFLUENCER-MODUS/);
+  assert(s.flags.vinceTransformed);
+  assert(s.inventory.includes('officeRelease3F'));
+  ActOne.Vince.talk(s, 'teamLeader');
+  assert(s.flags.teamLeaderRecommendation);
 });

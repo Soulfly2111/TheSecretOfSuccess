@@ -155,6 +155,7 @@
       "objects": [
         ["lightSwitch", "Lichtschalter", 39, 41, 4, 9, 402, 421, "up"],
         ["cleaningShelves", "Reinigungsmittelregale", 22, 19, 17, 59, 392, 452, "left"],
+        ["insulationTape", "Isolierband", 31, 56, 5, 8, 418, 470, "up"],
         ["cleaningCart", "Putzwagen", 4, 49, 23, 43, 315, 487, "left"],
         ["scrubber", "Bodenreinigungsmaschine", 72, 53, 16, 32, 665, 469, "right"],
         ["supplyShelf", "Vorratsregal", 61, 19, 17, 59, 582, 438, "right"],
@@ -195,6 +196,7 @@
         "spots": {
           "lightSwitch": [402, 421, "up"],
           "cleaningShelves": [392, 452, "left"],
+          "insulationTape": [418, 470, "up"],
           "cleaningCart": [315, 487, "left"],
           "scrubber": [665, 469, "right"],
           "supplyShelf": [582, 438, "right"],
@@ -602,9 +604,11 @@
         ["secondExit", "Tür zur 2. Etage", 2, 9, 11, 56, 132, 389, "left"],
         ["emsConsole", "EMS-Trainingsgerät", 24, 30, 10, 24, 277, 318, "up"],
         ["trainingVest", "Trainingsweste", 35, 30, 12, 22, 401, 319, "up"],
+        ["shaker", "Konzern-Shaker", 48, 42, 6, 13, 500, 351, "up"],
         ["trainingMat", "Trainingsmatte", 39, 54, 27, 5, 503, 330, "up"],
         ["locker", "Spind", 63, 22, 9, 31, 661, 312, "up"],
         ["trainer", "Trainer", 67, 27, 9, 39, 665, 367, "right"],
+        ["vince", "Vince", 56, 25, 11, 45, 570, 382, "down"],
         ["weights", "Hanteln", 78, 40, 11, 19, 789, 357, "up"],
         ["towels", "Handtücher", 56, 36, 7, 4, 548, 313, "up"]
       ],
@@ -645,9 +649,11 @@
           "secondExit": [132, 389, "left"],
           "emsConsole": [277, 318, "up"],
           "trainingVest": [401, 319, "up"],
+          "shaker": [500, 351, "up"],
           "trainingMat": [503, 330, "up"],
           "locker": [661, 312, "up"],
           "trainer": [665, 367, "right"],
+          "vince": [570, 382, "down"],
           "weights": [789, 357, "up"],
           "towels": [548, 313, "up"]
         }
@@ -663,6 +669,7 @@
         ["secondExit", "Tür zur 2. Etage", 2, 12, 11, 56, 127, 398, "left"],
         ["fridge", "Kühlschrank", 21, 28, 5, 26, 209, 321, "up"],
         ["coffeeMachine", "Kaffeemaschine", 28, 31, 4, 10, 296, 315, "up"],
+        ["wheyPowder", "Executive Bulk Vanilla", 24, 38, 5, 8, 245, 333, "up"],
         ["redSofa", "Rotes Sofa", 36, 40, 28, 15, 376, 331, "up"],
         ["greenSofa", "Grünes Sofa", 73, 41, 20, 21, 739, 373, "up"],
         ["coffeeTable", "Couchtisch", 43, 51, 19, 10, 529, 357, "up"],
@@ -709,6 +716,7 @@
           "secondExit": [127, 398, "left"],
           "fridge": [209, 321, "up"],
           "coffeeMachine": [296, 315, "up"],
+          "wheyPowder": [245, 333, "up"],
           "redSofa": [376, 331, "up"],
           "greenSofa": [739, 373, "up"],
           "coffeeTable": [529, 357, "up"],
@@ -730,6 +738,7 @@
     "copyStaff": [1, 656, 378, "second"],
     "teamLeader": [0, 724, 344, "second"],
     "trainer": [2, 710, 351, "second"],
+    "vince": [0, 570, 382, "vince"],
     "breakStaff": [3, 695, 358, "second"]
   },
   "connections": {

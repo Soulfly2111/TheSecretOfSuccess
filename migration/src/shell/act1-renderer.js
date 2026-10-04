@@ -30,6 +30,8 @@ export const ActOneScene = (() => {
   const extraPeople = assetImage(),
     extraTiles = [];
   extraPeople.src = 'assets/act1-second-characters-v1.png';
+  const vinceStates = assetImage();
+  vinceStates.src = 'assets/act1-vince-states-v1.png';
   const newBackgrounds = { second, teamOffice, ems, lounge };
   extraPeople.onload = () => {
     const canvas = document.createElement('canvas');
@@ -123,6 +125,37 @@ export const ActOneScene = (() => {
       w,
       h,
     );
+  }
+  function vince(ctx, x, y, state, transform = 0) {
+    if (!vinceStates.complete || !vinceStates.naturalWidth) return;
+    const transformed = state.flags.vinceTransformed;
+    const sourceX = transformed ? Math.floor(vinceStates.width / 2) : 0;
+    const sourceW = Math.floor(vinceStates.width / 2);
+    const pulse = transform > 0 ? Math.sin(transform / 75) * 3 : 0;
+    const h = transformed ? 112 : 96;
+    const w = transformed ? 104 : 65;
+    ctx.drawImage(
+      vinceStates,
+      sourceX,
+      0,
+      sourceW,
+      vinceStates.height,
+      Math.round((x * 2) / 3 - w / 2 + pulse),
+      Math.round((y * 2) / 3 - h),
+      w,
+      h,
+    );
+    if (transform > 0) {
+      const cx = Math.round((x * 2) / 3);
+      ctx.fillStyle = transform > 1300 ? '#fff3bd' : '#d7b55b';
+      for (const [dx, dy] of [
+        [-45, -62],
+        [43, -55],
+        [-38, -30],
+        [35, -85],
+      ])
+        ctx.fillRect(cx + dx, Math.round((y * 2) / 3 + dy), 3, 3);
+    }
   }
   function patchImage(ctx, image, box, width) {
     if (!image.complete || !image.naturalWidth) return;
@@ -323,12 +356,46 @@ export const ActOneScene = (() => {
           );
         },
       });
+    if (s.room === 'lounge' && ActOne.visible(s, 'wheyPowder'))
+      actors.push({
+        y: 327,
+        draw: () => {
+          r(150, 197, 12, 17, '#d7bb69');
+          r(152, 199, 8, 5, '#63394d');
+          r(153, 207, 6, 2, '#f1e3b0');
+        },
+      });
+    if (s.room === 'ems') {
+      actors.push({
+        y: 350,
+        draw: () => {
+          r(324, 210, 12, 18, '#6d5968');
+          r(326, 207, 8, 4, '#ead4a3');
+          r(327, 215, 6, 3, '#b77566');
+          if (s.flags.lockerOpen) {
+            r(434, 179, 10, 45, '#392f2d');
+            r(429, 180, 5, 42, '#9a7652');
+            if (ActOne.visible(s, 'creatineCapsules')) {
+              r(438, 200, 8, 8, '#d3dfd8');
+              r(439, 201, 6, 2, '#61879a');
+            }
+          }
+        },
+      });
+    }
     for (const o of ActOneWorld.rooms[s.room].objects)
-      if (o[0] !== 'walter' && ActOneWorld.npcs[o[0]] && ActOne.visible(s, o[0])) {
+      if (
+        o[0] !== 'walter' &&
+        o[0] !== 'vince' &&
+        ActOneWorld.npcs[o[0]] &&
+        ActOne.visible(s, o[0])
+      ) {
         let [frame, x, y] = ActOneWorld.npcs[o[0]];
         if (o[0] === 'technician' && s.room === 'corridor') x = 651;
         actors.push({ y, draw: () => npc(ctx, o[0], x, y, t, s.room) });
       }
+    if (s.room === 'ems' && ActOne.visible(s, 'vince'))
+      actors.push({ y: 382, draw: () => vince(ctx, 570, 382, s, photo.vinceTransform || 0) });
     if (s.room === 'lobby')
       for (const [id, person] of Object.entries(ActOneCast.actors))
         if (person)
@@ -399,6 +466,12 @@ export const ActOneScene = (() => {
         rendererLayer('actor-' + i, x.y);
         x.draw();
       });
+    // Vince is deliberately kept above the EMS equipment: his sprite is a story state,
+    // while the equipment remains a fixed foreground layer.
+    if (s.room === 'ems' && ActOne.visible(s, 'vince')) {
+      rendererLayer('vince', 9000);
+      vince(ctx, 570, 382, s, photo.vinceTransform || 0);
+    }
     rendererLayer('foreground', 10000);
     if (s.room === 'restroom' && restroom.complete && restroom.naturalWidth) {
       // Foreground furniture occludes the actor, while its footprint is excluded from navigation.
@@ -470,6 +543,10 @@ export const ActOneScene = (() => {
       // The foreground carts hide feet at their solid, non-walkable edges.
       patchImage(ctx, cleaning, [0, 288, 140, 28], 640);
       patchImage(ctx, cleaning, [537, 283, 103, 33], 640);
+      if (ActOne.visible(s, 'insulationTape') && s.flags.cleaningLightOn) {
+        r(272, 290, 13, 11, '#20272b');
+        r(275, 293, 7, 5, '#aab4b3');
+      }
       if (!s.flags.cleaningLightOn) {
         r(0, 0, 640, 360, 'rgba(0,0,0,0.985)');
         r(253, 151, 12, 21, '#514621');

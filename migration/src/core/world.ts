@@ -18,11 +18,16 @@ export const ActOneWorld = {
     connections[room]?.find((e) => e.target === target && (!destination || e.to === destination)),
   entry: (edge: Connection) => entries[edge.to][edge.entry],
   liftOptions: (room: string) =>
-    ['lobby', 'upper', 'second'].map((id) => ({
-      id,
-      label: rooms[id].label,
-      current: id === room,
-    })),
+    [
+      ['lobby', rooms.lobby.label, ''],
+      ['upper', rooms.upper.label, ''],
+      ['second', rooms.second.label, ''],
+      ['third', '3. Etage', 'Zutritt nur mit gültiger Büropolitik.'],
+      ['fourth', '4. Etage', 'Nur für Menschen mit Kalenderhoheit.'],
+      ['fifth', '5. Etage', 'Budgetzone. Bitte nicht direkt ansehen.'],
+      ['sixth', '6. Etage', 'Strategie. Zutritt macht die Sache nicht klarer.'],
+      ['seventh', '7. Etage', 'Vorstand. Sauerstoff optional.'],
+    ].map(([id, label, locked]) => ({ id, label, current: id === room, locked })),
   route: (from: string, to: string): Connection[] => {
     const queue = [{ room: from, path: [] as Connection[] }],
       seen = new Set([from]);

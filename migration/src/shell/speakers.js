@@ -13,6 +13,7 @@ export const Speakers = (() => {
     teamLeader: ['TEAMLEITER', '#FFD0A0'],
     copyStaff: ['MITARBEITERIN', '#E78BEF'],
     trainer: ['TRAINER', '#C6E66B'],
+    vince: ['VINCE', '#FFAA5C'],
     breakStaff: ['MITARBEITERIN', '#D4C1FF'],
   };
   const aliases = {
@@ -26,6 +27,7 @@ export const Speakers = (() => {
     Technikerin: 'technician',
     Teamleiter: 'teamLeader',
     Trainer: 'trainer',
+    Vince: 'vince',
   };
   function resolve(id) {
     return entries[id] ? id : aliases[id] || 'hero';

@@ -24,7 +24,8 @@ W.install(Movement);
 const photoMarble = assetImage();
 photoMarble.src = 'assets/company-brochure-v1.png';
 let photoJob = null,
-  photoFlash = 0;
+  photoFlash = 0,
+  vinceTransform = 0;
 let state = A.fresh(),
   verb = 'Gehe zu',
   selected = null,
@@ -152,6 +153,50 @@ function icon(canvas, id) {
     g.fillRect(5, 14, 6, 2);
     return;
   }
+  if (id === 'wheyPowder') {
+    g.fillStyle = '#e7cf75';
+    g.fillRect(5, 5, 14, 15);
+    g.fillStyle = '#5a3356';
+    g.fillRect(6, 7, 12, 5);
+    g.fillStyle = '#f4ecc3';
+    g.fillRect(7, 14, 10, 2);
+    return;
+  }
+  if (id === 'creatineCapsules') {
+    g.fillStyle = '#d7e1dd';
+    g.fillRect(5, 7, 14, 11);
+    g.fillStyle = '#6b8b9d';
+    g.fillRect(6, 8, 12, 3);
+    g.fillStyle = '#d09555';
+    g.fillRect(8, 14, 3, 3);
+    g.fillRect(13, 14, 3, 3);
+    return;
+  }
+  if (id === 'coffee' || id === 'muscleShake') {
+    g.fillStyle = id === 'coffee' ? '#a97d4e' : '#7f5369';
+    g.fillRect(7, 6, 11, 14);
+    g.fillStyle = '#ead8a0';
+    g.fillRect(8, 4, 9, 2);
+    g.fillRect(10, 9, 5, 2);
+    return;
+  }
+  if (id === 'insulationTape') {
+    g.fillStyle = '#1d2428';
+    g.fillRect(5, 6, 14, 13);
+    g.fillStyle = '#9ba5a4';
+    g.fillRect(8, 9, 8, 7);
+    return;
+  }
+  if (id === 'officeRelease3F') {
+    g.fillStyle = '#d9c382';
+    g.fillRect(4, 4, 16, 17);
+    g.fillStyle = '#34313b';
+    g.fillRect(7, 8, 10, 2);
+    g.fillRect(7, 13, 8, 2);
+    g.fillStyle = '#9d3c35';
+    g.fillRect(13, 16, 4, 3);
+    return;
+  }
   const context = canvas.getContext('2d');
   for (const [left, top, width, height, color] of [
     [3, 2, 18, 21, '#c3a56a'],
@@ -224,8 +269,10 @@ function render() {
   $('location-name').textContent = room.name;
   $('location-sub').textContent = room.sub;
   $('hotspots').replaceChildren();
-  for (const [id, label, x, y, w, h] of room.objects) {
+  for (const [id, originalLabel, x, y, w, h] of room.objects) {
     if (!A.visible(state, id)) continue;
+    const label =
+      id === 'graphicsPC' && state.flags.workstationAssigned ? 'Mein Büroplatz' : originalLabel;
     const b = document.createElement('button');
     b.className = 'hotspot';
     b.dataset.object = id;
@@ -279,9 +326,11 @@ function render() {
   updateCamera();
   renderControls();
   sentence();
-  $('progress').textContent = A.Photo.ready(state)
-    ? 'BEREIT FÜR DEN ARBEITSBEGINN'
-    : `WALTER: ${state.flags.cardReturned ? '✓' : 'OFFEN'} · AUSWEIS: ${state.flags.badgeIssued ? '✓' : 'OFFEN'}`;
+  $('progress').textContent = A.Vince.ready(state)
+    ? state.flags.workstationComplete
+      ? 'ARBEITSBEGINN BESTÄTIGT'
+      : 'BÜROPLATZ IM 1. OG BEREIT'
+    : `WALTER: ${state.flags.cardReturned ? '✓' : 'OFFEN'} · AUSWEIS: ${state.flags.badgeIssued ? '✓' : 'OFFEN'} · TEAMLEITER: ${state.flags.teamLeaderRecommendation ? '✓' : 'OFFEN'}`;
 }
 function approach(id, explicit = false) {
   if (transition || photoJob || (id !== 'hero' && !A.visible(state, id))) return;
@@ -428,6 +477,20 @@ function arrive(action) {
     renderControls();
     return;
   }
+  if (
+    ['teamLeader', 'vince', 'trainer'].includes(action.target) &&
+    !action.selected &&
+    ['Rede mit', 'Benutze'].includes(action.verb)
+  ) {
+    const lines = A.Vince.talk(state, action.target);
+    if (lines) {
+      selected = null;
+      save();
+      ActOneStory.talk(lines, () => render());
+      return;
+    }
+  }
+  const wasTransformed = state.flags.vinceTransformed;
   const returned = state.flags.cardReturned;
   ping();
   say(performAction(action.verb, action.target, action.selected), action.target);
@@ -436,6 +499,23 @@ function arrive(action) {
   save();
   render();
   if (!returned && state.flags.cardReturned) ActOneStory.thanks();
+  if (!wasTransformed && state.flags.vinceTransformed) {
+    vinceTransform = 2100;
+    ActOneStory.talk(
+      [
+        {
+          speaker: 'trainer',
+          text: 'Das ist entweder ein Trainingsfortschritt oder ein meldepflichtiger Standortvorteil.',
+        },
+        { speaker: 'vince', text: 'Ich spüre es! Mein Körper kündigt innerlich!' },
+        {
+          speaker: 'vince',
+          text: 'Mein Büro im 3. OG ist zu klein für diese Marke. Der Teamleiter kann es haben.',
+        },
+      ],
+      () => render(),
+    );
+  }
   if (action.verb === 'Schau an' && !action.selected) {
     inspectPhoto(action.target);
     MobileUI.inspected(action.target);
@@ -450,11 +530,18 @@ function showLiftMenu() {
   $('close-modal').textContent = 'Abbrechen';
   for (const option of W.liftOptions(origin)) {
     const button = document.createElement('button');
-    button.textContent = option.label;
+    button.textContent = option.locked ? option.label + ' · gesperrt' : option.label;
+    button.classList.toggle('locked-floor', Boolean(option.locked));
+    if (option.locked) button.setAttribute('aria-disabled', 'true');
     button.disabled = option.current;
     button.dataset.floor = option.id;
     button.onclick = () => {
       if (state.room !== origin || transition) return;
+      if (option.locked) {
+        $('modal').close();
+        say(option.locked);
+        return;
+      }
       const edge = W.connection(origin, 'elevator', option.id);
       if (!edge) return;
       $('modal').close();
@@ -559,6 +646,7 @@ $('hint').onclick = () => {
       state.flags.cardReturned ? 'Walters Empfehlung ist erledigt.' : A.hint(state),
     ],
     ['Firmenausweis', A.Photo.hint(state)],
+    ['Vince und der Teamleiter', A.hint(state)],
   ]) {
     const b = document.createElement('button');
     b.textContent = label;
@@ -679,6 +767,7 @@ function frame(t) {
         }
       }
       photoFlash = Math.max(0, photoFlash - dt);
+      vinceTransform = Math.max(0, vinceTransform - dt);
       if (liftVisual) {
         liftVisual.elapsed += dt;
         if (liftVisual.arrival && liftVisual.elapsed > 1100) liftVisual = null;
@@ -700,6 +789,7 @@ function frame(t) {
   presentation.renderAct1(ActOneScene, state, actor, t, camera, ActOneStory.lift || liftVisual, {
     job: photoJob,
     flash: photoFlash,
+    vinceTransform,
   });
   $('scene').dataset.transition = transition?.edge.kind || (transition ? 'door' : '');
   $('scene').dataset.moving = String(actor.moving);
@@ -758,10 +848,13 @@ MobileUI.init({
       text: state.flags.cardReturned ? 'Walters Empfehlung ist erledigt.' : A.hint(state),
     },
     { label: 'Firmenausweis', text: A.Photo.hint(state) },
+    { label: 'Vince und der Teamleiter', text: A.hint(state) },
   ],
   drawItem: icon,
   itemActions: (id) =>
-    id === 'keycard' ? ['Schau an', 'Benutze', 'Gib'] : ['Schau an', 'Benutze'],
+    ['keycard', 'muscleShake', 'officeRelease3F'].includes(id)
+      ? ['Schau an', 'Benutze', 'Gib']
+      : ['Schau an', 'Benutze'],
   object: (id, v, item) => {
     verb = v;
     selected = item;
@@ -788,6 +881,16 @@ MobileUI.init({
   },
 });
 function performAction(v, target, item) {
+  if (
+    target === 'graphicsPC' &&
+    !item &&
+    ['Benutze', 'Gehe zu', 'Schau an'].includes(v) &&
+    state.flags.workstationAssigned
+  )
+    return (
+      A.Vince.completeWorkstation(state) ||
+      'Dieser Arbeitsplatz ist gerade für eine Bildbearbeitung reserviert.'
+    );
   const before = {
     selfie: state.flags.selfieTaken,
     marble: state.flags.marbleTaken,

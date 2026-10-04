@@ -32,7 +32,7 @@ const roomAssets: Record<string, string[]> = {
     'act1-second-characters-v1.png',
   ],
   teamOffice: ['act1-team-office-v1.png', 'act1-second-characters-v1.png'],
-  ems: ['act1-ems-v1.png', 'act1-second-characters-v1.png'],
+  ems: ['act1-ems-v1.png', 'act1-second-characters-v1.png', 'act1-vince-states-v1.png'],
   lounge: ['act1-lounge-v1.png', 'act1-second-characters-v1.png'],
   delivery: ['act1-locations.png'],
 };
