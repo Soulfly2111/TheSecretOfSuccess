@@ -8,6 +8,8 @@ const require = createRequire(import.meta.url),
   oldWorld = require('../../act1-world.js');
 oldWorld.install(old);
 ActOneWorld.install(Movement);
+// Compare both movement engines against the deliberately revised EMS geometry.
+old.maps.ems = structuredClone(Movement.maps.ems);
 test('TypeScript navigation and actor movement preserve original paths', () => {
   for (const [room, m] of Object.entries(Movement.maps))
     for (const point of [

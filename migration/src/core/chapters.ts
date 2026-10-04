@@ -125,6 +125,12 @@ const vinceAct = (
     f.lockerOpen = true;
     return '030G. Der Spind öffnet sich. Vince hat seinen Karrieretraum offenbar auch als PIN gespeichert.';
   }
+  if (target === 'locker' && verb === 'Schließe') {
+    f.lockerOpen = false;
+    return 'Der Spind ist wieder geschlossen. Vinces Karrieregeheimnisse sind sicher.';
+  }
+  if (target === 'creatineCapsules' && verb === 'Schau an')
+    return 'Creatin-Kapseln. Auf dem Etikett steht: Für Mitarbeiter mit Wachstumsambitionen.';
   if (target === 'creatineCapsules' && verb === 'Nimm') {
     if (!f.lockerOpen) return 'Die Kapseln stehen hinter der verschlossenen Spindtür.';
     if (f.creatineTaken) return 'Die Creatin-Kapseln sind bereits eingesteckt.';

@@ -30,7 +30,33 @@ export const ActOneScene = (() => {
   const extraPeople = assetImage(),
     extraTiles = [];
   extraPeople.src = 'assets/act1-second-characters-v1.png';
-  const vinceStates = assetImage();
+  const vinceStates = assetImage(),
+    vinceTiles = [];
+  vinceStates.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = vinceStates.width;
+    canvas.height = vinceStates.height;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(vinceStates, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    for (let frame = 0; frame < 2; frame++) {
+      const start = Math.floor((frame * canvas.width) / 2),
+        end = Math.floor(((frame + 1) * canvas.width) / 2);
+      let left = end,
+        right = start,
+        top = canvas.height,
+        bottom = 0;
+      for (let y = 0; y < canvas.height; y++)
+        for (let x = start; x < end; x++) {
+          if (pixels[(y * canvas.width + x) * 4 + 3] <= 110) continue;
+          left = Math.min(left, x);
+          right = Math.max(right, x);
+          top = Math.min(top, y);
+          bottom = Math.max(bottom, y);
+        }
+      vinceTiles.push({ x: left, y: top, w: right - left + 1, h: bottom - top + 1 });
+    }
+  };
   vinceStates.src = 'assets/act1-vince-states-v1.png';
   const newBackgrounds = { second, teamOffice, ems, lounge };
   extraPeople.onload = () => {
@@ -129,17 +155,17 @@ export const ActOneScene = (() => {
   function vince(ctx, x, y, state, transform = 0) {
     if (!vinceStates.complete || !vinceStates.naturalWidth) return;
     const transformed = state.flags.vinceTransformed;
-    const sourceX = transformed ? Math.floor(vinceStates.width / 2) : 0;
-    const sourceW = Math.floor(vinceStates.width / 2);
+    const tile = vinceTiles[transformed ? 1 : 0];
+    if (!tile) return;
     const pulse = transform > 0 ? Math.sin(transform / 75) * 3 : 0;
-    const h = transformed ? 112 : 96;
-    const w = transformed ? 104 : 65;
+    const h = Math.round((72 * Movement.scale('ems', y) * 2) / 3);
+    const w = Math.round((h * tile.w) / tile.h);
     ctx.drawImage(
       vinceStates,
-      sourceX,
-      0,
-      sourceW,
-      vinceStates.height,
+      tile.x,
+      tile.y,
+      tile.w,
+      tile.h,
       Math.round((x * 2) / 3 - w / 2 + pulse),
       Math.round((y * 2) / 3 - h),
       w,
@@ -367,19 +393,50 @@ export const ActOneScene = (() => {
       });
     if (s.room === 'ems') {
       actors.push({
-        y: 350,
+        y: 289,
         draw: () => {
-          r(324, 210, 12, 18, '#6d5968');
-          r(326, 207, 8, 4, '#ead4a3');
-          r(327, 215, 6, 3, '#b77566');
           if (s.flags.lockerOpen) {
-            r(434, 179, 10, 45, '#392f2d');
-            r(429, 180, 5, 42, '#9a7652');
+            // Left compartment of the existing metal locker, in background coordinates.
+            r(410, 84, 25, 101, '#242e31');
+            r(412, 86, 21, 97, '#384447');
+            r(413, 132, 20, 3, '#9da7a1');
+            r(413, 170, 20, 3, '#9da7a1');
+            r(411, 85, 2, 99, '#151d22');
+            ctx.fillStyle = '#758080';
+            ctx.beginPath();
+            ctx.moveTo(409, 84);
+            ctx.lineTo(398, 91);
+            ctx.lineTo(398, 192);
+            ctx.lineTo(409, 185);
+            ctx.closePath();
+            ctx.fill();
+            r(399, 100, 6, 1, '#404d50');
+            r(399, 103, 6, 1, '#404d50');
+            r(400, 137, 2, 10, '#c3c8bb');
             if (ActOne.visible(s, 'creatineCapsules')) {
-              r(438, 200, 8, 8, '#d3dfd8');
-              r(439, 201, 6, 2, '#61879a');
+              r(417, 116, 12, 16, '#1c343d');
+              r(418, 118, 10, 13, '#dde7d5');
+              r(417, 114, 12, 4, '#477688');
+              r(419, 121, 8, 6, '#397087');
+              r(420, 122, 5, 1, '#f1eac8');
+              r(420, 125, 4, 1, '#f1eac8');
+              r(418, 118, 2, 12, '#ffffff');
             }
           }
+        },
+      });
+      actors.push({
+        y: 372,
+        draw: () => {
+          // Shaker rests on the right-hand tabletop.
+          r(584, 191, 17, 3, '#332d29');
+          r(586, 176, 13, 16, '#263d48');
+          r(588, 178, 9, 12, s.flags.shakeMixed ? '#ae8c68' : '#91aeb0');
+          r(587, 173, 12, 5, '#334f5b');
+          r(590, 170, 5, 3, '#b9c7b5');
+          r(588, 178, 2, 11, '#dae3cd');
+          r(594, 181, 3, 1, '#435d64');
+          r(594, 185, 3, 1, '#435d64');
         },
       });
     }
@@ -395,7 +452,7 @@ export const ActOneScene = (() => {
         actors.push({ y, draw: () => npc(ctx, o[0], x, y, t, s.room) });
       }
     if (s.room === 'ems' && ActOne.visible(s, 'vince'))
-      actors.push({ y: 382, draw: () => vince(ctx, 570, 382, s, photo.vinceTransform || 0) });
+      actors.push({ y: 315, draw: () => vince(ctx, 510, 315, s, photo.vinceTransform || 0) });
     if (s.room === 'lobby')
       for (const [id, person] of Object.entries(ActOneCast.actors))
         if (person)
@@ -437,7 +494,6 @@ export const ActOneScene = (() => {
       ],
       ems: [
         [292, [153, 111, 156, 85]],
-        [290, [399, 80, 63, 110]],
         [330, [503, 142, 55, 77]],
       ],
       lounge: [
@@ -466,12 +522,6 @@ export const ActOneScene = (() => {
         rendererLayer('actor-' + i, x.y);
         x.draw();
       });
-    // Vince is deliberately kept above the EMS equipment: his sprite is a story state,
-    // while the equipment remains a fixed foreground layer.
-    if (s.room === 'ems' && ActOne.visible(s, 'vince')) {
-      rendererLayer('vince', 9000);
-      vince(ctx, 570, 382, s, photo.vinceTransform || 0);
-    }
     rendererLayer('foreground', 10000);
     if (s.room === 'restroom' && restroom.complete && restroom.naturalWidth) {
       // Foreground furniture occludes the actor, while its footprint is excluded from navigation.

@@ -32,6 +32,8 @@ export const ContextActions = {
     }
     if (ActOneWorld.npcs[id]) return group('person');
     if (id === 'lightSwitch') return ['Schau an', s.flags.cleaningLightOn ? 'Mach aus' : 'Mach an'];
+    if (id === 'locker' && s.room === 'ems')
+      return [s.flags.lockerOpen ? 'Schließe' : 'Öffne', 'Schau an'];
     if (id === 'drawer') return [s.flags.drawerOpen ? 'Schließe' : 'Öffne', 'Schau an'];
     if (id === 'brochureStand') return group(s.flags.brochureTaken ? 'look' : 'pickup');
     return group((data.act1 as Record<string, ActionEntry>)[id]);

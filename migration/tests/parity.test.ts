@@ -204,3 +204,27 @@ test('Vince quest grants the team leader recommendation only after the influence
   ActOne.Vince.talk(s, 'teamLeader');
   assert(s.flags.teamLeaderRecommendation);
 });
+
+test('Creatin remains visible and collectible only inside the open locker across saves', () => {
+  const s = ActOne.fresh();
+  s.room = 'ems';
+  assert.equal(ActOne.visible(s, 'creatineCapsules'), false);
+  ActOne.act(s, 'Öffne', 'locker');
+  assert.equal(Boolean(s.flags.lockerOpen), false);
+  ActOne.Vince.talk(s, 'vince');
+  ActOne.act(s, 'Öffne', 'locker');
+  assert.equal(ActOne.visible(s, 'creatineCapsules'), true);
+  const loaded = restoreAct1(decode(encode('act1', s), 'act1'), null);
+  assert.equal(ActOne.visible(loaded, 'creatineCapsules'), true);
+  ActOne.act(loaded, 'Schließe', 'locker');
+  assert.equal(ActOne.visible(loaded, 'creatineCapsules'), false);
+  ActOne.act(loaded, 'Öffne', 'locker');
+  ActOne.act(loaded, 'Nimm', 'creatineCapsules');
+  assert.equal(ActOne.visible(loaded, 'creatineCapsules'), false);
+  ActOne.act(loaded, 'Nimm', 'creatineCapsules');
+  assert.equal(loaded.inventory.filter((id) => id === 'creatineCapsules').length, 1);
+  assert.equal(
+    ActOne.visible(restoreAct1(decode(encode('act1', loaded), 'act1'), null), 'creatineCapsules'),
+    false,
+  );
+});
