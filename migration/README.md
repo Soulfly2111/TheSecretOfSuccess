@@ -1,6 +1,6 @@
 # Spielbare TypeScript-/Phaser-Migration
 
-Diese eigenständige Vorschau enthält den vollständigen Prolog und alle zehn Räume von Akt 1 einschließlich Walter und Marmor-Passfoto. Die bisherige Spielversion im Repository bleibt die Referenz. Es wurden keine neuen Spielinhalte ergänzt.
+Dieser Build enthält den vollständigen Prolog und alle zehn Räume von Akt 1 einschließlich Walter und Marmor-Passfoto. Er läuft unter den regulären Spieladressen und unter der separaten Vorschau. Die früheren JavaScript-Quellen bleiben im Repository als Referenz für Paritätstests. Es wurden keine neuen Spielinhalte ergänzt.
 
 ## Status und Aufbau
 
@@ -30,10 +30,11 @@ npm run typecheck
 npm run validate
 npm test
 npm run build
+npm run promote:static
 npm run preview -- --port 8771
 ```
 
-`index.html?chapter=prolog` startet den Prolog; `act1.html` Akt 1. `npm run build` prüft Typen und Inhalte, kopiert die vorhandenen Bilder aus `../assets` und erstellt die statische Ausgabe. Auf dem Webserver wird kein Node-Dienst benötigt. `base: './'` ermöglicht den Betrieb in einem Unterordner.
+`index.html?chapter=prolog` startet den Prolog; `act1.html` Akt 1. `npm run build` prüft Typen und Inhalte, kopiert die vorhandenen Bilder aus `../assets` und erstellt die statische Ausgabe. `npm run promote:static` vergleicht die bestehenden Grafiken per SHA-256 und kopiert HTML und Bundles an die Stammadressen des Repositorys. Auf dem Webserver wird kein Node-Dienst benötigt. `base: './'` ermöglicht den Betrieb in einem Unterordner.
 
 ## JSON-Inhalte bearbeiten
 
@@ -100,14 +101,14 @@ Touchtests sind **Chrome-Browseremulation**, keine Tests auf einem echten Smartp
 
 Lokaler Chrome, Akt-1-Start bei 844×390, drei frische Kontexte, Ressourcen nach 2,5 Sekunden; ohne Netzwerkkonditionierung. Referenz: 48 Anfragen und 58,55 MB. Migration: 15 Anfragen und 15,04 MB (etwa 74 % weniger Anfangsdaten). Median `DOMContentLoaded`: Referenz 154,5 ms, Migration 230,5 ms. Die Migration startet in dieser Messung **nicht schneller**. Dies ist keine Messung bis zur vollständig spielbereiten Szene.
 
-Gemeldeter JavaScript-Heap: Referenz 2,18–28,07 MB, Migration 21,85–28,58 MB. Die starke Streuung erlaubt keine belastbare Speicherverbesserungsbehauptung. Bild-, Canvas- und GPU-Speicher sind nicht enthalten; Gesamtspeicher und Leistung auf echten Mobilgeräten sind noch offen. `tests/metrics.cjs` reproduziert die Messung bei erreichbarer Referenz auf Port 8765 und Vorschau auf Port 8771.
+Gemeldeter JavaScript-Heap: Referenz 2,18–28,07 MB, Migration 21,85–28,58 MB. Die starke Streuung erlaubt keine belastbare Speicherverbesserungsbehauptung. Bild-, Canvas- und GPU-Speicher sind nicht enthalten; Gesamtspeicher und Leistung auf echten Mobilgeräten sind noch offen. `tests/metrics.cjs` reproduziert die Messung, wenn der frühere Referenzstand (Commit `c819ec8`) auf Port 8765 und der Migrationsbuild auf Port 8771 erreichbar sind.
 
 ## Veröffentlichung
 
-Die Vorschau wird separat unter `/the-secret-of-my-success/migration/` abgelegt. Die regulären HTML-, JavaScript- und Bilddateien bleiben unverändert. Ein Release kopiert den aktuellen Webroot, ergänzt ausschließlich den geprüften `dist`-Unterordner und wechselt den vorhandenen `current`-Symlink atomar. Apache-Konfiguration und andere Domains werden nicht verändert. Vorheriger Release bleibt für einen Rückwechsel verfügbar.
+Der geprüfte Build liegt an den regulären Adressen `/the-secret-of-my-success/` und `/the-secret-of-my-success/act1.html`; die Vorschau unter `/the-secret-of-my-success/migration/` bleibt erreichbar. Release `20261004-phaser-live` enthält dieselben 39 verifizierten Builddateien. Der vorherige Release `20261004-phaser-preview` bleibt für den Rückwechsel verfügbar. Apache-Konfiguration und andere Domains wurden nicht verändert.
 
-Die [Online-Vorschau](https://casanova-studio.de/the-secret-of-my-success/migration/) und [Akt 1 direkt](https://casanova-studio.de/the-secret-of-my-success/migration/act1.html) sind veröffentlicht. Release: `/var/www/casanova-studio/releases/20261004-phaser-preview`. Der bisherige Release `20261001-direct` bleibt erhalten.
+Die [reguläre Kapitelwahl](https://casanova-studio.de/the-secret-of-my-success/) und [Akt 1](https://casanova-studio.de/the-secret-of-my-success/act1.html) sind veröffentlicht. Die getrennte [Vorschau](https://casanova-studio.de/the-secret-of-my-success/migration/) bleibt ebenfalls erreichbar.
 
-`scripts/package-preview.cjs` erzeugt ein kleines Archiv der Builddateien und ein SHA-256-Manifest einschließlich Grafikdateien. `scripts/deploy-preview.sh` beschreibt den tatsächlich verwendeten Upload-/Release-Schritt. Wegen des anfangs knappen Serverplatzes verwendet der Release Hardlinks auf unveränderte Dateien. **Diese verknüpften Dateien niemals im Release bearbeiten**; neue Releases mit eigenen Dateien anlegen. Alle ursprünglichen Webdateien und Apache-Sites wurden nach Veröffentlichung per SHA-256 unverändert bestätigt; die weiteren Domains antworten erfolgreich.
+`scripts/package-preview.cjs` erzeugt ein Archiv der Builddateien und ein SHA-256-Manifest einschließlich Grafikdateien. `scripts/deploy-preview.sh` und `scripts/deploy-production.sh` beschreiben die verwendeten Release-Schritte. Die Releases verwenden Hardlinks auf unveränderte Dateien. **Diese verknüpften Dateien niemals im Release bearbeiten**; neue Releases mit eigenen Dateien anlegen. Alle anderen Webdateien und Apache-Sites wurden nach Veröffentlichung per SHA-256 unverändert bestätigt; die weiteren Domains antworten erfolgreich.
 
-Eine Umstellung der regulären Spielversion erfolgt erst nach Abschluss der verbleibenden Migrationsschritte und Gesamtprüfung. GitHub enthält die Umsetzung auf `codex/typescript-phaser-migration`.
+Die reguläre Version wurde auf Wunsch des Nutzers nach den Funktions- und Browserprüfungen umgestellt. Die JavaScript-Brücke für Oberfläche und Pixelzeichnung bleibt als dokumentierter weiterer Migrationsschritt bestehen.

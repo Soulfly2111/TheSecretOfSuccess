@@ -1,6 +1,8 @@
 # The Secret of My Success – Prolog und Akt 1
 
-Eine separate, spielbare TypeScript-/Phaser-/Vite-Migration befindet sich in [migration](migration/README.md). Die bisherige Version bleibt die Referenz; die Vorschau verwendet eigene Spielstände.
+Die reguläre Browserfassung wird aus [migration](migration/README.md) gebaut: TypeScript, Phaser 3, Vite und JSON-Regeln. `index.html` und `act1.html` im Repository sind der geprüfte statische Build für die bisherigen Spieladressen. Die früheren JavaScript-Quellen bleiben als Referenz für Paritätstests erhalten; alte Spielstände werden gelesen und nicht überschrieben.
+
+Entwicklung und Veröffentlichung sind in der Migrationsdokumentation beschrieben. Die ältere Spielbeschreibung unten dokumentiert den inhaltlichen Ausgangsstand.
 
 ## Kapitelwahl
 

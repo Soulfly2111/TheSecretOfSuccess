@@ -1,1 +1,5 @@
 migration/** text eol=lf
+index.html text eol=lf
+act1.html text eol=lf
+assets/*.js -text
+assets/*.css -text
