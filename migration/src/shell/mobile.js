@@ -226,16 +226,21 @@ function layout() {
     h = v?.height || innerHeight;
   document.documentElement.style.setProperty('--mobile-height', h + 'px');
   document.documentElement.style.setProperty('--mobile-width', w + 'px');
+  document.documentElement.style.setProperty('--viewport-left', (v?.offsetLeft || 0) + 'px');
+  document.documentElement.style.setProperty('--viewport-top', (v?.offsetTop || 0) + 'px');
   const wrap = document.querySelector('.scene-wrap').getBoundingClientRect(),
-    width = Math.min(wrap.width, (wrap.height * 16) / 9);
+    width = Math.min(Math.max(1, wrap.width - 72), (wrap.height * 16) / 9);
   document.documentElement.style.setProperty('--mobile-scene-width', Math.max(1, width) + 'px');
   const s = document.getElementById('scene').getBoundingClientRect();
-  rail.style.cssText = `left:${s.right - 62}px;top:${s.top + 10}px;height:${Math.max(164, s.height - 20)}px`;
+  document.documentElement.style.setProperty('--scene-center-x', s.left + s.width / 2 + 'px');
+  document.documentElement.style.setProperty('--scene-center-y', s.top + s.height / 2 + 'px');
+  document.documentElement.style.setProperty('--scene-height', s.height + 'px');
+  rail.style.cssText = `left:${s.right + 8}px;top:${s.top}px;height:${Math.max(156, s.height)}px`;
   selection.style.left = s.left + 8 + 'px';
   selection.style.top = s.top + 8 + 'px';
-  selection.style.maxWidth = Math.max(100, s.width - 90) + 'px';
+  selection.style.maxWidth = Math.max(100, s.width - 16) + 'px';
   if (mode === 'wheel') {
-    const size = Math.max(160, Math.min(306, s.height - 12, s.width - 76));
+    const size = Math.max(160, Math.min(306, s.height - 12, s.width - 12));
     panel.style.width = panel.style.height = size + 'px';
     const x = anchor?.x ?? s.left + s.width / 2,
       y = anchor?.y ?? s.top + s.height / 2;
@@ -245,7 +250,7 @@ function layout() {
     panel.style.width = Math.min(290, Math.max(220, s.width * 0.3), w - 82) + 'px';
     panel.style.height = Math.max(110, s.height - 24) + 'px';
     panel.style.left = 'auto';
-    panel.style.right = Math.max(8, w - s.right + 68) + 'px';
+    panel.style.right = Math.max(8, w - s.right + 8) + 'px';
     panel.style.top = s.top + 12 + 'px';
   } else {
     panel.style.cssText = '';
@@ -569,6 +574,7 @@ function init(adapter) {
   };
   window.addEventListener('resize', resized);
   window.visualViewport?.addEventListener('resize', resized);
+  window.visualViewport?.addEventListener('scroll', resized);
   layout();
 }
 function clearHover() {

@@ -525,21 +525,34 @@ function showLiftMenu() {
   Movement.cancel(actor);
   selected = null;
   const origin = state.room;
-  popup('Aufzug · Etage wählen', ['Aktueller Standort: ' + rooms[origin].label + '.']);
+  const options = W.liftOptions(origin);
+  const shortLabel = (index) => (index === 0 ? 'EG' : `${index}. OG`);
+  popup('Aufzug · ' + shortLabel(options.findIndex((option) => option.current)), []);
   $('modal').classList.add('lift-modal');
-  $('close-modal').textContent = 'Abbrechen';
-  for (const option of W.liftOptions(origin)) {
+  const grid = document.createElement('div');
+  grid.className = 'lift-grid';
+  grid.setAttribute('aria-label', 'Etage wählen');
+  const status = document.createElement('p');
+  status.className = 'lift-status';
+  status.setAttribute('role', 'status');
+  status.textContent = 'Bitte eine Etage wählen.';
+  for (const [index, option] of options.entries()) {
     const button = document.createElement('button');
-    button.textContent = option.locked ? option.label + ' · gesperrt' : option.label;
+    button.textContent = shortLabel(index) + (option.locked ? ' 🔒' : '');
+    button.setAttribute(
+      'aria-label',
+      option.label +
+        (option.current ? ' · aktueller Standort' : option.locked ? ' · gesperrt' : ''),
+    );
     button.classList.toggle('locked-floor', Boolean(option.locked));
+    if (option.current) button.setAttribute('aria-current', 'location');
     if (option.locked) button.setAttribute('aria-disabled', 'true');
     button.disabled = option.current;
     button.dataset.floor = option.id;
     button.onclick = () => {
       if (state.room !== origin || transition) return;
       if (option.locked) {
-        $('modal').close();
-        say(option.locked);
+        status.textContent = option.locked;
         return;
       }
       const edge = W.connection(origin, 'elevator', option.id);
@@ -547,8 +560,13 @@ function showLiftMenu() {
       $('modal').close();
       startTransition(edge);
     };
-    $('modal-content').append(button);
+    grid.append(button);
   }
+  const cancel = document.createElement('button');
+  cancel.textContent = 'Abbrechen';
+  cancel.onclick = () => $('modal').close();
+  grid.append(cancel);
+  $('modal-content').append(grid, status);
 }
 function showBrochure() {
   Movement.cancel(actor);
